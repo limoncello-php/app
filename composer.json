@@ -1,0 +1,86 @@
+{
+    "name": "limoncello-php/app",
+    "homepage": "https://github.com/limoncello-php/app",
+    "support": {
+        "issues": "https://github.com/limoncello-php/app/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "neomerx",
+            "email": "info@neomerx.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0",
+        "monolog/monolog": "^1.18",
+        "neomerx/cors-psr7": "^1.0.0",
+        "limoncello-php/templates": "^0.1.0",
+        "limoncello-php/framework": "^0.1.0",
+        "limoncello-php/json-api": "dev-develop"
+    },
+    "require-dev": {
+        "filp/whoops": "^2.1",
+        "vlucas/phpdotenv": "^2.3",
+        "limoncello-php/testing": "^0.1.0",
+        "squizlabs/php_codesniffer": "^2.5",
+        "phpmd/phpmd": "^2.4",
+        "composer/composer": "^1.0.0",
+        "phpunit/phpunit": "^4.0 || ^5.0",
+        "mockery/mockery": "^0.9.4",
+        "fzaninotto/faker": "^1.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Config\\": "config/",
+            "Cached\\": "storage/cache/scripts/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "serve": "php -S 0.0.0.0:8080 -t public/ public/index.php",
+        "develop": [
+            "@cache-routes-clear",
+            "@cache-config-clear",
+            "@cache-templates-clear",
+            "@model-schemes-clear",
+            "@composer update --optimize-autoloader --quiet"
+        ],
+        "build": [
+            "@cache-routes-create",
+            "@cache-config-create",
+            "@cache-templates-create",
+            "@model-schemes-create",
+            "@composer update --no-dev --optimize-autoloader --quiet"
+        ],
+        "cache-routes-create": "App\\Commands\\CacheRoutes::cache",
+        "cache-routes-clear": "App\\Commands\\CacheRoutes::clear",
+        "cache-config-create": "App\\Commands\\CacheConfig::cache",
+        "cache-config-clear": "App\\Commands\\CacheConfig::clear",
+        "cache-templates-create": "App\\Commands\\CacheTemplates::cache",
+        "cache-templates-clear": "App\\Commands\\CacheTemplates::clear",
+        "model-schemes-create": "App\\Commands\\CacheModelSchemes::cache",
+        "model-schemes-clear": "App\\Commands\\CacheModelSchemes::clear",
+
+        "db": ["@db-reset", "@db-migrate", "@db-seed"],
+        "db-reset": "App\\Commands\\Database::reset",
+        "db-migrate": "App\\Commands\\Database::migrate",
+        "db-seed": "App\\Commands\\Database::seed",
+
+        "local-up": ["docker-compose -f docker-compose-local.yml up -d", "echo waiting 10s && sleep 10s", "@db"],
+        "local-down": "docker-compose -f docker-compose-local.yml down",
+        "docker-up": ["docker-compose up -d", "echo waiting 10s && sleep 10s", "@docker-db"],
+        "docker-down": "docker-compose down",
+
+        "test": ["@test-unit", "@test-cs", "@test-md"],
+        "test-unit": "./vendor/bin/phpunit --coverage-text",
+        "test-cs": "./vendor/bin/phpcs -p -s --standard=PSR2 ./app ./tests",
+        "test-md": "./vendor/bin/phpmd ./app text codesize,controversial,cleancode,design,unusedcode,naming",
+        "ab-home": "ab -c 10 -t 5 http://localhost:8080/"
+    }
+}
