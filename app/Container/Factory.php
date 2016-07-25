@@ -8,7 +8,7 @@ use Limoncello\ContainerLight\Container;
  */
 trait Factory
 {
-    use AppSetUpRouter, SetUpConfig, SetUpCors, SetUpLogs, SetUpPdo, SetUpTemplates;
+    use AppSetUpRouter, SetUpConfig, SetUpCors, SetUpCrypt, SetUpLogs, SetUpDatabase, SetUpTemplates;
 
     /**
      * @return ContainerInterface
@@ -19,13 +19,14 @@ trait Factory
 
         $this->setUpConfig($container);
         $this->setUpCors($container);
+        $this->setUpCrypt($container);
 
         $this->setUpFileLogs($container);
         // or
         //$this->setUpNetworkLogs($container);
 
-        // Uncomment if you need to have PDO in container
-        //$this->setUpPdo($container);
+        // Uncomment if you need to have database access classes in container
+        //$this->setUpDatabase($container);
 
         // Uncomment if you need to have Twig in container
         //$this->setUpTwig($container);

@@ -1,7 +1,6 @@
 <?php namespace App\Database\Migrations;
 
-use App\Database\Models\Role;
-use PDO;
+use App\Database\Models\Role as Model;
 
 /**
  * @package App
@@ -9,31 +8,21 @@ use PDO;
 class RolesMigration extends Migration
 {
     /** @inheritdoc */
-    const MODEL_CLASS = Role::class;
+    const MODEL_CLASS = Model::class;
 
     /**
      * @inheritdoc
      */
-    public function migrate(PDO $pdo)
+    public function migrate()
     {
-        $this->createTable($pdo, Role::TABLE_NAME, [
-            $this->int(Role::FIELD_ID, true),
-            $this->string(Role::FIELD_NAME),
+        $this->createTable(Model::TABLE_NAME, [
+            $this->primaryInt(Model::FIELD_ID),
+            $this->string(Model::FIELD_NAME),
+            $this->datetime(Model::FIELD_CREATED_AT),
+            $this->nullableDatetime(Model::FIELD_UPDATED_AT),
+            $this->nullableDatetime(Model::FIELD_DELETED_AT),
 
-            $this->timestamp(Role::FIELD_CREATED_AT),
-            $this->timestamp(Role::FIELD_UPDATED_AT),
-            $this->timestamp(Role::FIELD_DELETED_AT),
-
-            $this->primary(Role::FIELD_ID),
-            $this->unique(Role::FIELD_NAME),
+            $this->unique([Model::FIELD_NAME]),
         ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rollback(PDO $pdo)
-    {
-        $this->dropTable($pdo, Role::TABLE_NAME);
     }
 }

@@ -8,19 +8,16 @@ use Limoncello\Models\FieldTypes;
  */
 class BaseRepository extends Repository
 {
-    /** @noinspection PhpMissingParentCallCommonInspection
+    /**
      * @inheritdoc
      */
-    protected function getColumns($class)
+    protected function getColumn($class, $table, $column)
     {
-        $table = $this->getSchemaStorage()->getTable($class);
-        foreach ($this->getSchemaStorage()->getAttributeTypes($class) as $column => $type) {
-            if ($type === FieldTypes::DATE) {
-                yield null => $this->getRawExpressionForDate($table, $column);
-            } else {
-                yield $table => $column;
-            }
+        if ($this->getModelSchemes()->getAttributeType($class, $column) === FieldTypes::DATE) {
+            return $this->getRawExpressionForDate($table, $column);
         }
+
+        return parent::getColumn($class, $table, $column);
     }
 
     /**
@@ -32,7 +29,7 @@ class BaseRepository extends Repository
     private function getRawExpressionForDate($table, $column)
     {
         $result = <<<EOT
-DATE_FORMAT(CONVERT_TZ(`$table`.`$column`, @@session.time_zone, 'UTC'), '%Y-%m-%dT%H:%i:%s+0000') as `$column`
+DATE_FORMAT(CONVERT_TZ(`$table`.`$column`, @@session.time_zone, '+00:00'), '%Y-%m-%dT%H:%i:%s+0000') as `$column`
 EOT;
         return $result;
     }

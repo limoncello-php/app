@@ -13,15 +13,143 @@ class CommentsTest extends TestCase
     /**
      * Test index.
      */
+    public function testIndex()
+    {
+        $response = $this->get(self::API_URI);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertNotNull($resources = json_decode((string)$response->getBody()));
+
+        // by default results are paginated by 10 resources
+        $this->assertCount(10, $resources->data);
+    }
+
+    /**
+     * Test index.
+     */
+    public function testShow()
+    {
+        $response = $this->get(self::API_URI . '/2');
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertNotNull($resources = json_decode((string)$response->getBody()));
+
+        $this->assertEquals(2, $resources->data->id);
+        $this->assertEquals('comments', $resources->data->type);
+    }
+
+    /**
+     * Test index.
+     */
+    public function testShowRelationship()
+    {
+        $response = $this->get(self::API_URI . '/2/relationships/post');
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertNotNull($resources = json_decode((string)$response->getBody()));
+
+        $this->assertEquals(96, $resources->data->id);
+    }
+
+    /**
+     * Test create and delete.
+     */
+    public function testCreateAndDelete()
+    {
+        $this->setPreventCommits();
+
+        // Note you can save `belongsTo` relationships on creation (`belongsToMany` is also supported).
+        //
+        // `hasMany` could not be saved by it nature as it requires
+        // saving additional resources (we can return ID for only 1 created resource per HTTP request).
+        $body = <<<EOT
+        {
+            "data": {
+                "type": "comments",
+                "id"  : null,
+                "attributes": {
+                    "text"  : "Comment text"
+                },
+                "relationships": {
+                    "post": {
+                        "data": { "type": "posts", "id": "1" }
+                    }
+                }
+            }
+        }
+EOT;
+
+        $response = $this->postJson(self::API_URI, $body);
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertNotEmpty($resource = json_decode((string)$response->getBody()));
+
+        // index of created resource
+        $index = $resource->data->id;
+
+        // check it was actually saved in database
+        $this->assertEquals(200, $this->get(self::API_URI . "/$index")->getStatusCode());
+
+        // delete
+        $this->assertEquals(204, $this->delete(self::API_URI . '/' . $index)->getStatusCode());
+
+        // check resource deleted
+        $this->assertEquals(404, $this->get(self::API_URI . "/$index")->getStatusCode());
+    }
+
+    /**
+     * Test create.
+     */
+    public function testUpdate()
+    {
+        $this->setPreventCommits();
+
+        $index = 1;
+        $body  = <<<EOT
+        {
+            "data" : {
+                "type"  : "comments",
+                "id"    : "$index",
+                "attributes" : {
+                    "text"  : "New text"
+                }
+            }
+        }
+EOT;
+
+        $response = $this->patchJson(self::API_URI . "/$index", $body);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertNotEmpty(json_decode((string)$response->getBody()));
+
+        // check it was actually saved in database
+        $connection = $this->getCapturedConnection();
+        $title = $connection->executeQuery('SELECT `text` FROM comments WHERE id_comment = ' . $index)->fetchColumn();
+        $this->assertEquals('New text', $title);
+    }
+
+    /**
+     * Test index.
+     */
+    public function testHasTopLevelMeta()
+    {
+        $response = $this->get(self::API_URI);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertNotNull($resources = json_decode((string)$response->getBody()));
+        $this->assertNotEmpty($resources->meta);
+    }
+
+    /**
+     * Test index.
+     */
     public function testLimitsTopLevelResourcesWithPagination()
     {
         $response = $this->get(self::API_URI);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNotNull($resource = json_decode((string)$response->getBody()));
-        $this->assertCount(PaginationStrategy::DEFAULT_LIMIT_SIZE, $resource->data);
+        // check value from config was used
+        $this->assertCount(10, $resource->data);
         $this->assertNotEmpty($resource->links);
         $this->assertNotEmpty($resource->links->next);
-        $this->assertEmpty($resource->links->prev);
+        $this->assertObjectNotHasAttribute('prev', $resource->links);
     }
 
     /**
@@ -33,6 +161,8 @@ class CommentsTest extends TestCase
         $response = $this->get(self::API_URI, $parameters);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNotNull($resource = json_decode((string)$response->getBody()));
+
+        // check requested crazy number of resources was limited by backend
         $this->assertCount(PaginationStrategy::DEFAULT_LIMIT_SIZE, $resource->data);
         $this->assertNotEmpty($resource->links->next);
         $this->assertNotEmpty($resource->links->prev);

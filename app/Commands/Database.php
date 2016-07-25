@@ -1,19 +1,19 @@
 <?php namespace App\Commands;
 
 use App\Container\SetUpConfig;
-use App\Container\SetUpPdo;
+use App\Container\SetUpDatabase;
 use App\Database\Migrations\MigrationsRunner;
 use App\Database\Seeds\SeedsRunner;
 use Composer\Script\Event;
+use Doctrine\DBAL\Connection;
 use Limoncello\ContainerLight\Container;
-use PDO;
 
 /**
  * @package App
  */
 class Database
 {
-    use SetUpConfig, SetUpPdo;
+    use SetUpConfig, SetUpDatabase;
 
     /**
      * @param Event $event
@@ -22,7 +22,7 @@ class Database
      */
     public static function reset(Event $event)
     {
-        (new MigrationsRunner())->rollback(static::getPdo());
+        (new MigrationsRunner())->rollback(static::getConnection()->getSchemaManager());
 
         $event->getIO()->write("<info>Database reset completed.</info>");
     }
@@ -34,7 +34,7 @@ class Database
      */
     public static function migrate(Event $event)
     {
-        (new MigrationsRunner())->migrate(static::getPdo());
+        (new MigrationsRunner())->migrate(static::getConnection()->getSchemaManager());
 
         $event->getIO()->write("<info>Database migration completed.</info>");
     }
@@ -46,22 +46,22 @@ class Database
      */
     public static function seed(Event $event)
     {
-        (new SeedsRunner())->run(static::getPdo());
+        (new SeedsRunner())->run(static::getConnection());
 
         $event->getIO()->write("<info>Database seeding completed.</info>");
     }
 
     /**
-     * @return PDO
+     * @return Connection
      */
-    protected static function getPdo()
+    protected static function getConnection()
     {
         $container = new Container();
         static::setUpConfig($container);
-        static::setUpPdo($container);
+        static::setUpDatabase($container);
 
-        /** @var PDO $pdo */
-        $pdo = $container->get(PDO::class);
+        /** @var Connection $pdo */
+        $pdo = $container->get(Connection::class);
 
         return $pdo;
     }

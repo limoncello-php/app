@@ -1,7 +1,7 @@
-<?php namespace App\Http\Controllers\Posts;
+<?php namespace App\Http\Controllers;
 
 use App\Api\PostsApi as Api;
-use App\Http\Controllers\BaseController;
+use App\Api\Validation\Validator;
 use App\Schemes\PostSchema as Schema;
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -10,18 +10,12 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @package App
  */
-class Controller extends BaseController
+class PostsController extends BaseController
 {
     /** @inheritdoc */
     const API_CLASS = Api::class;
 
     const SCHEMA_CLASS = Schema::class;
-
-    /** @inheritdoc */
-    const CREATE_TRANSFORMER_CLASS = OnCreate::class;
-
-    /** @inheritdoc */
-    const UPDATE_TRANSFORMER_CLASS = OnUpdate::class;
 
     /**
      * @param array                  $routeParams
@@ -69,5 +63,55 @@ class Controller extends BaseController
         $response = static::readRelationship($index, Schema::REL_COMMENTS, $container, $request);
 
         return $response;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function parseInputOnCreate(
+        ContainerInterface $container,
+        ServerRequestInterface $request
+    ) {
+        /** @var Validator $validator */
+        $validator = $container->get(Validator::class);
+        $json      = static::parseJson($container, $request);
+        $schema    = static::getSchema($container);
+
+        $idRule         = $validator->absentOrNull();
+        $attributeRules = [
+            Schema::ATTR_TITLE => $validator->requiredPostTitle(),
+            Schema::ATTR_TEXT  => $validator->requiredPostText(),
+        ];
+        $toOneRules     = [
+            Schema::REL_BOARD => $validator->requiredBoardId(),
+        ];
+
+        list (, $attrCaptures, $toManyCaptures) =
+            $validator->assert($schema, $json, $idRule, $attributeRules, $toOneRules);
+
+        return [$attrCaptures, $toManyCaptures];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function parseInputOnUpdate(
+        $index,
+        ContainerInterface $container,
+        ServerRequestInterface $request
+    ) {
+        /** @var Validator $validator */
+        $validator = $container->get(Validator::class);
+        $json      = static::parseJson($container, $request);
+        $schema    = static::getSchema($container);
+
+        $idRule         = $validator->idEquals($index);
+        $attributeRules = [
+            Schema::ATTR_TEXT => $validator->optionalPostText(),
+        ];
+
+        list (, $attrCaptures, $toManyCaptures) = $validator->assert($schema, $json, $idRule, $attributeRules);
+
+        return [$attrCaptures, $toManyCaptures];
     }
 }

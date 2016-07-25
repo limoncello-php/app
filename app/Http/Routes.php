@@ -1,11 +1,11 @@
 <?php namespace App\Http;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Boards\Controller as BoardsController;
-use App\Http\Controllers\Comments\Controller as CommentsController;
-use App\Http\Controllers\Posts\Controller as PostsController;
-use App\Http\Controllers\Roles\Controller as RolesController;
-use App\Http\Controllers\Users\Controller as UsersController;
+use App\Http\Controllers\BoardsController;
+use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\PostsController;
+use App\Http\Controllers\RolesController;
+use App\Http\Controllers\UsersController;
 use App\Http\Controllers\HomeController;
 use App\Schemes\BoardSchema;
 use App\Schemes\CommentSchema;
@@ -43,7 +43,7 @@ trait Routes
     protected function getRoutes()
     {
         // This closure automates adding routes for CRUD operations.
-        // As routes are cached it does not slows down the app.
+        // As routes are cached it does not slow down the app.
         $addResource = function (GroupInterface $group, $controllerClass) {
             /** @var BaseController $controllerClass */
             /** @var SchemaInterface $schemaClass */

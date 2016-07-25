@@ -1,7 +1,6 @@
 <?php namespace App\Database\Migrations;
 
-use App\Database\Models\Comment;
-use PDO;
+use App\Database\Models\Comment as Model;
 
 /**
  * @package App
@@ -9,34 +8,21 @@ use PDO;
 class CommentsMigration extends Migration
 {
     /** @inheritdoc */
-    const MODEL_CLASS = Comment::class;
+    const MODEL_CLASS = Model::class;
 
     /**
      * @inheritdoc
      */
-    public function migrate(PDO $pdo)
+    public function migrate()
     {
-        $this->createTable($pdo, Comment::TABLE_NAME, [
-            $this->int(Comment::FIELD_ID, true),
-            $this->int(Comment::FIELD_ID_POST),
-            $this->int(Comment::FIELD_ID_USER),
-            $this->text(Comment::FIELD_TEXT),
-            $this->timestamp(Comment::FIELD_CREATED_AT),
-            $this->timestamp(Comment::FIELD_UPDATED_AT),
-            $this->timestamp(Comment::FIELD_DELETED_AT),
-
-            $this->primary(Comment::FIELD_ID),
-
-            $this->relationship(Comment::REL_POST),
-            $this->relationship(Comment::REL_USER),
+        $this->createTable(Model::TABLE_NAME, [
+            $this->primaryInt(Model::FIELD_ID),
+            $this->relationship(Model::REL_USER),
+            $this->relationship(Model::REL_POST),
+            $this->text(Model::FIELD_TEXT),
+            $this->datetime(Model::FIELD_CREATED_AT),
+            $this->nullableDatetime(Model::FIELD_UPDATED_AT),
+            $this->nullableDatetime(Model::FIELD_DELETED_AT),
         ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rollback(PDO $pdo)
-    {
-        $this->dropTable($pdo, Comment::TABLE_NAME);
     }
 }

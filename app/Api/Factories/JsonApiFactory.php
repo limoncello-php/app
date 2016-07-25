@@ -1,13 +1,11 @@
 <?php namespace App\Api\Factories;
 
 use App\Api\Repositories\BaseRepository;
+use Doctrine\DBAL\Connection;
 use Limoncello\JsonApi\Contracts\Adapters\FilterOperationsInterface;
-use Limoncello\JsonApi\Contracts\Adapters\PaginationStrategyInterface;
 use Limoncello\JsonApi\Contracts\I18n\TranslatorInterface;
-use Limoncello\JsonApi\Contracts\QueryBuilderInterface;
 use Limoncello\JsonApi\Factory;
-use Limoncello\Models\Contracts\SchemaStorageInterface;
-use PDO;
+use Limoncello\Models\Contracts\ModelSchemesInterface;
 
 /**
  * @package App
@@ -18,25 +16,16 @@ class JsonApiFactory extends Factory
      * @inheritdoc
      */
     public function createRepository(
-        $class,
-        PDO $pdo,
-        SchemaStorageInterface $schemaStorage,
-        QueryBuilderInterface $builder,
+        Connection $connection,
+        ModelSchemesInterface $modelSchemes,
         FilterOperationsInterface $filterOperations,
-        PaginationStrategyInterface $relationshipPaging,
-        TranslatorInterface $translator,
-        $isExecuteOnByOne = true
+        TranslatorInterface $translator
     ) {
         return new BaseRepository(
-            $this,
-            $class,
-            $pdo,
-            $schemaStorage,
-            $builder,
+            $connection,
+            $modelSchemes,
             $filterOperations,
-            $relationshipPaging,
-            $translator,
-            $isExecuteOnByOne
+            $translator
         );
     }
 }

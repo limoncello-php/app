@@ -1,7 +1,6 @@
 <?php namespace App\Database\Migrations;
 
-use Exception;
-use PDO;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 
 /**
  * @package App
@@ -20,42 +19,30 @@ class MigrationsRunner
     ];
 
     /**
-     * @param PDO $pdo
+     * @param AbstractSchemaManager $schemaManager
      *
      * @return void
-     *
-     * @throws Exception
      */
-    public function migrate(PDO $pdo)
+    public function migrate(AbstractSchemaManager $schemaManager)
     {
         foreach ($this->migrations as $class) {
-            try {
-                /** @var Migration $migration */
-                $migration = new $class();
-                $migration->migrate($pdo);
-            } catch (Exception $exception) {
-                throw new Exception("Migration '$class' failed.", 0, $exception);
-            }
+            /** @var Migration $migration */
+            $migration = new $class($schemaManager);
+            $migration->migrate();
         }
     }
 
     /**
-     * @param PDO $pdo
+     * @param AbstractSchemaManager $schemaManager
      *
      * @return void
-     *
-     * @throws Exception
      */
-    public function rollback(PDO $pdo)
+    public function rollback(AbstractSchemaManager $schemaManager)
     {
         foreach (array_reverse($this->migrations, false) as $class) {
-            try {
-                /** @var Migration $migration */
-                $migration = new $class();
-                $migration->rollback($pdo);
-            } catch (Exception $exception) {
-                throw new Exception("Migration '$class' failed.", 0, $exception);
-            }
+            /** @var Migration $migration */
+            $migration = new $class($schemaManager);
+            $migration->rollback();
         }
     }
 }

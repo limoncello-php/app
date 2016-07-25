@@ -1,7 +1,6 @@
 <?php namespace App\Database\Migrations;
 
-use App\Database\Models\Post;
-use PDO;
+use App\Database\Models\Post as Model;
 
 /**
  * @package App
@@ -9,35 +8,22 @@ use PDO;
 class PostsMigration extends Migration
 {
     /** @inheritdoc */
-    const MODEL_CLASS = Post::class;
+    const MODEL_CLASS = Model::class;
 
     /**
      * @inheritdoc
      */
-    public function migrate(PDO $pdo)
+    public function migrate()
     {
-        $this->createTable($pdo, Post::TABLE_NAME, [
-            $this->int(Post::FIELD_ID, true),
-            $this->int(Post::FIELD_ID_BOARD),
-            $this->int(Post::FIELD_ID_USER),
-            $this->string(Post::FIELD_TITLE),
-            $this->text(Post::FIELD_TEXT),
-            $this->timestamp(Post::FIELD_CREATED_AT),
-            $this->timestamp(Post::FIELD_UPDATED_AT),
-            $this->timestamp(Post::FIELD_DELETED_AT),
-
-            $this->primary(Post::FIELD_ID),
-
-            $this->relationship(Post::REL_BOARD),
-            $this->relationship(Post::REL_USER),
+        $this->createTable(Model::TABLE_NAME, [
+            $this->primaryInt(Model::FIELD_ID),
+            $this->relationship(Model::REL_USER),
+            $this->relationship(Model::REL_BOARD),
+            $this->string(Model::FIELD_TITLE),
+            $this->text(Model::FIELD_TEXT),
+            $this->datetime(Model::FIELD_CREATED_AT),
+            $this->nullableDatetime(Model::FIELD_UPDATED_AT),
+            $this->nullableDatetime(Model::FIELD_DELETED_AT),
         ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rollback(PDO $pdo)
-    {
-        $this->dropTable($pdo, Post::TABLE_NAME);
     }
 }

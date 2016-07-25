@@ -1,8 +1,9 @@
 {
     "name": "limoncello-php/app",
-    "homepage": "https://github.com/limoncello-php/app",
+    "homepage": "https://github.com/neomerx/limoncello-flute",
+    "keywords": ["json api", "json", "api", "PSR7", "limoncello"],
     "support": {
-        "issues": "https://github.com/limoncello-php/app/issues"
+        "issues": "https://github.com/neomerx/limoncello-flute/issues"
     },
     "license": "MIT",
     "authors": [
@@ -15,20 +16,20 @@
         "php": ">=5.6.0",
         "monolog/monolog": "^1.18",
         "neomerx/cors-psr7": "^1.0.0",
-        "limoncello-php/templates": "^0.1.0",
         "limoncello-php/framework": "^0.1.0",
-        "limoncello-php/json-api": "dev-develop"
+        "limoncello-php/templates": "^0.1.0",
+        "limoncello-php/json-api": "^0.1.1"
     },
     "require-dev": {
         "filp/whoops": "^2.1",
         "vlucas/phpdotenv": "^2.3",
         "limoncello-php/testing": "^0.1.0",
         "squizlabs/php_codesniffer": "^2.5",
-        "phpmd/phpmd": "^2.4",
         "composer/composer": "^1.0.0",
         "phpunit/phpunit": "^4.0 || ^5.0",
         "mockery/mockery": "^0.9.4",
-        "fzaninotto/faker": "^1.6"
+        "fzaninotto/faker": "^1.6",
+        "phpmd/phpmd" : "@stable"
     },
     "autoload": {
         "psr-4": {
@@ -43,6 +44,10 @@
         }
     },
     "scripts": {
+        "post-root-package-install": [
+            "php -r \"copy('.env.sample', '.env');\""
+        ],
+
         "serve": "php -S 0.0.0.0:8080 -t public/ public/index.php",
         "develop": [
             "@cache-routes-clear",
@@ -76,6 +81,7 @@
         "local-down": "docker-compose -f docker-compose-local.yml down",
         "docker-up": ["docker-compose up -d", "echo waiting 10s && sleep 10s", "@docker-db"],
         "docker-down": "docker-compose down",
+        "docker-db": "docker-compose run --rm fpm php /usr/local/bin/composer db",
 
         "test": ["@test-unit", "@test-cs", "@test-md"],
         "test-unit": "./vendor/bin/phpunit --coverage-text",

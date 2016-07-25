@@ -1,7 +1,6 @@
 <?php namespace App\Database\Migrations;
 
-use App\Database\Models\Board;
-use PDO;
+use App\Database\Models\Board as Model;
 
 /**
  * @package App
@@ -9,31 +8,21 @@ use PDO;
 class BoardsMigration extends Migration
 {
     /** @inheritdoc */
-    const MODEL_CLASS = Board::class;
+    const MODEL_CLASS = Model::class;
 
     /**
      * @inheritdoc
      */
-    public function migrate(PDO $pdo)
+    public function migrate()
     {
-        $this->createTable($pdo, Board::TABLE_NAME, [
-            $this->int(Board::FIELD_ID, true),
-            $this->string(Board::FIELD_TITLE),
+        $this->createTable(Model::TABLE_NAME, [
+            $this->primaryInt(Model::FIELD_ID),
+            $this->string(Model::FIELD_TITLE),
+            $this->datetime(Model::FIELD_CREATED_AT),
+            $this->nullableDatetime(Model::FIELD_UPDATED_AT),
+            $this->nullableDatetime(Model::FIELD_DELETED_AT),
 
-            $this->timestamp(Board::FIELD_CREATED_AT),
-            $this->timestamp(Board::FIELD_UPDATED_AT),
-            $this->timestamp(Board::FIELD_DELETED_AT),
-
-            $this->primary(Board::FIELD_ID),
-            $this->unique(Board::FIELD_TITLE),
+            $this->unique([Model::FIELD_TITLE]),
         ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rollback(PDO $pdo)
-    {
-        $this->dropTable($pdo, Board::TABLE_NAME);
     }
 }

@@ -20,6 +20,9 @@
 			<directory suffix=".php">app/</directory>
 		</whitelist>
 	</filter>
+	<php>
+		<env name="IN_PHPUNIT" value="1" />
+	</php>
 	<!--logging>
 		<log type="tap" target="build/report.tap"/>
 		<log type="junit" target="build/report.junit.xml"/>

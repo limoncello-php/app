@@ -22,16 +22,16 @@ trait JsonApiConfig
      */
     protected function getConfig()
     {
-        $config = new \Limoncello\JsonApi\Config\JsonApiConfig([
-            Board::class   => BoardSchema::class,
-            Comment::class => CommentSchema::class,
-            Post::class    => PostSchema::class,
-            Role::class    => RoleSchema::class,
-            User::class    => UserSchema::class,
-        ]);
-
+        $config = new \Limoncello\JsonApi\Config\JsonApiConfig();
         $config
-            ->setRelationshipPagingSize(20)
+            ->setModelSchemaMap([
+                Board::class   => BoardSchema::class,
+                Comment::class => CommentSchema::class,
+                Post::class    => PostSchema::class,
+                Role::class    => RoleSchema::class,
+                User::class    => UserSchema::class,
+            ])
+            ->setRelationshipPagingSize(10)
             ->setJsonEncodeOptions($config->getJsonEncodeOptions() | JSON_PRETTY_PRINT)
             ->setHideVersion()
             ->setMeta([

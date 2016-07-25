@@ -18,7 +18,7 @@ trait AppConfig
         return [
             C::KEY_APP_NAME        => getenv('APP_NAME'),
             C::KEY_APP_DEBUG_MODE  => !$isInConfigCachingProcess,
-            C::KEY_APP_ENABLE_LOGS => true,
+            C::KEY_APP_ENABLE_LOGS => false,
         ];
     }
 }

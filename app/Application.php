@@ -64,7 +64,9 @@ class Application extends \Limoncello\Core\Application\Application
         set_exception_handler(PHP_MAJOR_VERSION >= 7 ? $throwableHandler : $exceptionHandler);
 
         set_error_handler(function ($severity, $message, $fileName, $lineNumber) use ($exceptionHandler) {
-            $exceptionHandler(new ErrorException($message, 0, $severity, $fileName, $lineNumber));
+            $errorException = new ErrorException($message, 0, $severity, $fileName, $lineNumber);
+            $exceptionHandler($errorException);
+            throw $errorException;
         });
     }
 

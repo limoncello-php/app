@@ -1,15 +1,13 @@
 <?php namespace App\Api;
 
-use Config\ConfigInterface;
-use Config\Services\JsonApi\JsonApiConfigInterface as C;
+use App\Database\Models\Model;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Interop\Container\ContainerInterface;
-use Limoncello\JsonApi\Adapters\FilterOperations;
-use Limoncello\JsonApi\Adapters\PaginationStrategy;
-use Limoncello\JsonApi\Builders\QueryBuilder;
+use Limoncello\JsonApi\Api\Crud;
+use Limoncello\JsonApi\Contracts\Adapters\PaginationStrategyInterface;
+use Limoncello\JsonApi\Contracts\Adapters\RepositoryInterface;
 use Limoncello\JsonApi\Contracts\FactoryInterface;
-use Limoncello\JsonApi\Crud;
-use Limoncello\Models\Contracts\SchemaStorageInterface;
-use PDO;
+use Limoncello\Models\Contracts\ModelSchemesInterface;
 
 /**
  * @package App
@@ -20,41 +18,93 @@ abstract class BaseApi extends Crud
     const MODEL = null;
 
     /**
-     * @param ContainerInterface $container
+     * @var ContainerInterface
      */
-    public function __construct(ContainerInterface $container)
-    {
-        /** @var FactoryInterface $factory */
-        $factory = $container->get(FactoryInterface::class);
+    private $container;
 
-        /** @var SchemaStorageInterface $modelSchemes */
-        $modelSchemes = $container->get(SchemaStorageInterface::class);
-
-        /** @var PDO $pdo */
-        $pdo = $container->get(PDO::class);
-
-        $translator       = $factory->createTranslator();
-        $queryBuilder     = new QueryBuilder($translator);
-        $filterOperations = new FilterOperations();
-
-        /** @var ConfigInterface $config */
-        $config        = $container->get(ConfigInterface::class);
-        $jsonApiConfig = $config->getConfig()[ConfigInterface::KEY_JSON_API];
-        $encodeConfig  = $jsonApiConfig[C::KEY_JSON];
-
-        $paging = array_key_exists(C::KEY_JSON_RELATIONSHIP_PAGING_SIZE, $encodeConfig) === true ?
-            new PaginationStrategy($encodeConfig[C::KEY_JSON_RELATIONSHIP_PAGING_SIZE]) : new PaginationStrategy();
-
-        $repository = $factory->createRepository(
+    /**
+     * @inheritdoc
+     */
+    public function __construct(
+        FactoryInterface $factory,
+        RepositoryInterface $repository,
+        ModelSchemesInterface $modelSchemes,
+        PaginationStrategyInterface $paginationStrategy,
+        ContainerInterface $container
+    ) {
+        parent::__construct(
+            $factory,
             static::MODEL,
-            $pdo,
+            $repository,
             $modelSchemes,
-            $queryBuilder,
-            $filterOperations,
-            $paging,
-            $translator
+            $paginationStrategy
         );
+        $this->container = $container;
+    }
 
-        parent::__construct($repository, $factory);
+    /**
+     * @return ContainerInterface
+     */
+    protected function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function builderSaveResourceOnCreate(QueryBuilder $builder)
+    {
+        return $this->addCreatedAt(parent::builderSaveResourceOnCreate($builder));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function builderSaveResourceOnUpdate(QueryBuilder $builder)
+    {
+        return $this->addUpdatedAt(parent::builderSaveResourceOnUpdate($builder));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function builderSaveRelationshipOnCreate($relationshipName, QueryBuilder $builder)
+    {
+        return $this->addCreatedAt(parent::builderSaveRelationshipOnCreate($relationshipName, $builder));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function builderSaveRelationshipOnUpdate($relationshipName, QueryBuilder $builder)
+    {
+        return $this->addCreatedAt(parent::builderSaveRelationshipOnUpdate($relationshipName, $builder));
+    }
+
+    /**
+     * @param QueryBuilder $builder
+     *
+     * @return QueryBuilder
+     */
+    private function addCreatedAt(QueryBuilder $builder)
+    {
+        // `Doctrine` specifics: `setValue` works for inserts and `set` for updates
+        $builder->setValue(Model::FIELD_CREATED_AT, $builder->createNamedParameter(date('Y-m-d H:i:s')));
+
+        return $builder;
+    }
+
+    /**
+     * @param QueryBuilder $builder
+     *
+     * @return QueryBuilder
+     */
+    private function addUpdatedAt(QueryBuilder $builder)
+    {
+        // `Doctrine` specifics: `setValue` works for inserts and `set` for updates
+        $builder->set(Model::FIELD_UPDATED_AT, $builder->createNamedParameter(date('Y-m-d H:i:s')));
+
+        return $builder;
     }
 }

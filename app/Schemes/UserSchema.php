@@ -37,6 +37,12 @@ class UserSchema extends BaseSchema
     /** Relationship name */
     const REL_COMMENTS = 'comments';
 
+    /** Virtual attribute name */
+    const V_ATTR_PASSWORD = 'password';
+
+    /** Capture name */
+    const CAPTURE_NAME_PASSWORD = self::V_ATTR_PASSWORD;
+
     /**
      * @inheritdoc
      */
@@ -47,10 +53,12 @@ class UserSchema extends BaseSchema
                 self::ATTR_TITLE      => Model::FIELD_TITLE,
                 self::ATTR_FIRST_NAME => Model::FIELD_FIRST_NAME,
                 self::ATTR_LAST_NAME  => Model::FIELD_LAST_NAME,
-                self::ATTR_EMAIL      => Model::FIELD_EMAIL,
                 self::ATTR_LANGUAGE   => Model::FIELD_LANGUAGE,
+                self::ATTR_EMAIL      => Model::FIELD_EMAIL,
                 self::ATTR_CREATED_AT => Model::FIELD_CREATED_AT,
                 self::ATTR_UPDATED_AT => Model::FIELD_UPDATED_AT,
+
+                self::V_ATTR_PASSWORD => self::CAPTURE_NAME_PASSWORD,
             ],
             self::SCHEMA_RELATIONSHIPS => [
                 self::REL_ROLE     => Model::REL_ROLE,

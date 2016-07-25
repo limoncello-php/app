@@ -1,8 +1,5 @@
 <?php namespace Config\Services\Database;
 
-use Config\Services\Database\DatabaseInterface as DC;
-use PDO;
-
 /**
  * @package Config
  */
@@ -13,14 +10,20 @@ trait DatabaseConfig
      */
     protected function getConfig()
     {
-        return [
-            /** @see http://php.net/manual/en/pdo.construct.php */
-            DC::USER_NAME             => getenv('DB_USER_NAME'),
-            DC::PASSWORD              => getenv('DB_PASSWORD'),
-            DC::PDO_CONNECTION_STRING => getenv('DB_CONNECTION_STRING'),
-            DC::PDO_OPTIONS           => [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            ],
+        $config = [
+            'driver'   => getenv('DB_DRIVER'),
+            'host'     => getenv('DB_HOST'),
+            'port'     => getenv('DB_PORT'),
+            'dbname'   => getenv('DB_DATABASE'),
+            'user'     => getenv('DB_USER_NAME'),
+            'password' => getenv('DB_PASSWORD'),
         ];
+
+        $inTests = getenv('IN_PHPUNIT') === '1';
+        if ($inTests === true) {
+            $config['wrapperClass'] = 'Tests\Utils\TestingConnection';
+        }
+
+        return $config;
     }
 }

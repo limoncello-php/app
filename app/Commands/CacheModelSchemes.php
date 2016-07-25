@@ -4,11 +4,11 @@ use App\Database\Models\Model;
 use Composer\Script\Event;
 use Config\Config;
 use Config\ConfigInterface;
-use Config\Services\JsonApi\JsonApiConfigInterface;
 use Limoncello\AppCache\CacheScript;
-use Limoncello\Models\Contracts\SchemaStorageInterface;
+use Limoncello\JsonApi\Contracts\Config\JsonApiConfigInterface;
+use Limoncello\Models\Contracts\ModelSchemesInterface;
 use Limoncello\Models\RelationshipTypes;
-use Limoncello\Models\SchemaStorage;
+use Limoncello\Models\ModelSchemes;
 
 /**
  * @package App
@@ -28,7 +28,7 @@ class CacheModelSchemes extends CacheScript
         $config        = new Config();
         $jsonApiConfig = $config->getConfig()[ConfigInterface::KEY_JSON_API];
 
-        $modelSchemes = new SchemaStorage();
+        $modelSchemes = new ModelSchemes();
         $modelClasses = array_keys($jsonApiConfig[JsonApiConfigInterface::KEY_MODEL_TO_SCHEMA_MAP]);
         self::buildModelSchemes($modelSchemes, $modelClasses);
         $schemes = $modelSchemes->getData();
@@ -36,10 +36,10 @@ class CacheModelSchemes extends CacheScript
     }
 
     /**
-     * @param SchemaStorageInterface $modelSchemes
-     * @param array                  $modelClasses
+     * @param ModelSchemesInterface $modelSchemes
+     * @param array                 $modelClasses
      */
-    public static function buildModelSchemes(SchemaStorageInterface $modelSchemes, array $modelClasses)
+    public static function buildModelSchemes(ModelSchemesInterface $modelSchemes, array $modelClasses)
     {
         $registered = [];
         foreach ($modelClasses as $modelClass) {

@@ -6,6 +6,7 @@ use Limoncello\Testing\Sapi;
 use Mockery;
 use Neomerx\JsonApi\Contracts\Http\Headers\MediaTypeInterface;
 use Psr\Http\Message\ResponseInterface;
+use Tests\Utils\TestingConnection;
 use Zend\Diactoros\Response\EmitterInterface;
 
 /**
@@ -13,6 +14,9 @@ use Zend\Diactoros\Response\EmitterInterface;
  */
 class TestCase extends PhpUnitTestCase
 {
+    /** DateTime format string */
+    const JSON_API_DATE_TIME_FORMAT = 'Y-m-d\TH:i:sO';
+
     /**
      * @inheritdoc
      */
@@ -20,7 +24,28 @@ class TestCase extends PhpUnitTestCase
     {
         parent::tearDown();
 
+        TestingConnection::reset();
         Mockery::close();
+    }
+
+    /**
+     * Prevent commits to database within current test.
+     *
+     * @return void
+     */
+    protected function setPreventCommits()
+    {
+        TestingConnection::setPreventCommits();
+    }
+
+    /**
+     * Returns database connection used used by application within current test. Needs 'prevent commits' to be set.
+     *
+     * @return \Doctrine\DBAL\Connection|null
+     */
+    protected function getCapturedConnection()
+    {
+        return TestingConnection::getCapturedConnection();
     }
 
     /**
