@@ -38,6 +38,10 @@ $ composer install && composer docker-up
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/064046759f3d14d4def7#?env%5Blocal%5D=W3sia2V5Ijoic2VydmVyIiwidmFsdWUiOiJodHRwOi8vbG9jYWxob3N0Ojg4ODgvIiwidHlwZSI6InRleHQiLCJuYW1lIjoic2VydmVyIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJ0b2tlbiIsInR5cGUiOiJ0ZXh0IiwidmFsdWUiOiJmTHZRelFKaXRuSElYUUl0MiIsImVuYWJsZWQiOnRydWV9XQ==)
 
+The application comes with [Postman](https://www.getpostman.com/) collection of various CRUD operations you can do with the server (link above).
+
+That is a screen-shot of how it might look.
+
 ![Requests in Postman](resources/img/screen-shot.png)
 
 ### License
