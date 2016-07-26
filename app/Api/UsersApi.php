@@ -3,8 +3,9 @@
 use App\Database\Models\User as Model;
 use App\Database\Models\User;
 use App\Schemes\UserSchema as Schema;
-use Doctrine\DBAL\Connection;
 use Limoncello\Crypt\Contracts\HasherInterface;
+use Limoncello\JsonApi\Contracts\Adapters\RepositoryInterface;
+use PDO;
 
 /**
  * @package App
@@ -62,33 +63,47 @@ class UsersApi extends BaseApi
      */
     public function authenticate($email, $password)
     {
-        $container = $this->getContainer();
-        /** @var Connection $connection */
-        $connection = $container->get(Connection::class);
-        $sqlQuery   = 'SELECT ' . Model::FIELD_ID . ', ' . Model::FIELD_PASSWORD_HASH .
-            ' FROM ' . Model::TABLE_NAME . ' WHERE ' . Model::FIELD_EMAIL . ' = ? LIMIT 1';
-        $row = $connection->executeQuery($sqlQuery, [$email])->fetch();
-        if (empty($row) === true) {
+        $user = $this->readUserByEmail($email);
+        if ($user === null) {
             return null;
         }
 
         /** @var HasherInterface $hasher */
-        $hasher = $container->get(HasherInterface::class);
-        if ($hasher->verify($password, $row[Model::FIELD_PASSWORD_HASH]) === false) {
+        $hasher = $this->getContainer()->get(HasherInterface::class);
+        if ($hasher->verify($password, $user->{Model::FIELD_PASSWORD_HASH}) === false) {
             return null;
         }
 
         $token  = bin2hex(random_bytes(16));
-        $userId = $row[Model::FIELD_ID];
-        $result = $connection->update(
-            User::TABLE_NAME,
-            [Model::FIELD_API_TOKEN => $token],
-            [Model::FIELD_ID => $userId]
-        );
+        $userId = $user->{Model::FIELD_ID};
+        $this->update($userId, [Model::FIELD_API_TOKEN => $token]);
 
-        return $result > 0 ? [
+        return [
             self::KEY_USER_ID => $userId,
             self::KEY_SECRET  => $token,
-        ] : null;
+        ];
+    }
+
+    /**
+     * @param string $email
+     *
+     * @return User|null
+     */
+    public function readUserByEmail($email)
+    {
+        /** @var RepositoryInterface $repository */
+        $repository = $this->getContainer()->get(RepositoryInterface::class);
+        $statement = $repository
+            ->index(User::class)
+            ->andWhere(User::FIELD_EMAIL . ' = :email')
+            ->setParameter(':email', $email)
+            ->setMaxResults(1)
+            ->execute();
+        $statement->setFetchMode(PDO::FETCH_CLASS, User::class);
+        $dbResponse = $statement->fetch();
+
+        $result = $dbResponse !== false && $dbResponse !== null ? $dbResponse : null;
+
+        return $result;
     }
 }
