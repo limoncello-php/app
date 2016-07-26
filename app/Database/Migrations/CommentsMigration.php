@@ -15,7 +15,7 @@ class CommentsMigration extends Migration
      */
     public function migrate()
     {
-        $this->createTable(Model::TABLE_NAME, [
+        $this->createTable([
             $this->primaryInt(Model::FIELD_ID),
             $this->relationship(Model::REL_USER),
             $this->relationship(Model::REL_POST),

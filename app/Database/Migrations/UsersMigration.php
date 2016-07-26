@@ -15,7 +15,7 @@ class UsersMigration extends Migration
      */
     public function migrate()
     {
-        $this->createTable(Model::TABLE_NAME, [
+        $this->createTable([
             $this->primaryInt(Model::FIELD_ID),
             $this->relationship(Model::REL_ROLE),
             $this->string(Model::FIELD_TITLE),

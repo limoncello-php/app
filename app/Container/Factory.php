@@ -8,7 +8,7 @@ use Limoncello\ContainerLight\Container;
  */
 trait Factory
 {
-    use AppSetUpRouter, SetUpConfig, SetUpCors, SetUpCrypt, SetUpLogs, SetUpDatabase, SetUpTemplates;
+    use AppSetUpRouter, SetUpConfig, SetUpCors, SetUpDatabase, SetUpLogs, SetUpTemplates;
 
     /**
      * @return ContainerInterface
@@ -18,8 +18,10 @@ trait Factory
         $container = new Container();
 
         $this->setUpConfig($container);
+
         $this->setUpCors($container);
-        $this->setUpCrypt($container);
+
+        $this->setUpDatabase($container);
 
         $this->setUpFileLogs($container);
         // or

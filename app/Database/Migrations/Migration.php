@@ -64,13 +64,24 @@ abstract class Migration
     }
 
     /**
-     * @param string    $name
-     * @param Closure[] $expressions
+     * @return string
+     */
+    protected function getPrimaryKeyName()
+    {
+        $modelClass = $this->getModelClass();
+
+        return $this->getPrimaryKeyNameForClass($modelClass);
+    }
+
+    /**
+     * @param Closure[]   $expressions
+     * @param null|string $name
      *
      * @return Table
      */
-    protected function createTable($name, array $expressions = [])
+    protected function createTable(array $expressions = [], $name = null)
     {
+        $name  = $name === null ? $this->getTableName() : $name;
         $table = new Table($name);
 
         foreach ($expressions as $expression) {
@@ -238,6 +249,20 @@ abstract class Migration
     {
         /** @var Model $modelClass*/
         $tableName = $modelClass::TABLE_NAME;
+        assert('$tableName !== null', "Table name is not specified for model '$modelClass'.");
+
+        return $tableName;
+    }
+
+    /**
+     * @param string $modelClass
+     *
+     * @return string
+     */
+    protected function getPrimaryKeyNameForClass($modelClass)
+    {
+        /** @var Model $modelClass*/
+        $tableName = $modelClass::FIELD_ID;
         assert('$tableName !== null', "Table name is not specified for model '$modelClass'.");
 
         return $tableName;

@@ -1,9 +1,8 @@
 <?php namespace App\Http\Controllers;
 
-use App\Container\SetUpConfig;
-use App\Container\SetUpDatabase;
+use App\Container\SetUpAuth;
+use App\Container\SetUpCrypt;
 use App\Container\SetUpJsonApi;
-use App\Container\SetUpLogs;
 use Limoncello\ContainerLight\Container;
 
 /**
@@ -11,7 +10,7 @@ use Limoncello\ContainerLight\Container;
  */
 abstract class BaseController extends \Limoncello\JsonApi\Http\BaseController
 {
-    use SetUpConfig, SetUpJsonApi, SetUpLogs, SetUpDatabase;
+    use SetUpAuth, SetUpCrypt, SetUpJsonApi;
 
     /** API URI prefix */
     const API_URI_PREFIX = '/api/v1';
@@ -26,7 +25,8 @@ abstract class BaseController extends \Limoncello\JsonApi\Http\BaseController
      */
     public static function containerConfigurator(Container $container)
     {
-        self::setUpDatabase($container);
+        self::setUpAuth($container);
+        self::setUpCrypt($container);
         self::setUpJsonApi($container);
     }
 }

@@ -1,6 +1,7 @@
 <?php namespace Tests;
 
 use App\Application;
+use App\Http\Controllers\UsersController;
 use Limoncello\Testing\PhpUnitTestCase;
 use Limoncello\Testing\Sapi;
 use Mockery;
@@ -117,5 +118,50 @@ class TestCase extends PhpUnitTestCase
     {
         $headers[self::HEADER_CONTENT_TYPE] = MediaTypeInterface::JSON_API_MEDIA_TYPE;
         return parent::call('PATCH', $uri, [], [], $headers, $cookies, [], [], $this->streamFromString($json));
+    }
+
+    /**
+     * @param string $email
+     * @param string $password
+     *
+     * @return string
+     */
+    protected function setUserToken($email, $password)
+    {
+        $formData = [
+            UsersController::FORM_EMAIL    => $email,
+            UsersController::FORM_PASSWORD => $password,
+        ];
+        $response = $this->post('/authenticate', $formData);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertNotEmpty($token = (string)$response->getBody());
+
+        return $token;
+    }
+
+    /**
+     * @param string $token
+     *
+     * @return array
+     */
+    protected function getAuthorizationHeaders($token)
+    {
+        return ['Authorization' => 'Bearer ' . $token];
+    }
+
+    /**
+     * @return array
+     */
+    protected function createAdminAuthHeaders()
+    {
+        return $this->getAuthorizationHeaders($this->setUserToken('admin@admins.tld', 'password'));
+    }
+
+    /**
+     * @return array
+     */
+    protected function createUserAuthHeaders()
+    {
+        return $this->getAuthorizationHeaders($this->setUserToken('user@users.tld', 'password'));
     }
 }

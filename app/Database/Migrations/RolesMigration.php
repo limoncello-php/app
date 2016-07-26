@@ -15,7 +15,7 @@ class RolesMigration extends Migration
      */
     public function migrate()
     {
-        $this->createTable(Model::TABLE_NAME, [
+        $this->createTable([
             $this->primaryInt(Model::FIELD_ID),
             $this->string(Model::FIELD_NAME),
             $this->datetime(Model::FIELD_CREATED_AT),

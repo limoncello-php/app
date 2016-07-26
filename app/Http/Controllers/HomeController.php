@@ -1,7 +1,5 @@
 <?php namespace App\Http\Controllers;
 
-use App\Container\SetUpConfig;
-use App\Container\SetUpLogs;
 use App\Container\SetUpTemplates;
 use Config\Services\Templates\TemplatesInterface;
 use Interop\Container\ContainerInterface;
@@ -15,7 +13,7 @@ use Zend\Diactoros\Response\HtmlResponse;
  */
 class HomeController
 {
-    use SetUpConfig, SetUpTemplates, SetUpLogs;
+    use SetUpTemplates;
 
     /**
      * @param array              $routeParams

@@ -15,6 +15,7 @@ use App\Schemes\UserSchema;
 use Limoncello\Core\Contracts\Routing\GroupInterface as GI;
 use Limoncello\Core\Contracts\Routing\GroupInterface;
 use Limoncello\Core\Contracts\Routing\RouteInterface as RI;
+use Limoncello\Core\Contracts\Routing\RouteInterface;
 use Limoncello\Core\Routing\Group;
 use Limoncello\JsonApi\Contracts\Http\ControllerInterface;
 use Limoncello\JsonApi\Contracts\Schema\SchemaInterface;
@@ -52,13 +53,18 @@ trait Routes
             /** @var string $controllerClass */
             /** @var string $schemaClass */
 
+            // methods that changes data (create/update/delete) require authentication (middleware)
+            $authParams = [
+                RouteInterface::PARAM_MIDDLEWARE_LIST => [Middleware\AuthenticationRequired::class . '::handle']
+            ];
+
             $indexSlug = '/{' . BaseController::ROUTE_KEY_INDEX . '}';
             $group
                 ->get($subUri, [$controllerClass, ControllerInterface::METHOD_INDEX])
-                ->post($subUri, [$controllerClass, ControllerInterface::METHOD_CREATE])
+                ->post($subUri, [$controllerClass, ControllerInterface::METHOD_CREATE], $authParams)
                 ->get($subUri . $indexSlug, [$controllerClass, ControllerInterface::METHOD_READ])
-                ->patch($subUri . $indexSlug, [$controllerClass, ControllerInterface::METHOD_UPDATE])
-                ->delete($subUri . $indexSlug, [$controllerClass, ControllerInterface::METHOD_DELETE]);
+                ->patch($subUri . $indexSlug, [$controllerClass, ControllerInterface::METHOD_UPDATE], $authParams)
+                ->delete($subUri . $indexSlug, [$controllerClass, ControllerInterface::METHOD_DELETE], $authParams);
         };
 
         $addRelationship = function (GroupInterface $group, $relationshipName, $controllerClass, $method) {
@@ -81,6 +87,9 @@ trait Routes
             ->get('/', [HomeController::class, 'index'], [
                 RI::PARAM_REQUEST_FACTORY         => null,
                 RI::PARAM_CONTAINER_CONFIGURATORS => [HomeController::class . '::welcomeConfigurator'],
+            ])
+            ->post('/authenticate', [UsersController::class, 'authenticate'], [
+                RI::PARAM_CONTAINER_CONFIGURATORS => [BaseController::class . '::containerConfigurator'],
             ])
 
             ->group(BaseController::API_URI_PREFIX, function (GroupInterface $group) use (
@@ -110,6 +119,7 @@ trait Routes
 
             }, [
                 GroupInterface::PARAM_CONTAINER_CONFIGURATORS => [BaseController::class . '::containerConfigurator'],
+                GroupInterface::PARAM_MIDDLEWARE_LIST => [Middleware\TokenAuthentication::class . '::handle'],
             ]);
     }
 }

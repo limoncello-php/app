@@ -18,7 +18,8 @@
         "neomerx/cors-psr7": "^1.0.0",
         "limoncello-php/framework": "^0.1.0",
         "limoncello-php/templates": "^0.1.0",
-        "limoncello-php/json-api": "^0.1.1"
+        "limoncello-php/json-api": "^0.1.1",
+        "limoncello-php/auth": "^0.1.0"
     },
     "require-dev": {
         "filp/whoops": "^2.1",

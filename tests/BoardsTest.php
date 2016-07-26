@@ -86,6 +86,7 @@ class BoardsTest extends TestCase
     public function testCreateAndDelete()
     {
         $this->setPreventCommits();
+        $authHeaders = $this->createAdminAuthHeaders();
 
         $body = <<<EOT
         {
@@ -99,7 +100,7 @@ class BoardsTest extends TestCase
         }
 EOT;
 
-        $response = $this->postJson(self::API_URI, $body);
+        $response = $this->postJson(self::API_URI, $body, $authHeaders);
         $this->assertEquals(201, $response->getStatusCode());
         $this->assertNotEmpty($resource = json_decode((string)$response->getBody()));
 
@@ -115,7 +116,7 @@ EOT;
         $this->assertEquals(200, $this->get(self::API_URI . "/$index")->getStatusCode());
 
         // delete
-        $this->assertEquals(204, $this->delete(self::API_URI . '/' . $index)->getStatusCode());
+        $this->assertEquals(204, $this->delete(self::API_URI . '/' . $index, [], $authHeaders)->getStatusCode());
 
         // check resource deleted
         // option 1 - direct database query
@@ -125,7 +126,7 @@ EOT;
         $this->assertEquals(404, $this->get(self::API_URI . "/$index")->getStatusCode());
 
         // check multi-delete do not cause any problems
-        $this->assertEquals(204, $this->delete(self::API_URI . '/' . $index)->getStatusCode());
+        $this->assertEquals(204, $this->delete(self::API_URI . '/' . $index, [], $authHeaders)->getStatusCode());
     }
 
     /**
@@ -134,6 +135,7 @@ EOT;
     public function testUpdate()
     {
         $this->setPreventCommits();
+        $authHeaders = $this->createAdminAuthHeaders();
 
         $index = 1;
         $body  = <<<EOT
@@ -148,7 +150,7 @@ EOT;
         }
 EOT;
 
-        $response = $this->patchJson(self::API_URI . "/$index", $body);
+        $response = $this->patchJson(self::API_URI . "/$index", $body, $authHeaders);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNotEmpty(json_decode((string)$response->getBody()));
 
