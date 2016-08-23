@@ -3,7 +3,10 @@
 use App\Authentication\Contracts\AccountManagerInterface;
 use App\Database\Models\Model;
 use App\Database\Models\User;
+use App\Database\Types\DateTimeType;
+use DateTime;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Types\Type;
 use Interop\Container\ContainerInterface;
 use Limoncello\JsonApi\Api\Crud;
 use Limoncello\JsonApi\Contracts\Adapters\PaginationStrategyInterface;
@@ -109,6 +112,20 @@ abstract class BaseApi extends Crud
     }
 
     /**
+     * @param QueryBuilder $builder
+     * @param DateTime     $dateTime
+     *
+     * @return string
+     */
+    protected function convertDateTimeToDbValue(QueryBuilder $builder, DateTime $dateTime)
+    {
+        $type  = Type::getType(DateTimeType::NAME);
+        $value = $type->convertToDatabaseValue($dateTime, $builder->getConnection()->getDatabasePlatform());
+
+        return $value;
+    }
+
+    /**
      * @param string $table
      * @param string $column
      *
@@ -127,7 +144,8 @@ abstract class BaseApi extends Crud
     private function addCreatedAt(QueryBuilder $builder)
     {
         // `Doctrine` specifics: `setValue` works for inserts and `set` for updates
-        $builder->setValue(Model::FIELD_CREATED_AT, $builder->createNamedParameter(date('Y-m-d H:i:s')));
+        $timestamp = $this->convertDateTimeToDbValue($builder, new DateTime());
+        $builder->setValue(Model::FIELD_CREATED_AT, $builder->createNamedParameter($timestamp));
 
         return $builder;
     }
@@ -140,7 +158,8 @@ abstract class BaseApi extends Crud
     private function addUpdatedAt(QueryBuilder $builder)
     {
         // `Doctrine` specifics: `setValue` works for inserts and `set` for updates
-        $builder->set(Model::FIELD_UPDATED_AT, $builder->createNamedParameter(date('Y-m-d H:i:s')));
+        $timestamp = $this->convertDateTimeToDbValue($builder, new DateTime());
+        $builder->set(Model::FIELD_UPDATED_AT, $builder->createNamedParameter($timestamp));
 
         return $builder;
     }
