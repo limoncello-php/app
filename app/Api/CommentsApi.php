@@ -3,6 +3,7 @@
 use App\Authentication\Contracts\AccountManagerInterface;
 use App\Database\Models\Comment as Model;
 use App\Database\Models\User;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 /**
  * @package App
@@ -24,5 +25,21 @@ class CommentsApi extends BaseApi
         $attributes[Model::FIELD_ID_USER] = $currentUser->{User::FIELD_ID};
 
         return parent::create($attributes, $toMany);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function builderSaveResourceOnUpdate(QueryBuilder $builder)
+    {
+        return $this->addCurrentUserCondition(parent::builderSaveResourceOnUpdate($builder), Model::FIELD_ID_USER);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function builderOnDelete(QueryBuilder $builder)
+    {
+        return $this->addCurrentUserCondition(parent::builderOnDelete($builder), Model::FIELD_ID_USER);
     }
 }

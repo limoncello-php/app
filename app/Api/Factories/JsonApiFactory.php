@@ -4,8 +4,8 @@ use App\Api\Repositories\BaseRepository;
 use Doctrine\DBAL\Connection;
 use Limoncello\JsonApi\Contracts\Adapters\FilterOperationsInterface;
 use Limoncello\JsonApi\Contracts\I18n\TranslatorInterface;
+use Limoncello\JsonApi\Contracts\Models\ModelSchemesInterface;
 use Limoncello\JsonApi\Factory;
-use Limoncello\Models\Contracts\ModelSchemesInterface;
 
 /**
  * @package App

@@ -15,10 +15,9 @@
     "require": {
         "php": ">=5.6.0",
         "monolog/monolog": "^1.18",
-        "neomerx/cors-psr7": "^1.0.0",
-        "limoncello-php/framework": "^0.1.0",
+        "limoncello-php/framework": "^0.3.0",
         "limoncello-php/templates": "^0.1.0",
-        "limoncello-php/json-api": "^0.1.1",
+        "limoncello-php/json-api": "^0.2.0",
         "limoncello-php/auth": "^0.1.0"
     },
     "require-dev": {
@@ -35,6 +34,7 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
+            "App\\I18n\\": "resources/lang/",
             "Config\\": "config/",
             "Cached\\": "storage/cache/scripts/"
         }
@@ -80,9 +80,9 @@
 
         "local-up": ["docker-compose -f docker-compose-local.yml up -d", "echo waiting 10s && sleep 10s", "@db"],
         "local-down": "docker-compose -f docker-compose-local.yml down",
-        "docker-up": ["docker-compose up -d", "echo waiting 10s && sleep 10s", "@docker-db"],
-        "docker-down": "docker-compose down",
-        "docker-db": "docker-compose run --rm fpm php /usr/local/bin/composer db",
+        "stage-up": ["docker-compose -f docker-compose-stage.yml up -d", "echo waiting 10s && sleep 10s", "@stage-db"],
+        "stage-down": "docker-compose -f docker-compose-stage.yml down",
+        "stage-db": "docker-compose -f docker-compose-stage.yml run --rm fpm php /usr/local/bin/composer db",
 
         "test": ["@test-unit", "@test-cs", "@test-md"],
         "test-unit": "./vendor/bin/phpunit --coverage-text",

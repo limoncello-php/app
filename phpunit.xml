@@ -21,7 +21,7 @@
 		</whitelist>
 	</filter>
 	<php>
-		<env name="IN_PHPUNIT" value="1" />
+		<env name="APP_ENV" value="testing"/>
 	</php>
 	<!--logging>
 		<log type="tap" target="build/report.tap"/>

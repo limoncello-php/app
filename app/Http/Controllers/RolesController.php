@@ -1,7 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Api\RolesApi as Api;
-use App\Api\Validation\Validator;
+use App\Http\Validators\RolesValidator as Validator;
 use App\Schemes\RoleSchema as Schema;
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -16,6 +16,9 @@ class RolesController extends BaseController
     const API_CLASS = Api::class;
 
     const SCHEMA_CLASS = Schema::class;
+
+    /** @inheritdoc */
+    const VALIDATOR_CLASS = Validator::class;
 
     /**
      * @param array                  $routeParams
@@ -39,19 +42,11 @@ class RolesController extends BaseController
         ContainerInterface $container,
         ServerRequestInterface $request
     ) {
-        /** @var Validator $validator */
-        $validator = $container->get(Validator::class);
+        $validator = static::getValidator($container);
         $json      = static::parseJson($container, $request);
-        $schema    = static::getSchema($container);
+        $captures  = $validator->parseAndValidateOnCreate($json);
 
-        $idRule         = $validator->absentOrNull();
-        $attributeRules = [
-            Schema::ATTR_NAME => $validator->requiredRoleName(),
-        ];
-
-        list (, $attrCaptures, $toManyCaptures) = $validator->assert($schema, $json, $idRule, $attributeRules);
-
-        return [$attrCaptures, $toManyCaptures];
+        return $captures;
     }
 
     /**
@@ -62,18 +57,20 @@ class RolesController extends BaseController
         ContainerInterface $container,
         ServerRequestInterface $request
     ) {
-        /** @var Validator $validator */
-        $validator = $container->get(Validator::class);
+        $validator = static::getValidator($container);
         $json      = static::parseJson($container, $request);
-        $schema    = static::getSchema($container);
+        $captures  = $validator->parseAndValidateOnUpdate($index, $json);
 
-        $idRule         = $validator->idEquals($index);
-        $attributeRules = [
-            Schema::ATTR_NAME => $validator->requiredRoleName(),
-        ];
+        return $captures;
+    }
 
-        list (, $attrCaptures, $toManyCaptures) = $validator->assert($schema, $json, $idRule, $attributeRules);
-
-        return [$attrCaptures, $toManyCaptures];
+    /**
+     * @param ContainerInterface $container
+     *
+     * @return Validator
+     */
+    protected static function getValidator(ContainerInterface $container)
+    {
+        return static::createValidatorFromClass(static::VALIDATOR_CLASS, $container);
     }
 }

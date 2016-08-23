@@ -88,7 +88,10 @@ trait CorsConfig
              * You can read more on 'simple' headers at http://www.w3.org/TR/cors/#simple-header
              */
             S::KEY_ALLOWED_HEADERS      => [
-                S::VALUE_ALLOW_ALL_HEADERS => true,
+                'accept'        => true,
+                'content-type'  => true,
+                'authorization' => true,
+                'origin'        => true,
             ],
 
             /**

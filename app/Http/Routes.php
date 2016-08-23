@@ -8,7 +8,6 @@ use App\Http\Controllers\RolesController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\HomeController;
 use App\Schemes\BoardSchema;
-use App\Schemes\CommentSchema;
 use App\Schemes\PostSchema;
 use App\Schemes\RoleSchema;
 use App\Schemes\UserSchema;
@@ -101,19 +100,14 @@ trait Routes
                 $addRelationship($group, BoardSchema::REL_POSTS, BoardsController::class, 'readPosts');
 
                 $addResource($group, CommentsController::class);
-                $addRelationship($group, CommentSchema::REL_POST, CommentsController::class, 'readPost');
-                $addRelationship($group, CommentSchema::REL_USER, CommentsController::class, 'readUser');
 
                 $addResource($group, PostsController::class);
-                $addRelationship($group, PostSchema::REL_BOARD, PostsController::class, 'readBoard');
-                $addRelationship($group, PostSchema::REL_USER, PostsController::class, 'readUser');
                 $addRelationship($group, PostSchema::REL_COMMENTS, PostsController::class, 'readComments');
 
                 $addResource($group, RolesController::class);
                 $addRelationship($group, RoleSchema::REL_USERS, RolesController::class, 'readUsers');
 
                 $addResource($group, UsersController::class);
-                $addRelationship($group, UserSchema::REL_ROLE, UsersController::class, 'readRole');
                 $addRelationship($group, UserSchema::REL_POSTS, UsersController::class, 'readPosts');
                 $addRelationship($group, UserSchema::REL_COMMENTS, UsersController::class, 'readComments');
 

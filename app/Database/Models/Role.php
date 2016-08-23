@@ -1,7 +1,8 @@
 <?php namespace App\Database\Models;
 
-use Limoncello\Models\FieldTypes;
-use Limoncello\Models\RelationshipTypes;
+use App\Database\Types\DateTimeType;
+use Doctrine\DBAL\Types\Type;
+use Limoncello\JsonApi\Models\RelationshipTypes;
 
 /**
  * @package App
@@ -26,10 +27,10 @@ class Role extends Model
     public static function getAttributeTypes()
     {
         return [
-            self::FIELD_ID         => FieldTypes::INT,
-            self::FIELD_NAME       => FieldTypes::STRING,
-            self::FIELD_CREATED_AT => FieldTypes::DATE,
-            self::FIELD_UPDATED_AT => FieldTypes::DATE,
+            self::FIELD_ID         => Type::INTEGER,
+            self::FIELD_NAME       => Type::STRING,
+            self::FIELD_CREATED_AT => DateTimeType::NAME,
+            self::FIELD_UPDATED_AT => DateTimeType::NAME,
         ];
     }
 

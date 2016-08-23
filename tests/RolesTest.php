@@ -18,7 +18,7 @@ class RolesTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNotNull($resources = json_decode((string)$response->getBody()));
 
-        $this->assertCount(7, $resources->data);
+        $this->assertCount(2, $resources->data);
     }
 
     /**
@@ -45,7 +45,7 @@ class RolesTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNotNull($resources = json_decode((string)$response->getBody()));
 
-        $this->assertCount(2, $resources->data);
+        $this->assertCount(1, $resources->data);
     }
 
     /**

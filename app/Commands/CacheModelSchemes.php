@@ -6,9 +6,9 @@ use Config\Config;
 use Config\ConfigInterface;
 use Limoncello\AppCache\CacheScript;
 use Limoncello\JsonApi\Contracts\Config\JsonApiConfigInterface;
-use Limoncello\Models\Contracts\ModelSchemesInterface;
-use Limoncello\Models\RelationshipTypes;
-use Limoncello\Models\ModelSchemes;
+use Limoncello\JsonApi\Contracts\Models\ModelSchemesInterface;
+use Limoncello\JsonApi\Models\ModelSchemes;
+use Limoncello\JsonApi\Models\RelationshipTypes;
 
 /**
  * @package App

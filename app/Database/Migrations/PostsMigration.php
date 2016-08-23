@@ -21,9 +21,7 @@ class PostsMigration extends Migration
             $this->relationship(Model::REL_BOARD),
             $this->string(Model::FIELD_TITLE),
             $this->text(Model::FIELD_TEXT),
-            $this->datetime(Model::FIELD_CREATED_AT),
-            $this->nullableDatetime(Model::FIELD_UPDATED_AT),
-            $this->nullableDatetime(Model::FIELD_DELETED_AT),
+            $this->timestamps(),
         ]);
     }
 }

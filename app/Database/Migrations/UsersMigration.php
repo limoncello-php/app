@@ -25,9 +25,7 @@ class UsersMigration extends Migration
             $this->string(Model::FIELD_EMAIL),
             $this->string(Model::FIELD_PASSWORD_HASH),
             $this->nullableString(Model::FIELD_API_TOKEN),
-            $this->datetime(Model::FIELD_CREATED_AT),
-            $this->nullableDatetime(Model::FIELD_UPDATED_AT),
-            $this->nullableDatetime(Model::FIELD_DELETED_AT),
+            $this->timestamps(),
 
             $this->unique([Model::FIELD_EMAIL]),
         ]);

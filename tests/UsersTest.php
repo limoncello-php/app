@@ -1,4 +1,5 @@
 <?php namespace Tests;
+use App\Schemes\UserSchema;
 
 /**
  * @package Tests
@@ -19,7 +20,7 @@ class UsersTest extends TestCase
         $this->assertNotNull($resources = json_decode((string)$response->getBody()));
 
         // by default results are paginated by 10 resources
-        $this->assertCount(10, $resources->data);
+        $this->assertCount(2, $resources->data);
     }
 
     /**
@@ -41,12 +42,12 @@ class UsersTest extends TestCase
      */
     public function testShowRelationship()
     {
-        $response = $this->get(self::API_URI . '/2/relationships/role');
+        $response = $this->get(self::API_URI . '/2/relationships/' . UserSchema::REL_POSTS);
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNotNull($resources = json_decode((string)$response->getBody()));
 
-        $this->assertEquals(5, $resources->data->id);
+        $this->assertNotEmpty($resources->data);
     }
 
     /**

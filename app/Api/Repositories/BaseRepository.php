@@ -1,7 +1,7 @@
 <?php namespace App\Api\Repositories;
 
+use App\Database\Types\DateTimeType;
 use Limoncello\JsonApi\Adapters\Repository;
-use Limoncello\Models\FieldTypes;
 
 /**
  * @package App
@@ -13,7 +13,8 @@ class BaseRepository extends Repository
      */
     protected function getColumn($class, $table, $column)
     {
-        if ($this->getModelSchemes()->getAttributeType($class, $column) === FieldTypes::DATE) {
+        $type = $this->getModelSchemes()->getAttributeType($class, $column);
+        if ($type === DateTimeType::NAME) {
             return $this->getRawExpressionForDate($table, $column);
         }
 

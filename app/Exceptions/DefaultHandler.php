@@ -1,6 +1,7 @@
 <?php namespace App\Exceptions;
 
 use Config\ConfigInterface as C;
+use ErrorException;
 use Exception;
 use Interop\Container\ContainerInterface;
 use Limoncello\Core\Contracts\Application\ExceptionHandlerInterface;
@@ -18,13 +19,7 @@ use Zend\Diactoros\Response\TextResponse;
 class DefaultHandler implements ExceptionHandlerInterface
 {
     /**
-     * @param Exception          $exception
-     * @param SapiInterface      $sapi
-     * @param ContainerInterface $container
-     *
-     * @return void
-     *
-     * @SuppressWarnings(PHPMD.ElseExpression)
+     * @inheritdoc
      */
     public function handleException(Exception $exception, SapiInterface $sapi, ContainerInterface $container)
     {
@@ -32,13 +27,20 @@ class DefaultHandler implements ExceptionHandlerInterface
     }
 
     /**
-     * @param Throwable          $throwable
-     * @param SapiInterface      $sapi
-     * @param ContainerInterface $container
+     * @inheritdoc
      */
     public function handleThrowable(Throwable $throwable, SapiInterface $sapi, ContainerInterface $container)
     {
         $this->handle($throwable, $sapi, $container);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function handleFatal(array $error, ContainerInterface $container)
+    {
+        $errorException = new ErrorException($error['message'], $error['type'], 1, $error['file'], $error['line']);
+        $this->logException($errorException, $container, 'Fatal error');
     }
 
     /**
@@ -56,11 +58,7 @@ class DefaultHandler implements ExceptionHandlerInterface
 
         $message  = 'Internal Server Error';
 
-        if ($container->has(LoggerInterface::class) === true) {
-            /** @var LoggerInterface $logger */
-            $logger = $container->get(LoggerInterface::class);
-            $logger->critical($message, ['exception' => $exception]);
-        }
+        $this->logException($exception, $container, $message);
 
         if ($debugEnabled === true) {
             $run     = new Run();
@@ -86,5 +84,21 @@ class DefaultHandler implements ExceptionHandlerInterface
         }
 
         $sapi->handleResponse($response);
+    }
+
+    /**
+     * @param Exception          $exception
+     * @param ContainerInterface $container
+     * @param string             $message
+     *
+     * @return void
+     */
+    private function logException(Exception $exception, ContainerInterface $container, $message)
+    {
+        if ($container->has(LoggerInterface::class) === true) {
+            /** @var LoggerInterface $logger */
+            $logger = $container->get(LoggerInterface::class);
+            $logger->critical($message, ['exception' => $exception]);
+        }
     }
 }

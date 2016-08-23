@@ -2,6 +2,8 @@
 
 use Config\ConfigInterface as C;
 use Interop\Container\ContainerInterface;
+use Limoncello\JsonApi\Contracts\Http\Cors\CorsStorageInterface;
+use Limoncello\JsonApi\Http\Cors\CorsStorage;
 use Neomerx\Cors\Analyzer;
 use Neomerx\Cors\Contracts\AnalyzerInterface;
 use Neomerx\Cors\Strategies\Settings;
@@ -37,5 +39,7 @@ trait SetUpCors
 
             return $analyzer;
         };
+
+        $container[CorsStorageInterface::class] = new CorsStorage();
     }
 }

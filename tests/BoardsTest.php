@@ -1,4 +1,5 @@
 <?php namespace Tests;
+use App\Schemes\BoardSchema;
 
 /**
  * @package Tests
@@ -30,27 +31,27 @@ class BoardsTest extends TestCase
         $queryParams = [
             'filter'  => [
                 'id' => [
-                    'greater-than' => 5, // 'long' form for condition operations
-                    'lte'          => 9, // 'short' form supported as well
+                    'greater-than' => 1, // 'long' form for condition operations
+                    'lte'          => 4, // 'short' form supported as well
                 ],
             ],
-            'sort'    => '-id,+title',   // example of how multiple sorting conditions could be applied
+            'sort'    => '+id,-title',   // example of how multiple sorting conditions could be applied
             'include' => 'posts',        // 'posts.user' or 'posts.user,posts.comments' would also work
         ];
         $response = $this->get(self::API_URI, $queryParams);
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNotNull($resources = json_decode((string)$response->getBody()));
-        $this->assertCount(4, $resources->data);
+        $this->assertCount(3, $resources->data);
 
         // Board with ID 9 has more than 10 posts. Check that that data in its relationship were paginated
         $resource = $resources->data[0];
-        $this->assertEquals(9, $resource->id);
+        $this->assertEquals(2, $resource->id);
         $this->assertCount(10, $resource->relationships->posts->data);
         $this->assertNotEmpty($resource->relationships->posts->links->next);
 
         // check response has included posts as well
-        $this->assertCount(35, $resources->included);
+        $this->assertCount(30, $resources->included);
     }
 
     /**
@@ -72,7 +73,7 @@ class BoardsTest extends TestCase
      */
     public function testShowRelationship()
     {
-        $response = $this->get(self::API_URI . '/2/relationships/posts');
+        $response = $this->get(self::API_URI . '/10/relationships/' . BoardSchema::REL_POSTS);
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNotNull($resources = json_decode((string)$response->getBody()));

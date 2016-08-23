@@ -1,5 +1,7 @@
 <?php namespace Tests;
 
+use App\Schemes\PostSchema;
+
 /**
  * @package Tests
  */
@@ -41,12 +43,12 @@ class PostsTest extends TestCase
      */
     public function testShowRelationship()
     {
-        $response = $this->get(self::API_URI . '/2/relationships/user');
+        $response = $this->get(self::API_URI . '/2/relationships/' . PostSchema::REL_COMMENTS);
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNotNull($resources = json_decode((string)$response->getBody()));
 
-        $this->assertEquals(4, $resources->data->id);
+        $this->assertNotEmpty($resources->data);
     }
 
     /**
@@ -104,7 +106,7 @@ EOT;
         $this->setPreventCommits();
         $authHeaders = $this->createAdminAuthHeaders();
 
-        $index = 1;
+        $index = 2;
         $body  = <<<EOT
         {
             "data" : {

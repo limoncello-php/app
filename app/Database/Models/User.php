@@ -1,7 +1,8 @@
 <?php namespace App\Database\Models;
 
-use Limoncello\Models\FieldTypes;
-use Limoncello\Models\RelationshipTypes;
+use App\Database\Types\DateTimeType;
+use Doctrine\DBAL\Types\Type;
+use Limoncello\JsonApi\Models\RelationshipTypes;
 
 /**
  * @package App
@@ -47,24 +48,27 @@ class User extends Model
     /** Field name */
     const FIELD_API_TOKEN = 'api_token';
 
+    /** Field limit */
+    const MIN_FIELD_PASSWORD = 6;
+
     /**
      * @inheritdoc
      */
     public static function getAttributeTypes()
     {
         return [
-            self::FIELD_ID            => FieldTypes::INT,
-            self::FIELD_ID_ROLE       => FieldTypes::INT,
-            self::FIELD_TITLE         => FieldTypes::STRING,
-            self::FIELD_FIRST_NAME    => FieldTypes::STRING,
-            self::FIELD_LAST_NAME     => FieldTypes::STRING,
-            self::FIELD_EMAIL         => FieldTypes::STRING,
-            self::FIELD_PASSWORD_HASH => FieldTypes::STRING,
-            self::FIELD_LANGUAGE      => FieldTypes::STRING,
-            self::FIELD_API_TOKEN     => FieldTypes::STRING,
-            self::FIELD_CREATED_AT    => FieldTypes::DATE,
-            self::FIELD_UPDATED_AT    => FieldTypes::DATE,
-            self::FIELD_DELETED_AT    => FieldTypes::DATE,
+            self::FIELD_ID            => Type::INTEGER,
+            self::FIELD_ID_ROLE       => Type::INTEGER,
+            self::FIELD_TITLE         => Type::STRING,
+            self::FIELD_FIRST_NAME    => Type::STRING,
+            self::FIELD_LAST_NAME     => Type::STRING,
+            self::FIELD_EMAIL         => Type::STRING,
+            self::FIELD_PASSWORD_HASH => Type::STRING,
+            self::FIELD_LANGUAGE      => Type::STRING,
+            self::FIELD_API_TOKEN     => Type::STRING,
+            self::FIELD_CREATED_AT    => DateTimeType::NAME,
+            self::FIELD_UPDATED_AT    => DateTimeType::NAME,
+            self::FIELD_DELETED_AT    => DateTimeType::NAME,
         ];
     }
 

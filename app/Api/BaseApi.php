@@ -1,13 +1,15 @@
 <?php namespace App\Api;
 
+use App\Authentication\Contracts\AccountManagerInterface;
 use App\Database\Models\Model;
+use App\Database\Models\User;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Interop\Container\ContainerInterface;
 use Limoncello\JsonApi\Api\Crud;
 use Limoncello\JsonApi\Contracts\Adapters\PaginationStrategyInterface;
 use Limoncello\JsonApi\Contracts\Adapters\RepositoryInterface;
 use Limoncello\JsonApi\Contracts\FactoryInterface;
-use Limoncello\Models\Contracts\ModelSchemesInterface;
+use Limoncello\JsonApi\Contracts\Models\ModelSchemesInterface;
 
 /**
  * @package App
@@ -80,6 +82,41 @@ abstract class BaseApi extends Crud
     protected function builderSaveRelationshipOnUpdate($relationshipName, QueryBuilder $builder)
     {
         return $this->addCreatedAt(parent::builderSaveRelationshipOnUpdate($relationshipName, $builder));
+    }
+
+    /**
+     * @param QueryBuilder $builder
+     * @param string       $columnName
+     * @param string       $paramName
+     *
+     * @return QueryBuilder
+     */
+    protected function addCurrentUserCondition(QueryBuilder $builder, $columnName, $paramName = ':curUserId')
+    {
+        /** @var AccountManagerInterface $accountManager */
+        $accountManager = $this->getContainer()->get(AccountManagerInterface::class);
+
+        // user must be signed-in
+        $currentUser = $accountManager->getAccount()->getUser();
+        $userIndex   = $currentUser->{User::FIELD_ID};
+
+        $tableName = $this->getModelSchemes()->getTable($this->getModelClass());
+        $fullColumn = $this->buildTableColumn($tableName, $columnName);
+
+        $builder->andWhere($fullColumn . " = $paramName")->setParameter($paramName, $userIndex);
+
+        return $builder;
+    }
+
+    /**
+     * @param string $table
+     * @param string $column
+     *
+     * @return string
+     */
+    protected function buildTableColumn($table, $column)
+    {
+        return "`$table`.`$column`";
     }
 
     /**

@@ -1,12 +1,13 @@
 <?php namespace App\Database\Migrations;
 
-use App\Database\Models\Model;
-use App\Database\Models\ModelInterface;
 use Closure;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Type;
-use Limoncello\Models\RelationshipTypes;
+use Interop\Container\ContainerInterface;
+use Limoncello\JsonApi\Contracts\Models\ModelSchemesInterface;
+use Limoncello\JsonApi\Models\RelationshipTypes;
 
 /**
  * @package App
@@ -22,16 +23,16 @@ abstract class Migration
     abstract public function migrate();
 
     /**
-     * @var AbstractSchemaManager
+     * @var ContainerInterface
      */
-    private $schemaManager;
+    private $container;
 
     /**
-     * @param AbstractSchemaManager $schemaManager
+     * @param ContainerInterface $container
      */
-    public function __construct(AbstractSchemaManager $schemaManager)
+    public function __construct(ContainerInterface $container)
     {
-        $this->schemaManager = $schemaManager;
+        $this->container = $container;
     }
 
     /**
@@ -46,11 +47,35 @@ abstract class Migration
     }
 
     /**
+     * @return ContainerInterface
+     */
+    protected function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * @return Connection
+     */
+    protected function getConnection()
+    {
+        return $this->getContainer()->get(Connection::class);
+    }
+
+    /**
      * @return AbstractSchemaManager
      */
     protected function getSchemaManager()
     {
-        return $this->schemaManager;
+        return $this->getConnection()->getSchemaManager();
+    }
+
+    /**
+     * @return ModelSchemesInterface
+     */
+    protected function getModelSchemes()
+    {
+        return $this->getContainer()->get(ModelSchemesInterface::class);
     }
 
     /**
@@ -116,12 +141,7 @@ abstract class Migration
     {
         return function (Table $table) use ($name) {
             $modelClass = $this->getModelClass();
-            /** @var ModelInterface $modelClass*/
-            $lengths   = $modelClass::getAttributeLengths();
-            $hasLength = array_key_exists($name, $lengths);
-            assert('$hasLength === true', "String length is not specified for column '$name' in model '$modelClass'.");
-            $hasLength ?: null;
-            $length = $lengths[$name];
+            $length = $this->getModelSchemes()->getAttributeLength($modelClass, $name);
             $table->addColumn($name, Type::STRING, ['length' => $length])->setNotnull(true);
         };
     }
@@ -135,12 +155,7 @@ abstract class Migration
     {
         return function (Table $table) use ($name) {
             $modelClass = $this->getModelClass();
-            /** @var ModelInterface $modelClass*/
-            $lengths   = $modelClass::getAttributeLengths();
-            $hasLength = array_key_exists($name, $lengths);
-            assert('$hasLength === true', "String length is not specified for column '$name' in model '$modelClass'.");
-            $hasLength ?: null;
-            $length = $lengths[$name];
+            $length = $this->getModelSchemes()->getAttributeLength($modelClass, $name);
             $table->addColumn($name, Type::STRING, ['length' => $length])->setNotnull(false);
         };
     }
@@ -158,14 +173,48 @@ abstract class Migration
     }
 
     /**
-     * @param string $name
+     * @param string    $name
+     * @param null|bool $default
      *
      * @return Closure
      */
-    protected function bool($name)
+    protected function bool($name, $default = null)
     {
-        return function (Table $table) use ($name) {
-            $table->addColumn($name, Type::BOOLEAN)->setNotnull(true);
+        return function (Table $table) use ($name, $default) {
+            $column = $table->addColumn($name, Type::BOOLEAN)->setNotnull(true);
+            if ($default !== null && is_bool($default) === true) {
+                $column->setDefault($default);
+            }
+        };
+    }
+
+    /**
+     * @return Closure
+     */
+    protected function timestamps()
+    {
+        $createdAt = \App\Database\Models\Model::FIELD_CREATED_AT;
+        $updatedAt = \App\Database\Models\Model::FIELD_UPDATED_AT;
+        $deletedAt = \App\Database\Models\Model::FIELD_DELETED_AT;
+
+        $modelClass = $this->getModelClass();
+
+        // a list of data columns and `nullable` flag
+        $datesToAdd = [];
+        if ($this->getModelSchemes()->hasAttributeType($modelClass, $createdAt) === true) {
+            $datesToAdd[$createdAt] = true;
+        }
+        if ($this->getModelSchemes()->hasAttributeType($modelClass, $updatedAt) === true) {
+            $datesToAdd[$updatedAt] = false;
+        }
+        if ($this->getModelSchemes()->hasAttributeType($modelClass, $deletedAt) === true) {
+            $datesToAdd[$deletedAt] = false;
+        }
+
+        return function (Table $table) use ($datesToAdd) {
+            foreach ($datesToAdd as $column => $isNullable) {
+                $table->addColumn($column, Type::DATETIME)->setNotnull($isNullable);
+            }
         };
     }
 
@@ -194,14 +243,19 @@ abstract class Migration
     }
 
     /**
-     * @param string[] $names
+     * @param string[]    $names
+     * @param null|string $indexName
      *
      * @return Closure
      */
-    protected function unique(array $names)
+    protected function unique(array $names, $indexName = null)
     {
-        return function (Table $table) use ($names) {
-            $table->addUniqueIndex($names);
+        if ($indexName === null) {
+            $indexName = $this->createUniqueIndexName($names);
+        }
+
+        return function (Table $table) use ($names, $indexName) {
+            $table->addUniqueIndex($names, $indexName);
         };
     }
 
@@ -211,15 +265,26 @@ abstract class Migration
      *
      * @return Closure
      */
-    protected function foreignInt($name, $referredClass)
+    protected function foreignRelationship($name, $referredClass)
     {
-        return function (Table $table) use ($name, $referredClass) {
-            $table->addColumn($name, Type::INTEGER)->setUnsigned(true)->setNotnull(true);
-            $tableName = $this->getTableNameForClass($referredClass);
-            /** @var Model $referredClass*/
-            assert('$tableName !== null', "Table name is not specified for model '$referredClass'.");
-            $pkName = $referredClass::FIELD_ID;
-            $table->addForeignKeyConstraint($tableName, [$name], [$pkName]);
+        $tableName = $this->getTableNameForClass($referredClass);
+        $pkName    = $this->getModelSchemes()->getPrimaryKey($referredClass);
+
+        return $this->foreignColumn($name, $tableName, $pkName);
+    }
+
+    /**
+     * @param string $localKey
+     * @param string $foreignTable
+     * @param $foreignKey $foreignTable
+     *
+     * @return Closure
+     */
+    protected function foreignColumn($localKey, $foreignTable, $foreignKey)
+    {
+        return function (Table $table) use ($localKey, $foreignTable, $foreignKey) {
+            $table->addColumn($localKey, Type::INTEGER)->setUnsigned(true)->setNotnull(true);
+            $table->addForeignKeyConstraint($foreignTable, [$localKey], [$foreignKey]);
         };
     }
 
@@ -230,14 +295,34 @@ abstract class Migration
      */
     protected function relationship($name)
     {
-        /** @var ModelInterface $modelClass */
-        $modelClass    = $this->getModelClass();
-        $relationships = $modelClass::getRelationships();
-        $relFound      = isset($relationships[RelationshipTypes::BELONGS_TO][$name]);
-        $relFound ?: null;
-        assert('$relFound === true', "Belongs-to relationship '$name' not found.");
-        list ($referencedClass, $foreignKey) = $relationships[RelationshipTypes::BELONGS_TO][$name];
-        return $this->foreignInt($foreignKey, $referencedClass);
+        $modelClass = $this->getModelClass();
+
+        $hasRelationship = $this->getModelSchemes()->hasRelationship($modelClass, $name);
+        if ($hasRelationship === false) {
+            assert('$hasRelationship === true', "Relationship `$name` not found for model `$modelClass`.");
+        }
+
+        $type = $this->getModelSchemes()->getRelationshipType($modelClass, $name);
+        $canBeCreated = $type === RelationshipTypes::BELONGS_TO || $type === RelationshipTypes::BELONGS_TO_MANY;
+        if ($canBeCreated === false) {
+            assert(
+                '$canBeCreated === true',
+                "Relationship `$name` for model `$modelClass` must be either `belongsTo` or `belongsToMany`."
+            );
+        }
+
+        $localKey = $this->getModelSchemes()->getForeignKey($modelClass, $name);
+        if ($type === RelationshipTypes::BELONGS_TO) {
+            $otherModelClass = $this->getModelSchemes()->getReverseModelClass($modelClass, $name);
+            $foreignTable    = $this->getModelSchemes()->getTable($otherModelClass);
+            $foreignKey      = $this->getModelSchemes()->getPrimaryKey($otherModelClass);
+        } else {
+            // if we are here this is belongsToMany relationship
+            list ($foreignTable, $foreignKey) =
+                $this->getModelSchemes()->getBelongsToManyRelationship($modelClass, $name);
+        }
+
+        return $this->foreignColumn($localKey, $foreignTable, $foreignKey);
     }
 
     /**
@@ -247,9 +332,12 @@ abstract class Migration
      */
     protected function getTableNameForClass($modelClass)
     {
-        /** @var Model $modelClass*/
-        $tableName = $modelClass::TABLE_NAME;
-        assert('$tableName !== null', "Table name is not specified for model '$modelClass'.");
+        $hasClass = $this->getModelSchemes()->hasClass($modelClass);
+        if ($hasClass === false) {
+            assert('$hasClass !== null', "Table name is not specified for model '$modelClass'.");
+        }
+
+        $tableName = $this->getModelSchemes()->getTable($modelClass);
 
         return $tableName;
     }
@@ -261,11 +349,14 @@ abstract class Migration
      */
     protected function getPrimaryKeyNameForClass($modelClass)
     {
-        /** @var Model $modelClass*/
-        $tableName = $modelClass::FIELD_ID;
-        assert('$tableName !== null', "Table name is not specified for model '$modelClass'.");
+        $hasClass = $this->getModelSchemes()->hasClass($modelClass);
+        if ($hasClass === false) {
+            assert('$hasClass !== null', "Table name is not specified for model '$modelClass'.");
+        }
 
-        return $tableName;
+        $primary = $this->getModelSchemes()->getPrimaryKey($modelClass);
+
+        return $primary;
     }
 
     /**
@@ -277,5 +368,24 @@ abstract class Migration
         assert('$modelClass !== null', 'Model class should be set in migration');
 
         return $modelClass;
+    }
+
+    /**
+     * @param string[] $names
+     *
+     * @return string
+     */
+    protected function createUniqueIndexName(array $names)
+    {
+        $indexName = null;
+
+        if (empty($names) === false) {
+            $indexName = 'UN' . 'IQ';
+            foreach ($names as $name) {
+                $indexName .= ('_' . strtoupper($name));
+            }
+        }
+
+        return $indexName;
     }
 }

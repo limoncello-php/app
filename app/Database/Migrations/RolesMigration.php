@@ -18,9 +18,7 @@ class RolesMigration extends Migration
         $this->createTable([
             $this->primaryInt(Model::FIELD_ID),
             $this->string(Model::FIELD_NAME),
-            $this->datetime(Model::FIELD_CREATED_AT),
-            $this->nullableDatetime(Model::FIELD_UPDATED_AT),
-            $this->nullableDatetime(Model::FIELD_DELETED_AT),
+            $this->timestamps(),
 
             $this->unique([Model::FIELD_NAME]),
         ]);

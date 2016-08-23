@@ -1,5 +1,11 @@
 <?php namespace Config\Services\Database;
 
+use App\Database\Models\Board;
+use App\Database\Models\Comment;
+use App\Database\Models\Post;
+use App\Database\Models\Role;
+use App\Database\Models\User;
+
 /**
  * @package Config
  */
@@ -10,7 +16,7 @@ trait DatabaseConfig
      */
     protected function getConfig()
     {
-        $config = [
+        $connConfig = [
             'driver'   => getenv('DB_DRIVER'),
             'host'     => getenv('DB_HOST'),
             'port'     => getenv('DB_PORT'),
@@ -19,11 +25,22 @@ trait DatabaseConfig
             'password' => getenv('DB_PASSWORD'),
         ];
 
-        $inTests = getenv('IN_PHPUNIT') === '1';
+        $inTests = getenv('APP_ENV') === 'testing';
         if ($inTests === true) {
-            $config['wrapperClass'] = 'Tests\Utils\TestingConnection';
+            $connConfig['wrapperClass'] = 'Tests\Utils\TestingConnection';
         }
 
-        return $config;
+        $modelsList = [
+            Board::class,
+            Comment::class,
+            Post::class,
+            Role::class,
+            User::class,
+        ];
+
+        return [
+            DatabaseConfigInterface::CONNECTION_CONFIG => $connConfig,
+            DatabaseConfigInterface::MODELS_LIST       => $modelsList,
+        ];
     }
 }

@@ -1,9 +1,11 @@
 <?php namespace App\Commands;
 
 use App\Container\SetUpConfig;
+use App\Container\SetUpCrypt;
 use App\Container\SetUpDatabase;
-use App\Database\Migrations\MigrationsRunner;
-use App\Database\Seeds\SeedsRunner;
+use App\Container\SetUpLogs;
+use App\Database\MigrationsRunner;
+use App\Database\SeedsRunner;
 use Composer\Script\Event;
 use Doctrine\DBAL\Connection;
 use Limoncello\ContainerLight\Container;
@@ -13,7 +15,12 @@ use Limoncello\ContainerLight\Container;
  */
 class Database
 {
-    use SetUpConfig, SetUpDatabase;
+    use SetUpConfig, SetUpCrypt, SetUpDatabase, SetUpLogs;
+
+    /**
+     * @var null|Container
+     */
+    private static $container = null;
 
     /**
      * @param Event $event
@@ -22,7 +29,7 @@ class Database
      */
     public static function reset(Event $event)
     {
-        (new MigrationsRunner())->rollback(static::getConnection()->getSchemaManager());
+        (new MigrationsRunner())->rollback(static::getContainer());
 
         $event->getIO()->write("<info>Database reset completed.</info>");
     }
@@ -34,7 +41,7 @@ class Database
      */
     public static function migrate(Event $event)
     {
-        (new MigrationsRunner())->migrate(static::getConnection()->getSchemaManager());
+        (new MigrationsRunner())->migrate(static::getContainer());
 
         $event->getIO()->write("<info>Database migration completed.</info>");
     }
@@ -46,7 +53,7 @@ class Database
      */
     public static function seed(Event $event)
     {
-        (new SeedsRunner())->run(static::getConnection());
+        (new SeedsRunner())->run(static::getContainer());
 
         $event->getIO()->write("<info>Database seeding completed.</info>");
     }
@@ -56,13 +63,35 @@ class Database
      */
     protected static function getConnection()
     {
-        $container = new Container();
-        static::setUpConfig($container);
-        static::setUpDatabase($container);
+        $connection = static::getContainer()->get(Connection::class);
 
-        /** @var Connection $pdo */
-        $pdo = $container->get(Connection::class);
+        return $connection;
+    }
 
-        return $pdo;
+    /**
+     * @return Container
+     */
+    protected static function getContainer()
+    {
+        static::initVariables();
+
+        return static::$container;
+    }
+
+    /**
+     * Init class variables.
+     */
+    private static function initVariables()
+    {
+        if (static::$container === null) {
+            $container = new Container();
+
+            static::setUpConfig($container);
+            static::setUpCrypt($container);
+            static::setUpDatabase($container);
+            static::setUpFileLogs($container);
+
+            static::$container = $container;
+        }
     }
 }

@@ -52,7 +52,7 @@ class UsersApi extends BaseApi
             $attributes[Model::FIELD_PASSWORD_HASH] = $hasher->hash($password);
         }
 
-        parent::update($index, $attributes, $toMany);
+        return parent::update($index, $attributes, $toMany);
     }
 
     /**

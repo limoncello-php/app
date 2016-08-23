@@ -1,4 +1,4 @@
-FROM php:fpm
+FROM php:5-fpm
 
 RUN mkdir /app && \
     apt-get update && docker-php-ext-install -j$(nproc) pdo_mysql && \

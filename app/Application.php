@@ -63,10 +63,19 @@ class Application extends \Limoncello\Core\Application\Application
 
         set_exception_handler(PHP_MAJOR_VERSION >= 7 ? $throwableHandler : $exceptionHandler);
 
-        set_error_handler(function ($severity, $message, $fileName, $lineNumber) use ($exceptionHandler) {
+        set_error_handler(function ($severity, $message, $fileName, $lineNumber) {
             $errorException = new ErrorException($message, 0, $severity, $fileName, $lineNumber);
-            $exceptionHandler($errorException);
             throw $errorException;
+        });
+
+        // handle fatal error
+        register_shutdown_function(function () use ($container, $createHandler) {
+            $error = error_get_last();
+            if ($error !== null && ((int)$error['type'] & (E_ERROR | E_COMPILE_ERROR) )) {
+                /** @var ExceptionHandlerInterface $handler */
+                $handler = $createHandler();
+                $handler->handleFatal($error, $container);
+            }
         });
     }
 

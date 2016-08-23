@@ -1,10 +1,9 @@
 <?php namespace App\Http\Controllers;
 
 use App\Api\CommentsApi as Api;
-use App\Api\Validation\Validator;
+use App\Http\Validators\CommentsValidator as Validator;
 use App\Schemes\CommentSchema as Schema;
 use Interop\Container\ContainerInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -15,38 +14,10 @@ class CommentsController extends BaseController
     /** @inheritdoc */
     const API_CLASS = Api::class;
 
-    /** @inheritdoc */
     const SCHEMA_CLASS = Schema::class;
 
-    /**
-     * @param array                  $routeParams
-     * @param ContainerInterface     $container
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
-     */
-    public static function readPost(array $routeParams, ContainerInterface $container, ServerRequestInterface $request)
-    {
-        $index    = $routeParams[static::ROUTE_KEY_INDEX];
-        $response = static::readRelationship($index, Schema::REL_POST, $container, $request);
-
-        return $response;
-    }
-
-    /**
-     * @param array                  $routeParams
-     * @param ContainerInterface     $container
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
-     */
-    public static function readUser(array $routeParams, ContainerInterface $container, ServerRequestInterface $request)
-    {
-        $index    = $routeParams[static::ROUTE_KEY_INDEX];
-        $response = static::readRelationship($index, Schema::REL_USER, $container, $request);
-
-        return $response;
-    }
+    /** @inheritdoc */
+    const VALIDATOR_CLASS = Validator::class;
 
     /**
      * @inheritdoc
@@ -55,23 +26,11 @@ class CommentsController extends BaseController
         ContainerInterface $container,
         ServerRequestInterface $request
     ) {
-        /** @var Validator $validator */
-        $validator = $container->get(Validator::class);
+        $validator = static::getValidator($container);
         $json      = static::parseJson($container, $request);
-        $schema    = static::getSchema($container);
+        $captures  = $validator->parseAndValidateOnCreate($json);
 
-        $idRule         = $validator->absentOrNull();
-        $attributeRules = [
-            Schema::ATTR_TEXT => $validator->requiredCommentText(),
-        ];
-        $toOneRules     = [
-            Schema::REL_POST => $validator->requiredPostId(),
-        ];
-
-        list (, $attrCaptures, $toManyCaptures) =
-            $validator->assert($schema, $json, $idRule, $attributeRules, $toOneRules);
-
-        return [$attrCaptures, $toManyCaptures];
+        return $captures;
     }
 
     /**
@@ -82,19 +41,20 @@ class CommentsController extends BaseController
         ContainerInterface $container,
         ServerRequestInterface $request
     ) {
-        /** @var Validator $validator */
-        $validator = $container->get(Validator::class);
+        $validator = static::getValidator($container);
         $json      = static::parseJson($container, $request);
-        $schema    = static::getSchema($container);
+        $captures  = $validator->parseAndValidateOnUpdate($index, $json);
 
-        $idRule         = $validator->idEquals($index);
-        $attributeRules = [
-            Schema::ATTR_TEXT => $validator->optionalCommentText(),
-        ];
+        return $captures;
+    }
 
-        list (, $attrCaptures, $toManyCaptures) =
-            $validator->assert($schema, $json, $idRule, $attributeRules);
-
-        return [$attrCaptures, $toManyCaptures];
+    /**
+     * @param ContainerInterface $container
+     *
+     * @return Validator
+     */
+    protected static function getValidator(ContainerInterface $container)
+    {
+        return static::createValidatorFromClass(static::VALIDATOR_CLASS, $container);
     }
 }

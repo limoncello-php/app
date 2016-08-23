@@ -20,9 +20,7 @@ class CommentsMigration extends Migration
             $this->relationship(Model::REL_USER),
             $this->relationship(Model::REL_POST),
             $this->text(Model::FIELD_TEXT),
-            $this->datetime(Model::FIELD_CREATED_AT),
-            $this->nullableDatetime(Model::FIELD_UPDATED_AT),
-            $this->nullableDatetime(Model::FIELD_DELETED_AT),
+            $this->timestamps(),
         ]);
     }
 }

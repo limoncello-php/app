@@ -1,5 +1,6 @@
 <?php namespace Tests;
 
+use App\Schemes\CommentSchema;
 use Limoncello\JsonApi\Adapters\PaginationStrategy;
 
 /**
@@ -36,19 +37,6 @@ class CommentsTest extends TestCase
 
         $this->assertEquals(2, $resources->data->id);
         $this->assertEquals('comments', $resources->data->type);
-    }
-
-    /**
-     * Test index.
-     */
-    public function testShowRelationship()
-    {
-        $response = $this->get(self::API_URI . '/2/relationships/post');
-
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertNotNull($resources = json_decode((string)$response->getBody()));
-
-        $this->assertEquals(96, $resources->data->id);
     }
 
     /**
@@ -197,6 +185,6 @@ EOT;
         $this->assertNotNull($resource = json_decode((string)$response->getBody()));
 
         // manually checked number comments that have 'porro' and `velit' in `text` field
-        $this->assertCount(6, $resource->data);
+        $this->assertCount(2, $resource->data);
     }
 }
