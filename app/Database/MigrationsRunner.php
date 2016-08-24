@@ -146,7 +146,7 @@ class MigrationsRunner
             ->setAutoincrement(true);
         $table
             ->addColumn(static::MIGRATIONS_COLUMN_CLASS, Type::STRING)
-            ->setLength(256);
+            ->setLength(255);
 
         $table->setPrimaryKey([static::MIGRATIONS_COLUMN_ID]);
         $table->addUniqueIndex([static::MIGRATIONS_COLUMN_CLASS]);
