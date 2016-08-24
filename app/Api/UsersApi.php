@@ -1,5 +1,6 @@
 <?php namespace App\Api;
 
+use App\Api\Traits\SoftDeletes;
 use App\Database\Models\User as Model;
 use App\Database\Models\User;
 use App\Schemes\UserSchema as Schema;
@@ -12,6 +13,8 @@ use PDO;
  */
 class UsersApi extends BaseApi
 {
+    use SoftDeletes;
+
     const MODEL = Model::class;
 
     /** Token key */

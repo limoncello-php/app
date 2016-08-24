@@ -1,5 +1,6 @@
 <?php namespace App\Api;
 
+use App\Api\Traits\SoftDeletes;
 use App\Authentication\Contracts\AccountManagerInterface;
 use App\Database\Models\Comment as Model;
 use App\Database\Models\User;
@@ -10,6 +11,8 @@ use Doctrine\DBAL\Query\QueryBuilder;
  */
 class CommentsApi extends BaseApi
 {
+    use SoftDeletes;
+
     const MODEL = Model::class;
 
     /**

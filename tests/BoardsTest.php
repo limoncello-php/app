@@ -121,7 +121,9 @@ EOT;
 
         // check resource deleted
         // option 1 - direct database query
-        $count = $connection->executeQuery('SELECT count(*) FROM boards WHERE id_board = ' . $index)->fetchColumn();
+        $count = $connection
+            ->executeQuery('SELECT count(*) FROM boards WHERE deleted_at IS NULL AND id_board = ' . $index)
+            ->fetchColumn();
         $this->assertEquals(0, $count);
         // option 2 - using APi
         $this->assertEquals(404, $this->get(self::API_URI . "/$index")->getStatusCode());
