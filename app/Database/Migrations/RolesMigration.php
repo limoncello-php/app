@@ -5,7 +5,7 @@ use App\Database\Models\Role as Model;
 /**
  * @package App
  */
-class RolesMigration extends Migration
+class RolesMigration extends TableMigration
 {
     /** @inheritdoc */
     const MODEL_CLASS = Model::class;

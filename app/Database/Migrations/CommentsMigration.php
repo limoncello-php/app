@@ -5,7 +5,7 @@ use App\Database\Models\Comment as Model;
 /**
  * @package App
  */
-class CommentsMigration extends Migration
+class CommentsMigration extends TableMigration
 {
     /** @inheritdoc */
     const MODEL_CLASS = Model::class;

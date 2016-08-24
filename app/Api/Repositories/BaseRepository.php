@@ -1,5 +1,6 @@
 <?php namespace App\Api\Repositories;
 
+use App\Database\Migrations\DateTimeFunctionMigration;
 use App\Database\Types\DateTimeType;
 use Limoncello\JsonApi\Adapters\Repository;
 
@@ -29,9 +30,9 @@ class BaseRepository extends Repository
      */
     private function getRawExpressionForDate($table, $column)
     {
-        $result = <<<EOT
-DATE_FORMAT(CONVERT_TZ(`$table`.`$column`, @@session.time_zone, '+00:00'), '%Y-%m-%dT%H:%i:%s+0000') as `$column`
-EOT;
+        $functionName = DateTimeFunctionMigration::FUNCTION_NAME;
+        $result       = "$functionName(`$table`.`$column`) as `$column`";
+
         return $result;
     }
 }

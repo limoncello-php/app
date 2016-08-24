@@ -5,7 +5,7 @@ use App\Database\Models\User as Model;
 /**
  * @package App
  */
-class UsersMigration extends Migration
+class UsersMigration extends TableMigration
 {
     /** @inheritdoc */
     const MODEL_CLASS = Model::class;

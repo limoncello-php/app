@@ -2,6 +2,7 @@
 
 use App\Database\Migrations\BoardsMigration;
 use App\Database\Migrations\CommentsMigration;
+use App\Database\Migrations\DateTimeFunctionMigration;
 use App\Database\Migrations\Migration;
 use App\Database\Migrations\PostsMigration;
 use App\Database\Migrations\RolesMigration;
@@ -29,6 +30,7 @@ class MigrationsRunner
             UsersMigration::class,
             PostsMigration::class,
             CommentsMigration::class,
+            DateTimeFunctionMigration::class,
         ];
     }
 

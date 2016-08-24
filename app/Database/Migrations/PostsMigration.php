@@ -5,7 +5,7 @@ use App\Database\Models\Post as Model;
 /**
  * @package App
  */
-class PostsMigration extends Migration
+class PostsMigration extends TableMigration
 {
     /** @inheritdoc */
     const MODEL_CLASS = Model::class;

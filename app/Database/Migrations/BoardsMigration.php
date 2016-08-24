@@ -5,7 +5,7 @@ use App\Database\Models\Board as Model;
 /**
  * @package App
  */
-class BoardsMigration extends Migration
+class BoardsMigration extends TableMigration
 {
     /** @inheritdoc */
     const MODEL_CLASS = Model::class;
