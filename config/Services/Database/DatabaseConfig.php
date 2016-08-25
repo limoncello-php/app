@@ -17,12 +17,19 @@ trait DatabaseConfig
     protected function getConfig()
     {
         $connConfig = [
-            'driver'   => getenv('DB_DRIVER'),
-            'host'     => getenv('DB_HOST'),
-            'port'     => getenv('DB_PORT'),
-            'dbname'   => getenv('DB_DATABASE'),
-            'user'     => getenv('DB_USER_NAME'),
-            'password' => getenv('DB_PASSWORD'),
+            'driver'       => getenv('DB_DRIVER'),
+            'host'         => getenv('DB_HOST'),
+            'port'         => getenv('DB_PORT'),
+            'dbname'       => getenv('DB_DATABASE'),
+            'user'         => getenv('DB_USER_NAME'),
+            'password'     => getenv('DB_PASSWORD'),
+            'charset'      => getenv('DB_CHARSET'),
+
+            // you can set driver specific options here...
+            'driverOptions'=> [
+                // ... such as time zone for MySQL
+                // \PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = 'SYSTEM'",
+            ],
         ];
 
         $inTests = getenv('APP_ENV') === 'testing';
