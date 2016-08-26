@@ -25,8 +25,9 @@ trait SetUpConfig
                 $cached = call_user_func($cachedConfig);
                 $config->setConfig($cached);
             } else {
-                $dirWithEnvFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..';
-                $dotEnv         = new Dotenv($dirWithEnvFile);
+                $envDir  = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..';
+                $envFile = getenv('ENV_FILE');
+                $dotEnv  = $envFile === false ? new Dotenv($envDir) : new Dotenv($envDir, $envFile);
                 $dotEnv->load();
             }
 
