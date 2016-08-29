@@ -1,10 +1,12 @@
 <?php namespace App\Container;
 
 use App\Commands\CacheModelSchemes;
+use App\Database\Types\DateTimeType;
 use Config\ConfigInterface as C;
 use Config\Services\Database\DatabaseConfigInterface;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Types\Type;
 use Interop\Container\ContainerInterface;
 use Limoncello\ContainerLight\Container;
 use Limoncello\JsonApi\Contracts\Models\ModelSchemesInterface;
@@ -49,5 +51,9 @@ trait SetUpDatabase
 
             return $modelSchemes;
         };
+
+        if (Type::hasType(DateTimeType::NAME) === false) {
+            Type::addType(DateTimeType::NAME, DateTimeType::class);
+        }
     }
 }

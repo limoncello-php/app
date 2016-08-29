@@ -1,12 +1,10 @@
 <?php namespace App\Container;
 
 use App\Api\Factories\JsonApiFactory;
-use App\Database\Types\DateTimeType;
 use App\Exceptions\JsonApiHandler;
 use App\Http\Pagination\PaginationStrategy;
 use Config\ConfigInterface;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Types\Type;
 use Interop\Container\ContainerInterface;
 use Limoncello\ContainerLight\Container;
 use Limoncello\Core\Contracts\Application\ExceptionHandlerInterface;
@@ -113,9 +111,5 @@ trait SetUpJsonApi
         $container[ExceptionHandlerInterface::class] = function () {
             return new JsonApiHandler();
         };
-
-        if (Type::hasType(DateTimeType::NAME) === false) {
-            Type::addType(DateTimeType::NAME, DateTimeType::class);
-        }
     }
 }
