@@ -32,11 +32,6 @@ trait DatabaseConfig
             ],
         ];
 
-        $inTests = getenv('APP_ENV') === 'testing';
-        if ($inTests === true) {
-            $connConfig['wrapperClass'] = 'Tests\Utils\TestingConnection';
-        }
-
         $modelsList = [
             Board::class,
             Comment::class,

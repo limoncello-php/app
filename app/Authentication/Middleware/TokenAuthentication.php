@@ -59,7 +59,7 @@ class TokenAuthentication
     {
         /** @var RepositoryInterface $repository */
         $repository = $container->get(RepositoryInterface::class);
-        $statement = $repository
+        $statement  = $repository
             ->read(User::class, ':id')
             ->andWhere(User::FIELD_API_TOKEN . ' = :token')
             ->setParameter(':id', $userId)

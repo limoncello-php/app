@@ -1,13 +1,13 @@
 <?php namespace Tests;
 
-use App\Application;
 use App\Http\Controllers\UsersController;
+use Doctrine\DBAL\Connection;
+use Limoncello\ContainerLight\Container;
 use Limoncello\Testing\PhpUnitTestCase;
 use Limoncello\Testing\Sapi;
 use Mockery;
 use Neomerx\JsonApi\Contracts\Http\Headers\MediaTypeInterface;
 use Psr\Http\Message\ResponseInterface;
-use Tests\Utils\TestingConnection;
 use Zend\Diactoros\Response\EmitterInterface;
 
 /**
@@ -19,13 +19,41 @@ class TestCase extends PhpUnitTestCase
     const JSON_API_DATE_TIME_FORMAT = 'Y-m-d\TH:i:sO';
 
     /**
+     * @var AppWrapper|null
+     */
+    private $appWrapper;
+
+    /**
+     * @var bool
+     */
+    private $shouldPreventCommits = false;
+
+    /**
+     * Database connection shared during test when commit prevention is requested.
+     *
+     * @var Connection|null
+     */
+    private $sharedConnection = null;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->shouldPreventCommits = false;
+    }
+
+    /**
      * @inheritdoc
      */
     protected function tearDown()
     {
         parent::tearDown();
 
-        TestingConnection::reset();
+        if ($this->shouldPreventCommits === true && $this->sharedConnection !== null) {
+            $this->sharedConnection->rollBack();
+            $this->sharedConnection = null;
+        }
+
         Mockery::close();
     }
 
@@ -36,17 +64,17 @@ class TestCase extends PhpUnitTestCase
      */
     protected function setPreventCommits()
     {
-        TestingConnection::setPreventCommits();
+        $this->shouldPreventCommits = true;
     }
 
     /**
      * Returns database connection used used by application within current test. Needs 'prevent commits' to be set.
      *
-     * @return \Doctrine\DBAL\Connection|null
+     * @return Connection|null
      */
     protected function getCapturedConnection()
     {
-        return TestingConnection::getCapturedConnection();
+        return $this->sharedConnection;
     }
 
     /**
@@ -73,9 +101,29 @@ class TestCase extends PhpUnitTestCase
      */
     protected function createApplication(Sapi $sapi)
     {
-        $app = (new Application())->setSapi($sapi);
+        $this->appWrapper = new AppWrapper();
 
-        return $app;
+        if ($this->shouldPreventCommits === true) {
+            $this->appWrapper->addEventHandler(AppWrapper::EVENT_ON_CONTAINER_LAST_CONFIGURATOR, function (
+                AppWrapper $appWrapper,
+                Container $container
+            ) {
+                $appWrapper ?: null;
+                if ($this->sharedConnection === null) {
+                    // first connection during current test
+                    // * other option is take container from function args
+                    $this->sharedConnection = $container->get(Connection::class);
+                    $this->sharedConnection->beginTransaction();
+                } else {
+                    // we already have an open connection with transaction started
+                    $container[Connection::class] = $this->sharedConnection;
+                }
+            });
+        }
+
+        $this->appWrapper->setSapi($sapi);
+
+        return $this->appWrapper;
     }
 
     /**
