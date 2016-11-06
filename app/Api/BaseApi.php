@@ -16,6 +16,8 @@ use Limoncello\JsonApi\Contracts\Models\ModelSchemesInterface;
 
 /**
  * @package App
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 abstract class BaseApi extends Crud
 {
@@ -116,6 +118,8 @@ abstract class BaseApi extends Crud
      * @param DateTime     $dateTime
      *
      * @return string
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function convertDateTimeToDbValue(QueryBuilder $builder, DateTime $dateTime)
     {

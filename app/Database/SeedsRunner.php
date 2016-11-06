@@ -17,6 +17,8 @@ use Limoncello\ContainerLight\Container;
 
 /**
  * @package App
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class SeedsRunner
 {
@@ -38,6 +40,8 @@ class SeedsRunner
      * @param Container $container
      *
      * @return void
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function run(Container $container)
     {
@@ -65,6 +69,8 @@ class SeedsRunner
      * @param ContainerInterface $container
      *
      * @return Generator
+     *
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     protected function getSeeds(ContainerInterface $container)
     {

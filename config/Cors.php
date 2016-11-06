@@ -1,22 +1,23 @@
-<?php namespace Config\Services\Cors;
+<?php namespace Config;
 
-use Neomerx\Cors\Strategies\Settings as S;
+use Limoncello\Core\Config\ArrayConfig;
+use Neomerx\Cors\Strategies\Settings as C;
 
 /**
  * @package Config
  */
-trait CorsConfig
+class Cors extends ArrayConfig
 {
     /**
-     * @return array
+     * Constructor.
      */
-    protected function getConfig()
+    public function __construct()
     {
-        return [
-            S::KEY_SERVER_ORIGIN        => [
-                S::KEY_SERVER_ORIGIN_SCHEME => getenv('SERVER_ORIGIN_SCHEME'),
-                S::KEY_SERVER_ORIGIN_HOST   => getenv('SERVER_ORIGIN_HOST'),
-                S::KEY_SERVER_ORIGIN_PORT   => getenv('SERVER_ORIGIN_PORT'),
+        parent::__construct([C::class => [
+            C::KEY_SERVER_ORIGIN        => [
+                C::KEY_SERVER_ORIGIN_SCHEME => getenv('SERVER_ORIGIN_SCHEME'),
+                C::KEY_SERVER_ORIGIN_HOST   => getenv('SERVER_ORIGIN_HOST'),
+                C::KEY_SERVER_ORIGIN_PORT   => getenv('SERVER_ORIGIN_PORT'),
             ],
 
             /**
@@ -29,11 +30,11 @@ trait CorsConfig
              * [
              *     'http://example.com:123'  => true,
              *     'http://evil.com'         => null,
-             *     S::VALUE_ALLOW_ORIGIN_ALL => null,
+             *     C::VALUE_ALLOW_ORIGIN_ALL => null,
              * ];
              */
-            S::KEY_ALLOWED_ORIGINS      => [
-                S::VALUE_ALLOW_ORIGIN_ALL => true,
+            C::KEY_ALLOWED_ORIGINS      => [
+                C::VALUE_ALLOW_ORIGIN_ALL => true,
             ],
 
             /**
@@ -59,7 +60,7 @@ trait CorsConfig
              *
              * You can read more on 'simple' methods at http://www.w3.org/TR/cors/#simple-method
              */
-            S::KEY_ALLOWED_METHODS      => [
+            C::KEY_ALLOWED_METHODS      => [
                 'GET'    => true,
                 'POST'   => true,
                 'PATCH'  => true,
@@ -75,7 +76,7 @@ trait CorsConfig
              * $allowedHeaders = [
              *     'content-type'             => true,
              *     'x-custom-request-header'  => null,
-             *     S::VALUE_ALLOW_ALL_HEADERS => null,
+             *     C::VALUE_ALLOW_ALL_HEADERS => null,
              * ];
              *
              * Security Note: you have to remember CORS is not access control system and you should not expect all
@@ -87,7 +88,7 @@ trait CorsConfig
              *
              * You can read more on 'simple' headers at http://www.w3.org/TR/cors/#simple-header
              */
-            S::KEY_ALLOWED_HEADERS      => [
+            C::KEY_ALLOWED_HEADERS      => [
                 'accept'        => true,
                 'content-type'  => true,
                 'authorization' => true,
@@ -106,21 +107,21 @@ trait CorsConfig
              *     'X-Disabled-Header'        => null,
              * ];
              */
-            S::KEY_EXPOSED_HEADERS      => [
+            C::KEY_EXPOSED_HEADERS      => [
                 'content-type' => true,
             ],
 
             /**
              * If access with credentials is supported by the resource.
              */
-            S::KEY_IS_USING_CREDENTIALS => true,
+            C::KEY_IS_USING_CREDENTIALS => true,
 
             /**
              * Pre-flight response cache max period in seconds.
              *
              * @var int
              */
-            S::KEY_FLIGHT_CACHE_MAX_AGE => 0,
+            C::KEY_FLIGHT_CACHE_MAX_AGE => 0,
 
             /**
              * If allowed methods should be added to pre-flight response when
@@ -128,7 +129,7 @@ trait CorsConfig
              *
              * @see http://www.w3.org/TR/cors/#resource-preflight-requests
              */
-            S::KEY_IS_FORCE_ADD_METHODS => false,
+            C::KEY_IS_FORCE_ADD_METHODS => false,
 
             /**
              * If allowed headers should be added when request headers are 'simple' and
@@ -138,14 +139,14 @@ trait CorsConfig
              *
              * @var bool
              */
-            S::KEY_IS_FORCE_ADD_HEADERS => false,
+            C::KEY_IS_FORCE_ADD_HEADERS => false,
 
             /**
              * If request 'Host' header should be checked against server's origin.
              *
              * @var bool
              */
-            S::KEY_IS_CHECK_HOST        => false,
-        ];
+            C::KEY_IS_CHECK_HOST        => false,
+        ]]);
     }
 }

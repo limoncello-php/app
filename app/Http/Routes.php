@@ -74,10 +74,13 @@ trait Routes
             /** @var string $controllerClass */
             /** @var string $schemaClass */
 
-            $uri = $subUri . '/{' . BaseController::ROUTE_KEY_INDEX . '}/' .
-                DocumentInterface::KEYWORD_RELATIONSHIPS . '/' . $relationshipName;
+            // `related` URI is needed for ember to pick up actual relationship resources when we send URLs.
+            $resourceIdUri = $subUri . '/{' . BaseController::ROUTE_KEY_INDEX . '}/';
+            $selfUri       = $resourceIdUri . DocumentInterface::KEYWORD_RELATIONSHIPS . '/' . $relationshipName;
+            $relatedUri    = $resourceIdUri . $relationshipName;
 
-            $group->get($uri, [$controllerClass, $method]);
+            $group->get($selfUri, [$controllerClass, $method]);
+            $group->get($relatedUri, [$controllerClass, $method]);
         };
 
         return (new Group())
@@ -110,7 +113,6 @@ trait Routes
                 $addResource($group, UsersController::class);
                 $addRelationship($group, UserSchema::REL_POSTS, UsersController::class, 'readPosts');
                 $addRelationship($group, UserSchema::REL_COMMENTS, UsersController::class, 'readComments');
-
             }, [
                 GroupInterface::PARAM_CONTAINER_CONFIGURATORS => [BaseController::class . '::containerConfigurator'],
                 GroupInterface::PARAM_MIDDLEWARE_LIST => [Middleware\TokenAuthentication::class . '::handle'],

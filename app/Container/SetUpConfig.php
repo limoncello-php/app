@@ -1,10 +1,12 @@
 <?php namespace App\Container;
 
 use App\Commands\CacheConfig as CC;
-use Config\Config;
-use Config\ConfigInterface as C;
+use Config\Core;
 use Dotenv\Dotenv;
 use Limoncello\ContainerLight\Container;
+use Limoncello\Core\Config\ArrayConfig;
+use Limoncello\Core\Config\ConfigManager;
+use Limoncello\Core\Contracts\Config\ConfigInterface;
 
 /**
  * @package App
@@ -15,20 +17,20 @@ trait SetUpConfig
      * @param Container $container
      *
      * @return void
+     *
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     protected static function setUpConfig(Container $container)
     {
-        $container[C::class] = function () {
-            $config       = new Config();
+        $container[ConfigInterface::class] = function () {
             $cachedConfig = '\\' . CC::CACHED_NAMESPACE . '\\' . CC::CACHED_CLASS . '::' . CC::CACHED_METHOD;
-            if ($config->useAppCache() === true && is_callable($cachedConfig) === true) {
+            if (is_callable($cachedConfig) === true) {
                 $cached = call_user_func($cachedConfig);
-                $config->setConfig($cached);
+                $config = new ArrayConfig($cached);
             } else {
-                $envDir  = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..';
-                $envFile = getenv('ENV_FILE');
-                $dotEnv  = $envFile === false ? new Dotenv($envDir) : new Dotenv($envDir, $envFile);
-                $dotEnv->load();
+                $dirWithEnvFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..';
+                (new Dotenv($dirWithEnvFile))->load();
+                $config = (new ConfigManager())->loadConfigs(Core::CONFIG_NAMESPACE, Core::CONFIG_DIR);
             }
 
             return $config;

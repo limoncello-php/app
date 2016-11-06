@@ -21,7 +21,7 @@ class HomePageTest extends TestCase
             return $this->get('/');
         }, $time);
 
-        $this->assertLessThan(0.1, $time, 'Our home page has become sloppy.');
+        $this->assertLessThan(0.15, $time, 'Our home page has become sloppy.');
         $this->assertEquals(200, $response->getStatusCode());
     }
 }

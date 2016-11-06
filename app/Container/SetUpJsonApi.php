@@ -3,11 +3,11 @@
 use App\Api\Factories\JsonApiFactory;
 use App\Exceptions\JsonApiHandler;
 use App\Http\Pagination\PaginationStrategy;
-use Config\ConfigInterface;
 use Doctrine\DBAL\Connection;
 use Interop\Container\ContainerInterface;
 use Limoncello\ContainerLight\Container;
 use Limoncello\Core\Contracts\Application\ExceptionHandlerInterface;
+use Limoncello\Core\Contracts\Config\ConfigInterface;
 use Limoncello\JsonApi\Adapters\FilterOperations;
 use Limoncello\JsonApi\Config\JsonApiConfig;
 use Limoncello\JsonApi\Contracts\Adapters\PaginationStrategyInterface;
@@ -24,7 +24,7 @@ use Limoncello\Validation\Contracts\TranslatorInterface as ValidationTranslatorI
 use Limoncello\Validation\I18n\Translator as ValidationTranslator;
 use App\I18n\En\Validation;
 
-// TODO think about moving as much JSON API config trait to json-api lib as possible
+// TODO think of moving as much JSON API config trait to json-api lib as possible. Developers are unlikely to change it.
 
 /**
  * @package App
@@ -35,6 +35,8 @@ trait SetUpJsonApi
      * @param Container $container
      *
      * @return void
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected static function setUpJsonApi(Container $container)
     {
@@ -78,16 +80,14 @@ trait SetUpJsonApi
         };
 
         $container[JsonApiConfigInterface::class] = function (ContainerInterface $container) {
-            /** @var ConfigInterface $appConfig */
-            $appConfig  = $container->get(ConfigInterface::class);
-            $configData = $appConfig->getConfig()[ConfigInterface::KEY_JSON_API];
+            $jsonConfig   = $container->get(ConfigInterface::class)->getConfig(JsonApiConfigInterface::class);
 
-            return (new JsonApiConfig)->setConfig($configData);
+            return (new JsonApiConfig)->setConfig($jsonConfig);
         };
 
         $container[TranslatorInterface::class] = $translator = $factory->createTranslator();
 
-        $container[ValidationTranslatorInterface::class] = function (/*ContainerInterface $container*/) {
+        $container[ValidationTranslatorInterface::class] = function () {
             // TODO load locale according to current user preferences
             return new ValidationTranslator(Validation::getLocaleCode(), Validation::getMessages());
         };

@@ -48,6 +48,8 @@ class BoardsValidator extends BaseValidator
 
     /**
      * @return RuleInterface
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function name()
     {

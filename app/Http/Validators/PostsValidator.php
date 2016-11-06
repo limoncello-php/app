@@ -68,6 +68,8 @@ class PostsValidator extends BaseValidator
 
     /**
      * @return RuleInterface
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function title()
     {

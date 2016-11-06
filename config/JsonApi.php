@@ -1,4 +1,4 @@
-<?php namespace Config\Services\JsonApi;
+<?php namespace Config;
 
 use App\Database\Models\Board;
 use App\Database\Models\Comment;
@@ -11,18 +11,21 @@ use App\Schemes\CommentSchema;
 use App\Schemes\PostSchema;
 use App\Schemes\RoleSchema;
 use App\Schemes\UserSchema;
+use Limoncello\Core\Config\ArrayConfig;
+use Limoncello\JsonApi\Config\JsonApiConfig;
+use Limoncello\JsonApi\Contracts\Config\JsonApiConfigInterface;
 
 /**
  * @package Config
  */
-trait JsonApiConfig
+class JsonApi extends ArrayConfig
 {
     /**
-     * @return array
+     * Constructor.
      */
-    protected function getConfig()
+    public function __construct()
     {
-        $config = new \Limoncello\JsonApi\Config\JsonApiConfig();
+        $config = new JsonApiConfig();
         $config
             ->setModelSchemaMap([
                 Board::class   => BoardSchema::class,
@@ -43,6 +46,6 @@ trait JsonApiConfig
 
         $data = $config->getConfig();
 
-        return $data;
+        parent::__construct([JsonApiConfigInterface::class => $data]);
     }
 }

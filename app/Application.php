@@ -4,8 +4,6 @@ use App\Commands\CacheRoutes as CR;
 use App\Container\Factory;
 use App\Exceptions\DefaultHandler;
 use App\Http\Routes;
-use Config\Services\App\AppCacheConfig;
-use Config\ConfigInterface as C;
 use ErrorException;
 use Exception;
 use Interop\Container\ContainerInterface;
@@ -20,8 +18,7 @@ use Zend\Diactoros\Response\SapiEmitter;
  */
 class Application extends \Limoncello\Core\Application\Application
 {
-    use AppCacheConfig, Factory, Routes {
-        AppCacheConfig::getConfig as private getAppCacheConfig;
+    use Factory, Routes {
         Routes::getRoutes as private getRoutesGroup;
     }
 
@@ -96,9 +93,8 @@ class Application extends \Limoncello\Core\Application\Application
      */
     protected function getRoutesData()
     {
-        $config       = $this->getAppCacheConfig();
         $cachedRoutes = '\\' . CR::CACHED_NAMESPACE . '\\' . CR::CACHED_CLASS . '::' . CR::CACHED_METHOD;
-        if ($config[C::KEY_APP_CACHE_USE_CACHE] === true && is_callable($cachedRoutes) === true) {
+        if (is_callable($cachedRoutes) === true) {
             $routes = call_user_func($cachedRoutes);
             return $routes;
         }

@@ -98,7 +98,7 @@ class User extends Model
                 self::REL_ROLE => [Role::class, self::FIELD_ID_ROLE, Role::REL_USERS],
             ],
             RelationshipTypes::HAS_MANY   => [
-                self::REL_POSTS    => [Post::class, Post::FIELD_ID_BOARD, Post::REL_USER],
+                self::REL_POSTS    => [Post::class, Post::FIELD_ID_USER, Post::REL_USER],
                 self::REL_COMMENTS => [Comment::class, Comment::FIELD_ID_USER, Comment::REL_USER],
             ],
         ];

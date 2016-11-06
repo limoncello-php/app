@@ -75,6 +75,8 @@ class UsersValidator extends BaseValidator
 
     /**
      * @return RuleInterface
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function title()
     {
@@ -83,6 +85,8 @@ class UsersValidator extends BaseValidator
 
     /**
      * @return RuleInterface
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function firstName()
     {
@@ -91,6 +95,8 @@ class UsersValidator extends BaseValidator
 
     /**
      * @return RuleInterface
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function lastName()
     {
@@ -99,6 +105,8 @@ class UsersValidator extends BaseValidator
 
     /**
      * @return RuleInterface
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function language()
     {
@@ -107,6 +115,8 @@ class UsersValidator extends BaseValidator
 
     /**
      * @return RuleInterface
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function email()
     {

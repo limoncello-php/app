@@ -1,6 +1,5 @@
 <?php namespace Tests;
 
-use App\Schemes\CommentSchema;
 use Limoncello\JsonApi\Adapters\PaginationStrategy;
 
 /**
@@ -186,5 +185,29 @@ EOT;
 
         // manually checked number comments that have 'porro' and `velit' in `text` field
         $this->assertCount(2, $resource->data);
+    }
+
+    /**
+     * Test filter by attribute in relationship (and resource itself to get less results).
+     */
+    public function testFilterByAttributeInRelationship()
+    {
+        parse_str('filter[post.text][like]=%repudiandae%&filter[text][like]=%veniam%&sorting=id', $parameters);
+        $response = $this->get(self::API_URI, $parameters);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertNotNull($resource = json_decode((string)$response->getBody()));
+
+        // manually checked with
+        // SELECT comments.*
+        // FROM comments
+        //   JOIN posts ON comments.id_post = posts.id_post
+        // WHERE comments.text LIKE '%veniam%' AND posts.text LIKE '%repudiandae%'
+        // ORDER BY comments.id_comment;
+        $this->assertCount(4, $resource->data);
+        $this->assertEquals(104, $resource->data[0]->id);
+        $this->assertEquals(173, $resource->data[1]->id);
+        $this->assertEquals(207, $resource->data[2]->id);
+        $this->assertEquals(253, $resource->data[3]->id);
     }
 }

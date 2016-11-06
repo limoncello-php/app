@@ -1,4 +1,5 @@
-APP_NAME = 'Flute'
+APP_NAME        = 'Flute'
+APP_ENABLE_LOGS = false
 
 # CORS
 SERVER_ORIGIN_SCHEME = 'http'
@@ -12,3 +13,4 @@ DB_PORT      = 3306
 DB_DATABASE  = 'flute'
 DB_USER_NAME = 'root'
 DB_PASSWORD  = 'root'
+DB_CHARSET   = 'utf8'

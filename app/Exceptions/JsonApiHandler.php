@@ -1,11 +1,12 @@
 <?php namespace App\Exceptions;
 
-use Config\ConfigInterface as C;
+use App\Contracts\Config\Application as C;
 use ErrorException;
 use Exception;
 use Interop\Container\ContainerInterface;
 use Limoncello\Core\Contracts\Application\ExceptionHandlerInterface;
 use Limoncello\Core\Contracts\Application\SapiInterface;
+use Limoncello\Core\Contracts\Config\ConfigInterface;
 use Limoncello\JsonApi\Contracts\Encoder\EncoderInterface;
 use Limoncello\JsonApi\Contracts\Http\Cors\CorsStorageInterface;
 use Limoncello\JsonApi\Http\JsonApiResponse;
@@ -22,6 +23,14 @@ use Throwable;
  */
 class JsonApiHandler implements ExceptionHandlerInterface
 {
+    /**
+     * The following error classes (Exceptions and Throwables) will not be logged.
+     *
+     * @var string[]
+     */
+    private static $ignoredErrorClasses = [
+        JsonApiException::class,
+    ];
     /**
      * @inheritdoc
      */
@@ -44,37 +53,35 @@ class JsonApiHandler implements ExceptionHandlerInterface
     public function handleFatal(array $error, ContainerInterface $container)
     {
         $errorException = new ErrorException($error['message'], $error['type'], 1, $error['file'], $error['line']);
-        $this->logException($errorException, $container, 'Fatal error');
+        $this->logError($errorException, $container, 'Fatal error');
     }
 
     /**
-     * @param Exception|Throwable $exception
+     * @param Exception|Throwable $error
      * @param SapiInterface       $sapi
      * @param ContainerInterface  $container
      *
      * @SuppressWarnings(PHPMD.ElseExpression)
      */
-    private function handle($exception, SapiInterface $sapi, ContainerInterface $container)
+    private function handle($error, SapiInterface $sapi, ContainerInterface $container)
     {
         $message = 'Internal Server Error';
 
-        $this->logException($exception, $container, $message);
+        $this->logError($error, $container, $message);
 
         // compose JSON API Error with appropriate level of details
-        if ($exception instanceof JsonApiException) {
-            /** @var JsonApiException $exception */
-            $errors   = $exception->getErrors();
-            $httpCode = $exception->getHttpCode();
+        if ($error instanceof JsonApiException) {
+            /** @var JsonApiException $error */
+            $errors   = $error->getErrors();
+            $httpCode = $error->getHttpCode();
         } else {
             // we assume that 'normal' should be JsonApiException so anything else is 500 error code
             $httpCode = 500;
             $details  = null;
-            /** @var C $config */
-            $config       = $container->get(C::class);
-            $debugEnabled = $config->getConfigValue(C::KEY_APP, C::KEY_APP_DEBUG_MODE);
-            if ($debugEnabled === true) {
-                $message = $exception->getMessage();
-                $details = (string)$exception;
+            $appConfig = $container->get(ConfigInterface::class)->getConfig(C::class);
+            if ($appConfig[C::KEY_IS_LOG_ENABLED] === true) {
+                $message = $error->getMessage();
+                $details = (string)$error;
             }
             $errors = new ErrorCollection();
             $errors->add(new Error(null, null, $httpCode, null, $message, $details));
@@ -90,26 +97,22 @@ class JsonApiHandler implements ExceptionHandlerInterface
         $sapi->handleResponse($response);
     }
 
+
     /**
-     * @param Exception          $exception
-     * @param ContainerInterface $container
-     * @param string             $message
+     * @param Exception|Throwable $error
+     * @param ContainerInterface  $container
+     * @param string              $message
      *
      * @return void
      */
-    private function logException(Exception $exception, ContainerInterface $container, $message)
+    private function logError($error, ContainerInterface $container, $message)
     {
-        // log the error if necessary (you can list here all error classes that should not be logged)
-        $ignoredErrorTypes = [
-            JsonApiException::class,
-        ];
-
-        if (in_array(get_class($exception), $ignoredErrorTypes, true) === false &&
+        if (in_array(get_class($error), static::$ignoredErrorClasses) === false &&
             $container->has(LoggerInterface::class) === true
         ) {
             /** @var LoggerInterface $logger */
             $logger = $container->get(LoggerInterface::class);
-            $logger->critical($message, ['exception' => $exception]);
+            $logger->critical($message, ['error' => $error]);
         }
     }
 }

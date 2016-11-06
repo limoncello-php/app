@@ -2,13 +2,13 @@
 
 use App\Commands\CacheModelSchemes;
 use App\Database\Types\DateTimeType;
-use Config\ConfigInterface as C;
-use Config\Services\Database\DatabaseConfigInterface;
+use App\Contracts\Config\Database as C;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Types\Type;
 use Interop\Container\ContainerInterface;
 use Limoncello\ContainerLight\Container;
+use Limoncello\Core\Contracts\Config\ConfigInterface;
 use Limoncello\JsonApi\Contracts\Models\ModelSchemesInterface;
 use Limoncello\JsonApi\Models\ModelSchemes;
 
@@ -21,31 +21,29 @@ trait SetUpDatabase
      * @param Container $container
      *
      * @return void
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     protected static function setUpDatabase(Container $container)
     {
         $container[Connection::class] = function (ContainerInterface $container) {
-            /** @var C $config */
-            $config     = $container->get(C::class);
-            $dbConfig   = $config->getConfig()[C::KEY_DB];
-            $connection = DriverManager::getConnection($dbConfig[DatabaseConfigInterface::CONNECTION_CONFIG]);
+            $dbConfig   = $container->get(ConfigInterface::class)->getConfig(C::class);
+            $connection = DriverManager::getConnection($dbConfig[C::CONNECTION_PARAMS]);
 
             return $connection;
         };
 
         $container[ModelSchemesInterface::class] = function (ContainerInterface $container) {
-            /** @var C $config */
-            $config        = $container->get(C::class);
             $modelSchemes  = new ModelSchemes();
             $cachedRoutes  = '\\' . CacheModelSchemes::CACHED_NAMESPACE . '\\' .
                 CacheModelSchemes::CACHED_CLASS . '::' . CacheModelSchemes::CACHED_METHOD;
-            if ($config->useAppCache() === true && is_callable($cachedRoutes) === true) {
+            if (is_callable($cachedRoutes) === true) {
                 $schemesData = call_user_func($cachedRoutes);
                 $modelSchemes->setData($schemesData);
             } else {
-                $config       = $container->get(C::class);
-                $dbConfig     = $config->getConfig()[C::KEY_DB];
-                $modelClasses = $dbConfig[DatabaseConfigInterface::MODELS_LIST];
+                $dbConfig   = $container->get(ConfigInterface::class)->getConfig(C::class);
+                $modelClasses = $dbConfig[C::MODELS_LIST];
                 CacheModelSchemes::buildModelSchemes($modelSchemes, $modelClasses);
             }
 

@@ -256,6 +256,8 @@ abstract class TableMigration extends Migration
      * @param string $name
      *
      * @return Closure
+     *
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     protected function relationship($name)
     {

@@ -1,8 +1,10 @@
 <?php namespace App\Commands;
 
+use App\Container\SetUpConfig;
+use App\Contracts\Config\Templates as C;
 use Composer\Script\Event;
-use Config\Services\Templates\Templates;
-use Config\Services\Templates\TemplatesConfig;
+use Limoncello\ContainerLight\Container;
+use Limoncello\Core\Contracts\Config\ConfigInterface;
 use Limoncello\Templates\Scripts\BaseCacheTemplates;
 
 /**
@@ -10,30 +12,39 @@ use Limoncello\Templates\Scripts\BaseCacheTemplates;
  */
 class CacheTemplates extends BaseCacheTemplates
 {
-    use TemplatesConfig;
+    use SetUpConfig;
 
     /**
      * @param Event $event
      *
      * @return void
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function cache(Event $event)
     {
         CacheConfig::setInConfigCachingFlag($event);
-        list($templatesPath, $cachePath) = static::getTemplatesConfig();
-        static::cacheTemplates($event, realpath($templatesPath), realpath($cachePath), Templates::getTemplatesList());
+        $tplConfig = static::getTemplatesConfig();
+        static::cacheTemplates(
+            $event,
+            $tplConfig[C::TEMPLATES_FOLDER],
+            $tplConfig[C::CACHE_FOLDER],
+            $tplConfig[C::TEMPLATES_LIST]
+        );
     }
 
     /**
      * @param Event $event
      *
      * @return void
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function clear(Event $event)
     {
         CacheConfig::setInConfigCachingFlag($event);
-        list(, $cachePath) = static::getTemplatesConfig();
-        static::clearCacheFolder($event, realpath($cachePath));
+        $tplConfig = static::getTemplatesConfig();
+        static::clearCacheFolder($event, $tplConfig[C::CACHE_FOLDER]);
     }
 
     /**
@@ -41,6 +52,10 @@ class CacheTemplates extends BaseCacheTemplates
      */
     private static function getTemplatesConfig()
     {
-        return (new static)->getConfig();
+        $container = new Container();
+        self::setUpConfig($container);
+        $tplConfig = $container->get(ConfigInterface::class)->getConfig(C::class);
+
+        return $tplConfig;
     }
 }

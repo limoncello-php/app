@@ -1,11 +1,12 @@
 <?php namespace App\Exceptions;
 
-use Config\ConfigInterface as C;
+use App\Contracts\Config\Application as C;
 use ErrorException;
 use Exception;
 use Interop\Container\ContainerInterface;
 use Limoncello\Core\Contracts\Application\ExceptionHandlerInterface;
 use Limoncello\Core\Contracts\Application\SapiInterface;
+use Limoncello\Core\Contracts\Config\ConfigInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
 use Whoops\Handler\PrettyPageHandler;
@@ -52,15 +53,13 @@ class DefaultHandler implements ExceptionHandlerInterface
      */
     private function handle($exception, SapiInterface $sapi, ContainerInterface $container)
     {
-        /** @var C $config */
-        $config       = $container->get(C::class);
-        $debugEnabled = $config->getConfigValue(C::KEY_APP, C::KEY_APP_DEBUG_MODE);
+        $appConfig = $container->get(ConfigInterface::class)->getConfig(C::class);
 
-        $message  = 'Internal Server Error';
+        $message = 'Internal Server Error';
 
         $this->logException($exception, $container, $message);
 
-        if ($debugEnabled === true) {
+        if ($appConfig[C::KEY_IS_LOG_ENABLED] === true) {
             $run     = new Run();
             $handler = new PrettyPageHandler();
 
@@ -69,7 +68,7 @@ class DefaultHandler implements ExceptionHandlerInterface
                 //"Important Data" => $container->get(SomeClass::class)->getImportantData(),
             ];
 
-            $appName = $config->getConfigValue(C::KEY_APP, C::KEY_APP_NAME);
+            $appName = $appConfig[C::KEY_NAME];
             if (empty($appSpecificDetails) === false) {
                 $handler->addDataTable("$appName Details", $appSpecificDetails);
             }

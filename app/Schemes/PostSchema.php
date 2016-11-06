@@ -47,4 +47,26 @@ class PostSchema extends BaseSchema
             ],
         ];
     }
+
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @inheritdoc
+     */
+    protected function getExcludesFromDefaultShowSelfLinkInRelationships()
+    {
+        return [
+            self::REL_USER  => true,
+            self::REL_BOARD => true,
+        ];
+    }
+
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @inheritdoc
+     */
+    protected function getExcludesFromDefaultShowRelatedLinkInRelationships()
+    {
+        return [
+            self::REL_USER  => true,
+            self::REL_BOARD => true,
+        ];
+    }
 }

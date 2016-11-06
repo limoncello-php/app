@@ -39,4 +39,26 @@ class CommentSchema extends BaseSchema
             ],
         ];
     }
+
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @inheritdoc
+     */
+    protected function getExcludesFromDefaultShowSelfLinkInRelationships()
+    {
+        return [
+            self::REL_USER => true,
+            self::REL_POST => true,
+        ];
+    }
+
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @inheritdoc
+     */
+    protected function getExcludesFromDefaultShowRelatedLinkInRelationships()
+    {
+        return [
+            self::REL_USER => true,
+            self::REL_POST => true,
+        ];
+    }
 }

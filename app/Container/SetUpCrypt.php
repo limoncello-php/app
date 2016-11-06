@@ -1,6 +1,9 @@
 <?php namespace App\Container;
 
+use App\Contracts\Config\Crypt as C;
+use Interop\Container\ContainerInterface;
 use Limoncello\ContainerLight\Container;
+use Limoncello\Core\Contracts\Config\ConfigInterface;
 use Limoncello\Crypt\Contracts\HasherInterface;
 use Limoncello\Crypt\Hasher;
 
@@ -16,8 +19,11 @@ trait SetUpCrypt
      */
     protected static function setUpCrypt(Container $container)
     {
-        $container[HasherInterface::class] = function () {
-            return new Hasher();
+        $container[HasherInterface::class] = function (ContainerInterface $container) {
+            $cryptConfig = $container->get(ConfigInterface::class)->getConfig(C::class);
+            $hasher      = new Hasher($cryptConfig[C::HASH_ALGORITHM], $cryptConfig[C::HASH_COST]);
+
+            return $hasher;
         };
     }
 }

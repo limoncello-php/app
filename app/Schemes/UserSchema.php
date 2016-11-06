@@ -67,4 +67,24 @@ class UserSchema extends BaseSchema
             ],
         ];
     }
+
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @inheritdoc
+     */
+    protected function getExcludesFromDefaultShowSelfLinkInRelationships()
+    {
+        return [
+            self::REL_ROLE => true,
+        ];
+    }
+
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @inheritdoc
+     */
+    protected function getExcludesFromDefaultShowRelatedLinkInRelationships()
+    {
+        return [
+            self::REL_ROLE => true,
+        ];
+    }
 }

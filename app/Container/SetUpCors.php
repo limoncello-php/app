@@ -1,9 +1,8 @@
 <?php namespace App\Container;
 
-use Config\ConfigInterface as C;
+use App\Contracts\Config\Application;
 use Interop\Container\ContainerInterface;
-use Limoncello\JsonApi\Contracts\Http\Cors\CorsStorageInterface;
-use Limoncello\JsonApi\Http\Cors\CorsStorage;
+use Limoncello\Core\Contracts\Config\ConfigInterface;
 use Neomerx\Cors\Analyzer;
 use Neomerx\Cors\Contracts\AnalyzerInterface;
 use Neomerx\Cors\Strategies\Settings;
@@ -25,21 +24,18 @@ trait SetUpCors
     protected static function setUpCors(Container $container)
     {
         $container[AnalyzerInterface::class] = function (ContainerInterface $container) {
-            /** @var C $config */
-            $config       = $container->get(C::class);
-            $corsSettings = $config->getConfig()[C::KEY_CORS];
-            $strategy     = new Settings($corsSettings);
+            /** @var ConfigInterface $config */
+            $config    = $container->get(ConfigInterface::class);
+            $appConfig = $config->getConfig(Application::class);
+            $strategy  = new Settings($config->getConfig(Settings::class));
+            $analyzer  = Analyzer::instance($strategy);
 
-            $analyzer = Analyzer::instance($strategy);
-
-            if ($config->getConfigValue(C::KEY_APP, C::KEY_APP_ENABLE_LOGS) === true) {
+            if ($appConfig[Application::KEY_IS_LOG_ENABLED] === true) {
                 $logger = $container->get(LoggerInterface::class);
                 $analyzer->setLogger($logger);
             }
 
             return $analyzer;
         };
-
-        $container[CorsStorageInterface::class] = new CorsStorage();
     }
 }

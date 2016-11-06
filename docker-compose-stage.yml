@@ -14,9 +14,9 @@
 # $ docker-compose ps
 #
 # Connect into command line of running container
-# $ docker-compose run <container_name> bash
-# where <name> could be fpm_flute, web_flute, db_flute.
-# Container `fpm_flute` is most interesting as it has PHP, application code and connection to databse.
+# $ docker-compose -f docker-compose-stage.yml run <name> /bin/bash
+# where <name> could be fpm, web, db.
+# Container `fpm` is most interesting as it has PHP, application code and connection to databse.
 # Tip: `Ctrl+p` + `Ctrl+q` + `Enter` (to exit container bash)
 #
 # View docker logs

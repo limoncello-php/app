@@ -2,7 +2,6 @@
 
 use App\Application;
 use Composer\Script\Event;
-use Config\Config;
 use Limoncello\AppCache\CacheScript;
 
 /**
@@ -22,13 +21,6 @@ class CacheRoutes extends CacheScript
     {
         $app    = new Application();
         $routes = $app->getRoutes();
-
-        $config = new Config();
-        if ($config->useAppCache() !== true) {
-            $event
-                ->getIO()
-                ->writeError("<warning>Use cache config option is set to OFF. Cache will not be used.</warning>");
-        }
 
         parent::cacheData($routes, $event);
     }

@@ -1,9 +1,9 @@
 <?php namespace App\Http\Controllers;
 
 use App\Container\SetUpTemplates;
-use Config\Services\Templates\TemplatesInterface;
 use Interop\Container\ContainerInterface;
 use Limoncello\ContainerLight\Container;
+use Limoncello\Templates\Contracts\TemplatesInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -29,7 +29,7 @@ class HomeController
         /** @var TemplatesInterface $templates */
         $templates = $container->get(TemplatesInterface::class);
 
-        $body = $templates->render(TemplatesInterface::TPL_WELCOME, [
+        $body = $templates->render('welcome.html.twig', [
             'title' => 'Limoncello',
             'text'  => 'Fast and flexible micro-framework',
         ]);

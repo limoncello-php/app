@@ -1,10 +1,11 @@
 <?php namespace App\Container;
 
-use Config\ConfigInterface as C;
-use Config\Services\Templates\Templates;
-use Config\Services\Templates\TemplatesInterface as TI;
+use App\Contracts\Config\Templates as C;
 use Interop\Container\ContainerInterface;
 use Limoncello\ContainerLight\Container;
+use Limoncello\Core\Contracts\Config\ConfigInterface;
+use Limoncello\Templates\Contracts\TemplatesInterface;
+use Limoncello\Templates\TwigTemplates;
 
 /**
  * @package App
@@ -18,11 +19,9 @@ trait SetUpTemplates
      */
     protected static function setUpTemplates(Container $container)
     {
-        $container[TI::class] = function (ContainerInterface $container) {
-            /** @var C $config */
-            $config = $container->get(C::class);
-            list($templatesPath, $cachePath) = $config->getConfig()[C::KEY_TEMPLATES];
-            $templateEngine = new Templates($templatesPath, $cachePath);
+        $container[TemplatesInterface::class] = function (ContainerInterface $container) {
+            $tplConfig      = $container->get(ConfigInterface::class)->getConfig(C::class);
+            $templateEngine = new TwigTemplates($tplConfig[C::TEMPLATES_FOLDER], $tplConfig[C::CACHE_FOLDER]);
 
             return $templateEngine;
         };

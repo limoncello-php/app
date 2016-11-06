@@ -1,6 +1,7 @@
 <?php namespace App\Container;
 
-use Config\ConfigInterface as C;
+use App\Contracts\Config\Application as C;
+use Limoncello\Core\Contracts\Config\ConfigInterface;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\SocketHandler;
@@ -26,15 +27,10 @@ trait SetUpLogs
     protected static function setUpFileLogs(Container $container)
     {
         $container[LoggerInterface::class] = function (Container $container) {
-            /** @var C $config */
-            $config = $container->get(C::class);
-
-            $monolog = new Logger($config->getConfigValue(C::KEY_APP, C::KEY_APP_NAME, 'Limoncello'));
-            if ($config->getConfigValue(C::KEY_APP, C::KEY_APP_ENABLE_LOGS, false) === true) {
-                $logPath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..'
-                    . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR .
-                    'limoncello.log';
-                $handler = new StreamHandler($logPath, Logger::DEBUG);
+            $appConfig = $container->get(ConfigInterface::class)->getConfig(C::class);
+            $monolog   = new Logger($appConfig[C::KEY_NAME]);
+            if ($appConfig[C::KEY_IS_LOG_ENABLED] === true) {
+                $handler = new StreamHandler($appConfig[C::KEY_LOG_PATH], $appConfig[C::KEY_LOG_LEVEL]);
                 $handler->setFormatter(new LineFormatter(null, null, true, true));
                 $handler->pushProcessor(new WebProcessor());
                 $handler->pushProcessor(new UidProcessor());
@@ -57,12 +53,10 @@ trait SetUpLogs
     protected static function setUpNetworkLogs(Container $container)
     {
         $container[LoggerInterface::class] = function (Container $container) {
-            /** @var C $config */
-            $config = $container->get(C::class);
-
-            $monolog = new Logger($config->getConfigValue(C::KEY_APP, C::KEY_APP_NAME, 'Limoncello'));
-            if ($config->getConfigValue(C::KEY_APP, C::KEY_APP_ENABLE_LOGS, false) === true) {
-                $handler = new SocketHandler('udp://localhost:8081');
+            $appConfig = $container->get(ConfigInterface::class)->getConfig(C::class);
+            $monolog   = new Logger($appConfig[C::KEY_NAME]);
+            if ($appConfig[C::KEY_IS_LOG_ENABLED] === true) {
+                $handler = new SocketHandler('udp://localhost:8081', $appConfig[C::KEY_LOG_LEVEL]);
                 $handler->pushProcessor(new WebProcessor());
                 $handler->pushProcessor(new UidProcessor());
             } else {
