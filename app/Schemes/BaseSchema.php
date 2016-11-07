@@ -17,6 +17,12 @@ abstract class BaseSchema extends Schema
     /** Attribute name */
     const ATTR_DELETED_AT = 'deleted-at';
 
+    /** Namespace where schemes live */
+    const SCHEMES_NAMESPACE = __NAMESPACE__;
+
+    /** Folder where schemes live */
+    const SCHEMES_FOLDER = __DIR__;
+
     /**
      * @inheritdoc
      */

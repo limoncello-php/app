@@ -1,19 +1,11 @@
 <?php namespace Config;
 
-use App\Database\Models\Board;
-use App\Database\Models\Comment;
-use App\Database\Models\Post;
-use App\Database\Models\Role;
-use App\Database\Models\User;
 use App\Http\Controllers\BaseController;
-use App\Schemes\BoardSchema;
-use App\Schemes\CommentSchema;
-use App\Schemes\PostSchema;
-use App\Schemes\RoleSchema;
-use App\Schemes\UserSchema;
+use App\Schemes\BaseSchema;
 use Limoncello\Core\Config\ArrayConfig;
 use Limoncello\JsonApi\Config\JsonApiConfig;
 use Limoncello\JsonApi\Contracts\Config\JsonApiConfigInterface;
+use ReflectionClass;
 
 /**
  * @package Config
@@ -27,13 +19,7 @@ class JsonApi extends ArrayConfig
     {
         $config = new JsonApiConfig();
         $config
-            ->setModelSchemaMap([
-                Board::class   => BoardSchema::class,
-                Comment::class => CommentSchema::class,
-                Post::class    => PostSchema::class,
-                Role::class    => RoleSchema::class,
-                User::class    => UserSchema::class,
-            ])
+            ->setModelSchemaMap($this->getModelToSchemaMappings())
             ->setRelationshipPagingSize(10)
             ->setJsonEncodeOptions($config->getJsonEncodeOptions() | JSON_PRETTY_PRINT)
             ->setHideVersion()
@@ -47,5 +33,33 @@ class JsonApi extends ArrayConfig
         $data = $config->getConfig();
 
         parent::__construct([JsonApiConfigInterface::class => $data]);
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getModelToSchemaMappings()
+    {
+        // result will be cached for production so performance is not an issue here
+
+        foreach (glob(BaseSchema::SCHEMES_FOLDER . DIRECTORY_SEPARATOR . '*.php') as $filePath) {
+            /** @noinspection PhpIncludeInspection */
+            require_once  $filePath;
+        }
+
+        $schemaClasses = [];
+        foreach (get_declared_classes() as $class) {
+            $reflection = new ReflectionClass($class);
+            if ($reflection->inNamespace() === true &&
+                $reflection->getNamespaceName() === BaseSchema::SCHEMES_NAMESPACE &&
+                $reflection->isAbstract() === false &&
+                $reflection->isSubclassOf(BaseSchema::class) === true
+            ) {
+                /** @var BaseSchema $class */
+                $schemaClasses[$class::MODEL] = $class;
+            }
+        }
+
+        return $schemaClasses;
     }
 }
