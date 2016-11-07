@@ -1,6 +1,6 @@
 <?php namespace App\Container;
 
-use App\Contracts\Config\Templates as C;
+use Config\Templates as C;
 use Interop\Container\ContainerInterface;
 use Limoncello\ContainerLight\Container;
 use Limoncello\Core\Contracts\Config\ConfigInterface;

@@ -2,7 +2,7 @@
 
 use App\Commands\CacheModelSchemes;
 use App\Database\Types\DateTimeType;
-use App\Contracts\Config\Database as C;
+use Config\Database as C;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Types\Type;
@@ -42,7 +42,7 @@ trait SetUpDatabase
                 $schemesData = call_user_func($cachedRoutes);
                 $modelSchemes->setData($schemesData);
             } else {
-                $dbConfig   = $container->get(ConfigInterface::class)->getConfig(C::class);
+                $dbConfig     = $container->get(ConfigInterface::class)->getConfig(C::class);
                 $modelClasses = $dbConfig[C::MODELS_LIST];
                 CacheModelSchemes::buildModelSchemes($modelSchemes, $modelClasses);
             }

@@ -1,6 +1,6 @@
 <?php namespace App\Exceptions;
 
-use App\Contracts\Config\Application as C;
+use Config\Application as C;
 use ErrorException;
 use Exception;
 use Interop\Container\ContainerInterface;
@@ -96,7 +96,6 @@ class JsonApiHandler implements ExceptionHandlerInterface
         $response    = new JsonApiResponse($content, $httpCode, $corsStorage->getHeaders());
         $sapi->handleResponse($response);
     }
-
 
     /**
      * @param Exception|Throwable $error

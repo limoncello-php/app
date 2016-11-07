@@ -1,9 +1,9 @@
 <?php namespace App\Commands;
 
 use App\Container\SetUpConfig;
-use App\Contracts\Config\Database as C;
 use App\Database\Models\ModelInterface;
 use Composer\Script\Event;
+use Config\Database as C;
 use Limoncello\AppCache\CacheScript;
 use Limoncello\ContainerLight\Container;
 use Limoncello\Core\Contracts\Config\ConfigInterface;

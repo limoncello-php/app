@@ -1,6 +1,6 @@
 <?php namespace App\Container;
 
-use App\Contracts\Config\Application;
+use Config\Application;
 use Interop\Container\ContainerInterface;
 use Limoncello\Core\Contracts\Config\ConfigInterface;
 use Neomerx\Cors\Analyzer;

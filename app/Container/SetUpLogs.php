@@ -1,6 +1,6 @@
 <?php namespace App\Container;
 
-use App\Contracts\Config\Application as C;
+use Config\Application as C;
 use Limoncello\Core\Contracts\Config\ConfigInterface;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\NullHandler;

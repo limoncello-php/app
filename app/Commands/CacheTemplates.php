@@ -1,8 +1,8 @@
 <?php namespace App\Commands;
 
 use App\Container\SetUpConfig;
-use App\Contracts\Config\Templates as C;
 use Composer\Script\Event;
+use Config\Templates as C;
 use Limoncello\ContainerLight\Container;
 use Limoncello\Core\Contracts\Config\ConfigInterface;
 use Limoncello\Templates\Scripts\BaseCacheTemplates;

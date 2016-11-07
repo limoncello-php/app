@@ -1,6 +1,5 @@
 <?php namespace Config;
 
-use App\Contracts\Config\Crypt as C;
 use Limoncello\Core\Config\ArrayConfig;
 
 /**
@@ -8,16 +7,22 @@ use Limoncello\Core\Config\ArrayConfig;
  */
 class Crypt extends ArrayConfig
 {
+    /** Config key */
+    const HASH_ALGORITHM = 0;
+
+    /** Config key */
+    const HASH_COST = self::HASH_ALGORITHM + 1;
+
     /**
      * Constructor.
      */
     public function __construct()
     {
-        parent::__construct([C::class => [
+        parent::__construct([self::class => [
             /** @see http://php.net/manual/en/password.constants.php */
-            C::HASH_ALGORITHM => PASSWORD_DEFAULT,
+            self::HASH_ALGORITHM => PASSWORD_DEFAULT,
             /** @see http://php.net/manual/en/function.password-hash.php */
-            C::HASH_COST      => 10,
+            self::HASH_COST      => 10,
         ]]);
     }
 }

@@ -1,6 +1,5 @@
 <?php namespace Config;
 
-use App\Contracts\Config\Database as C;
 use App\Database\Models\Model;
 use Limoncello\Core\Config\ArrayConfig;
 use ReflectionClass;
@@ -10,13 +9,19 @@ use ReflectionClass;
  */
 class Database extends ArrayConfig
 {
+    /** Config key */
+    const CONNECTION_PARAMS = 0;
+
+    /** Config key */
+    const MODELS_LIST = self::CONNECTION_PARAMS + 1;
+
     /**
      * Constructor.
      */
     public function __construct()
     {
-        parent::__construct([C::class => [
-            C::CONNECTION_PARAMS => [
+        parent::__construct([self::class => [
+            self::CONNECTION_PARAMS => [
                 'driver'       => getenv('DB_DRIVER'),
                 'host'         => getenv('DB_HOST'),
                 'port'         => getenv('DB_PORT'),
@@ -31,7 +36,7 @@ class Database extends ArrayConfig
                     // \PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = 'SYSTEM'",
                 ],
             ],
-            C::MODELS_LIST => $this->getModelClassesList(),
+            self::MODELS_LIST => $this->getModelClassesList(),
         ]]);
     }
 

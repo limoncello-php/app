@@ -1,6 +1,5 @@
 <?php namespace Config;
 
-use App\Contracts\Config\Templates as C;
 use Limoncello\Core\Config\ArrayConfig;
 
 /**
@@ -8,6 +7,15 @@ use Limoncello\Core\Config\ArrayConfig;
  */
 class Templates extends ArrayConfig
 {
+    /** Config key */
+    const TEMPLATES_LIST = 0;
+
+    /** Config key */
+    const TEMPLATES_FOLDER = self::TEMPLATES_LIST + 1;
+
+    /** Config key */
+    const CACHE_FOLDER = self::TEMPLATES_FOLDER + 1;
+
     /**
      * Constructor.
      */
@@ -17,15 +25,15 @@ class Templates extends ArrayConfig
 
         $isInConfigCachingProcess = getenv(Core::IN_CONFIG_CACHING) !== false;
 
-        parent::__construct([C::class => [
+        parent::__construct([self::class => [
             // Templates by default are located at `resources/views` folder.
             // Twig namespaces are supported in names (for more see http://twig.sensiolabs.org/doc/api.html).
-            C::TEMPLATES_LIST  => [
+            self::TEMPLATES_LIST  => [
                 'welcome.html.twig',
             ],
 
-            C::TEMPLATES_FOLDER => $top . 'resources' . DIRECTORY_SEPARATOR . 'views',
-            C::CACHE_FOLDER     => $isInConfigCachingProcess === true ?
+            self::TEMPLATES_FOLDER => $top . 'resources' . DIRECTORY_SEPARATOR . 'views',
+            self::CACHE_FOLDER     => $isInConfigCachingProcess === true ?
                 $top . 'storage' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'templates' : null,
         ]]);
     }
