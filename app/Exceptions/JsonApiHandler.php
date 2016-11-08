@@ -91,9 +91,9 @@ class JsonApiHandler implements ExceptionHandlerInterface
         /** @var EncoderInterface $encoder */
         $encoder     = $container->get(EncoderInterface::class);
         $content     = $encoder->encodeErrors($errors);
-        /** @var CorsStorageInterface $corsStorage */
-        $corsStorage = $container->get(CorsStorageInterface::class);
-        $response    = new JsonApiResponse($content, $httpCode, $corsStorage->getHeaders());
+        $corsHeaders = $container->has(CorsStorageInterface::class) === true ?
+            $container->get(CorsStorageInterface::class)->getHeaders() : [];
+        $response    = new JsonApiResponse($content, $httpCode, $corsHeaders);
         $sapi->handleResponse($response);
     }
 
