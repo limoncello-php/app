@@ -28,17 +28,19 @@ class Application extends ArrayConfig
      */
     public function __construct()
     {
-        $isInConfigCachingProcess = getenv(Core::IN_CONFIG_CACHING) !== false;
+        $isInCaching = getenv(Core::IN_CONFIG_CACHING) !== false;
 
         $logPath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
             'storage' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'limoncello.log';
 
+        $logEnabledValue = getenv('APP_ENABLE_LOGS');
+
         parent::__construct([self::class => [
             self::KEY_NAME           => getenv('APP_NAME'),
-            self::KEY_IS_LOG_ENABLED => getenv('APP_ENABLE_LOGS'),
+            self::KEY_IS_LOG_ENABLED => $logEnabledValue === '1' || $logEnabledValue === 'true',
             self::KEY_LOG_PATH       => $logPath,
             self::KEY_LOG_LEVEL      => Logger::DEBUG,
-            self::KEY_IS_DEBUG       => !$isInConfigCachingProcess,
+            self::KEY_IS_DEBUG       => !$isInCaching,
         ]]);
     }
 }
