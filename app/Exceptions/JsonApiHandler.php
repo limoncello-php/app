@@ -111,7 +111,7 @@ class JsonApiHandler implements ExceptionHandlerInterface
         ) {
             /** @var LoggerInterface $logger */
             $logger = $container->get(LoggerInterface::class);
-            $logger->critical($message, ['error' => $error]);
+            $logger->critical($message, ['error' => (string)$error]);
         }
     }
 }

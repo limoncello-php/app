@@ -1,5 +1,6 @@
 <?php namespace Tests;
 
+use App\Http\Controllers\UsersController;
 use App\Schemes\UserSchema;
 
 /**
@@ -145,5 +146,18 @@ EOT;
         // test request with token
         $response = $this->get(self::API_URI, [], $this->getAuthorizationHeaders($token));
         $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    /**
+     * Test user authentication.
+     */
+    public function testInvalidAuthentication()
+    {
+        $formData = [
+            UsersController::FORM_EMAIL    => 'admin@admins.tld',
+            UsersController::FORM_PASSWORD => 'password-XXX',
+        ];
+        $response = $this->post('/authenticate', $formData);
+        $this->assertEquals(401, $response->getStatusCode());
     }
 }

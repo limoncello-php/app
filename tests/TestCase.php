@@ -18,6 +18,9 @@ class TestCase extends PhpUnitTestCase
     /** DateTime format string */
     const JSON_API_DATE_TIME_FORMAT = 'Y-m-d\TH:i:sO';
 
+    /** Header name */
+    const HEADER_ORIGIN = 'ORIGIN';
+
     /**
      * @var AppWrapper|null
      */
@@ -127,6 +130,48 @@ class TestCase extends PhpUnitTestCase
     }
 
     /**
+     * @param string $method
+     * @param string $uri
+     * @param array  $queryParams
+     * @param array  $parsedBody
+     * @param array  $headers
+     * @param array  $cookies
+     * @param array  $files
+     * @param array  $server
+     * @param string $content
+     * @param string $host
+     *
+     * @return ResponseInterface
+     */
+    protected function call(
+        $method,
+        $uri,
+        array $queryParams = [],
+        array $parsedBody = [],
+        array $headers = [],
+        array $cookies = [],
+        array $files = [],
+        array $server = [],
+        $content = 'php://input',
+        $host = 'localhost'
+    ) {
+        $headers[static::HEADER_ORIGIN] = $host;
+
+        return parent::call(
+            $method,
+            $uri,
+            $queryParams,
+            $parsedBody,
+            $headers,
+            $cookies,
+            $files,
+            $server,
+            $content,
+            $host
+        );
+    }
+
+    /**
      * @param string $uri
      * @param string $json
      * @param array  $headers
@@ -137,7 +182,7 @@ class TestCase extends PhpUnitTestCase
     protected function postJson($uri, $json, array $headers = [], array $cookies = [])
     {
         $headers[self::HEADER_CONTENT_TYPE] = MediaTypeInterface::JSON_API_MEDIA_TYPE;
-        return parent::call('POST', $uri, [], [], $headers, $cookies, [], [], $this->streamFromString($json));
+        return $this->call('POST', $uri, [], [], $headers, $cookies, [], [], $this->streamFromString($json));
     }
 
     /**
@@ -151,7 +196,7 @@ class TestCase extends PhpUnitTestCase
     protected function putJson($uri, $json, array $headers = [], array $cookies = [])
     {
         $headers[self::HEADER_CONTENT_TYPE] = MediaTypeInterface::JSON_API_MEDIA_TYPE;
-        return parent::call('PUT', $uri, [], [], $headers, $cookies, [], [], $this->streamFromString($json));
+        return $this->call('PUT', $uri, [], [], $headers, $cookies, [], [], $this->streamFromString($json));
     }
 
     /**
@@ -165,7 +210,7 @@ class TestCase extends PhpUnitTestCase
     protected function patchJson($uri, $json, array $headers = [], array $cookies = [])
     {
         $headers[self::HEADER_CONTENT_TYPE] = MediaTypeInterface::JSON_API_MEDIA_TYPE;
-        return parent::call('PATCH', $uri, [], [], $headers, $cookies, [], [], $this->streamFromString($json));
+        return $this->call('PATCH', $uri, [], [], $headers, $cookies, [], [], $this->streamFromString($json));
     }
 
     /**
