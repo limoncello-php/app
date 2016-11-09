@@ -130,18 +130,9 @@ class TestCase extends PhpUnitTestCase
     }
 
     /**
-     * @param string $method
-     * @param string $uri
-     * @param array  $queryParams
-     * @param array  $parsedBody
-     * @param array  $headers
-     * @param array  $cookies
-     * @param array  $files
-     * @param array  $server
-     * @param string $content
-     * @param string $host
+     * @inheritdoc
      *
-     * @return ResponseInterface
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     protected function call(
         $method,
