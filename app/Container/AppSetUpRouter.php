@@ -18,11 +18,11 @@ trait AppSetUpRouter
      *
      * @return void
      */
-    protected static function appSetUpRouter(Container $container)
+    protected function appSetUpRouter(Container $container)
     {
         $container[RouterInterface::class] = function () {
-            $hasher = self::getRouter();
-            return $hasher;
+            $router = $this->getRouter();
+            return $router;
         };
     }
 }
