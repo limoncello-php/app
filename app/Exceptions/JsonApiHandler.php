@@ -31,6 +31,7 @@ class JsonApiHandler implements ExceptionHandlerInterface
     private static $ignoredErrorClasses = [
         JsonApiException::class,
     ];
+
     /**
      * @inheritdoc
      */
@@ -79,7 +80,7 @@ class JsonApiHandler implements ExceptionHandlerInterface
             $httpCode = 500;
             $details  = null;
             $appConfig = $container->get(ConfigInterface::class)->getConfig(C::class);
-            if ($appConfig[C::KEY_IS_LOG_ENABLED] === true) {
+            if ($appConfig[C::KEY_IS_DEBUG] === true) {
                 $message = $error->getMessage();
                 $details = (string)$error;
             }
@@ -89,11 +90,18 @@ class JsonApiHandler implements ExceptionHandlerInterface
 
         // encode the error and send to client
         /** @var EncoderInterface $encoder */
-        $encoder     = $container->get(EncoderInterface::class);
-        $content     = $encoder->encodeErrors($errors);
-        $corsHeaders = $container->has(CorsStorageInterface::class) === true ?
-            $container->get(CorsStorageInterface::class)->getHeaders() : [];
-        $response    = new JsonApiResponse($content, $httpCode, $corsHeaders);
+        $encoder = $container->get(EncoderInterface::class);
+        $content = $encoder->encodeErrors($errors);
+        /** @var CorsStorageInterface $corsStorage */
+        if ($container->has(CorsStorageInterface::class) === true &&
+            ($corsStorage = $container->get(CorsStorageInterface::class)) !== null &&
+            $corsStorage->hasHeaders() === true
+        ) {
+            $corsHeaders = $corsStorage->getHeaders();
+        } else {
+            $corsHeaders = [];
+        }
+        $response = new JsonApiResponse($content, $httpCode, $corsHeaders);
         $sapi->handleResponse($response);
     }
 
