@@ -1,40 +1,26 @@
 <?php namespace App\Http\Controllers;
 
-use App\Api\BoardsApi as Api;
-use App\Http\Validators\BoardsValidator as Validator;
-use App\Schemes\BoardSchema as Schema;
-use Interop\Container\ContainerInterface;
+use App\Data\Models\Board as Model;
+use App\Json\Api\BoardsApi as Api;
+use App\Json\Schemes\BoardScheme as Scheme;
+use App\Json\Validators\BoardsValidator as Validator;
+use Limoncello\Flute\Http\BaseController;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @package App
+ *
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class BoardsController extends BaseController
 {
     /** @inheritdoc */
     const API_CLASS = Api::class;
 
-    const SCHEMA_CLASS = Schema::class;
-
     /** @inheritdoc */
-    const VALIDATOR_CLASS = Validator::class;
-
-    /**
-     * @param array                  $routeParams
-     * @param ContainerInterface     $container
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
-     */
-    public static function readPosts(array $routeParams, ContainerInterface $container, ServerRequestInterface $request)
-    {
-        $index    = $routeParams[static::ROUTE_KEY_INDEX];
-        $response = static::readRelationship($index, Schema::REL_POSTS, $container, $request);
-
-        return $response;
-    }
-
+    const SCHEMA_CLASS = Scheme::class;
 
     /**
      * @inheritdoc
@@ -42,12 +28,14 @@ class BoardsController extends BaseController
     public static function parseInputOnCreate(
         ContainerInterface $container,
         ServerRequestInterface $request
-    ) {
-        $validator = static::getValidator($container);
-        $json      = static::parseJson($container, $request);
-        $captures  = $validator->parseAndValidateOnCreate($json);
-
-        return $captures;
+    ): array {
+        return static::prepareCaptures(
+            Validator::onCreateValidator($container)
+                ->assert(static::parseJson($container, $request))
+                ->getCaptures(),
+            Model::FIELD_ID,
+            Validator::captureNames()
+        );
     }
 
     /**
@@ -57,21 +45,33 @@ class BoardsController extends BaseController
         $index,
         ContainerInterface $container,
         ServerRequestInterface $request
-    ) {
-        $validator = static::getValidator($container);
-        $json      = static::parseJson($container, $request);
-        $captures  = $validator->parseAndValidateOnUpdate($index, $json);
+    ): array {
+        $captures = Validator::onUpdateValidator($index, $container)
+            ->assert(static::parseJson($container, $request))
+            ->getCaptures();
 
-        return $captures;
+        return static::prepareCaptures(
+            $captures,
+            Model::FIELD_ID,
+            Validator::captureNames()
+        );
     }
 
     /**
-     * @param ContainerInterface $container
+     * @param array                  $routeParams
+     * @param ContainerInterface     $container
+     * @param ServerRequestInterface $request
      *
-     * @return Validator
+     * @return ResponseInterface
      */
-    protected static function getValidator(ContainerInterface $container)
-    {
-        return static::createValidatorFromClass(static::VALIDATOR_CLASS, $container);
+    public static function readPosts(
+        array $routeParams,
+        ContainerInterface $container,
+        ServerRequestInterface $request
+    ): ResponseInterface {
+        $index    = $routeParams[static::ROUTE_KEY_INDEX];
+        $response = static::readRelationship($index, Scheme::REL_POSTS, $container, $request);
+
+        return $response;
     }
 }

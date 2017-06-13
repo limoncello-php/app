@@ -1,30 +1,25 @@
 <?php namespace Tests;
 
-use App\Http\Controllers\UsersController;
+use App\Application;
+use App\Data\Seeds\UsersSeed;
 use Doctrine\DBAL\Connection;
-use Limoncello\ContainerLight\Container;
-use Limoncello\Testing\PhpUnitTestCase;
+use Limoncello\Contracts\Container\ContainerInterface;
+use Limoncello\Contracts\Core\ApplicationInterface;
+use Limoncello\Testing\ApplicationWrapperInterface;
+use Limoncello\Testing\ApplicationWrapperTrait;
+use Limoncello\Testing\HttpCallsTrait;
+use Limoncello\Testing\MeasureExecutionTimeTrait;
 use Limoncello\Testing\Sapi;
+use Limoncello\Testing\TestCaseTrait;
 use Mockery;
-use Neomerx\JsonApi\Contracts\Http\Headers\MediaTypeInterface;
-use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 
 /**
  * @package Tests
  */
-class TestCase extends PhpUnitTestCase
+class TestCase extends \PHPUnit\Framework\TestCase
 {
-    /** DateTime format string */
-    const JSON_API_DATE_TIME_FORMAT = 'Y-m-d\TH:i:sO';
-
-    /** Header name */
-    const HEADER_ORIGIN = 'ORIGIN';
-
-    /**
-     * @var AppWrapper|null
-     */
-    private $appWrapper;
+    use TestCaseTrait, HttpCallsTrait, MeasureExecutionTimeTrait;
 
     /**
      * @var bool
@@ -38,11 +33,32 @@ class TestCase extends PhpUnitTestCase
      */
     private $sharedConnection = null;
 
+    /**
+     * @inheritdoc
+     */
     protected function setUp()
     {
         parent::setUp();
 
+        $this->resetEventHandlers();
+
+        $this->sharedConnection     = null;
         $this->shouldPreventCommits = false;
+        $interceptConnection        = function (ApplicationWrapperInterface $wrapper, ContainerInterface $container) {
+            assert($wrapper);
+            if ($this->shouldPreventCommits === true) {
+                if ($this->sharedConnection === null) {
+                    // first connection during current test
+                    // * other option is take container from function args
+                    $this->sharedConnection = $container->get(Connection::class);
+                    $this->sharedConnection->beginTransaction();
+                } else {
+                    // we already have an open connection with transaction started
+                    $container[Connection::class] = $this->sharedConnection;
+                }
+            }
+        };
+        $this->addOnContainerConfiguredEvent($interceptConnection);
     }
 
     /**
@@ -54,8 +70,10 @@ class TestCase extends PhpUnitTestCase
 
         if ($this->shouldPreventCommits === true && $this->sharedConnection !== null) {
             $this->sharedConnection->rollBack();
-            $this->sharedConnection = null;
         }
+        $this->sharedConnection     = null;
+        $this->shouldPreventCommits = false;
+        $this->resetEventHandlers();
 
         Mockery::close();
     }
@@ -83,169 +101,103 @@ class TestCase extends PhpUnitTestCase
     /**
      * @inheritdoc
      */
+    protected function createApplication(): ApplicationInterface
+    {
+        $wrapper = new class extends Application implements ApplicationWrapperInterface {
+            use ApplicationWrapperTrait;
+        };
+
+        foreach ($this->getHandleRequestEvents() as $handler) {
+            $wrapper->addOnHandleRequest($handler);
+        }
+
+        foreach ($this->getHandleResponseEvents() as $handler) {
+            $wrapper->addOnHandleResponse($handler);
+        }
+
+        foreach ($this->getContainerCreatedEvents() as $handler) {
+            $wrapper->addOnContainerCreated($handler);
+        }
+
+        foreach ($this->getContainerConfiguredEvents() as $handler) {
+            $wrapper->addOnContainerLastConfigurator($handler);
+        }
+
+        return $wrapper;
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function createSapi(
         array $server = null,
         array $queryParams = null,
         array $parsedBody = null,
         array $cookies = null,
         array $files = null,
-        $messageBody = 'php://input'
-    ) {
-        /** @var EmitterInterface $sapiEmitter */
-        $sapiEmitter = Mockery::mock(EmitterInterface::class);
+        $messageBody = 'php://input',
+        string $protocolVersion = '1.1'
+    ): Sapi {
+        /** @var EmitterInterface $emitter */
+        $emitter = Mockery::mock(EmitterInterface::class);
 
-        $sapi = new Sapi($sapiEmitter, $server, $queryParams, $parsedBody, $cookies, $files, $messageBody);
+        $sapi =
+            new Sapi($emitter, $server, $queryParams, $parsedBody, $cookies, $files, $messageBody, $protocolVersion);
 
         return $sapi;
     }
 
     /**
-     * @inheritdoc
-     */
-    protected function createApplication(Sapi $sapi)
-    {
-        $this->appWrapper = new AppWrapper();
-
-        if ($this->shouldPreventCommits === true) {
-            $this->appWrapper->addEventHandler(AppWrapper::EVENT_ON_CONTAINER_LAST_CONFIGURATOR, function (
-                AppWrapper $appWrapper,
-                Container $container
-            ) {
-                $appWrapper ?: null;
-                if ($this->sharedConnection === null) {
-                    // first connection during current test
-                    // * other option is take container from function args
-                    $this->sharedConnection = $container->get(Connection::class);
-                    $this->sharedConnection->beginTransaction();
-                } else {
-                    // we already have an open connection with transaction started
-                    $container[Connection::class] = $this->sharedConnection;
-                }
-            });
-        }
-
-        $this->appWrapper->setSapi($sapi);
-
-        return $this->appWrapper;
-    }
-
-    /**
-     * @inheritdoc
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     */
-    protected function call(
-        $method,
-        $uri,
-        array $queryParams = [],
-        array $parsedBody = [],
-        array $headers = [],
-        array $cookies = [],
-        array $files = [],
-        array $server = [],
-        $content = 'php://input',
-        $host = 'localhost'
-    ) {
-        $headers[static::HEADER_ORIGIN] = $host;
-
-        return parent::call(
-            $method,
-            $uri,
-            $queryParams,
-            $parsedBody,
-            $headers,
-            $cookies,
-            $files,
-            $server,
-            $content,
-            $host
-        );
-    }
-
-    /**
-     * @param string $uri
-     * @param string $json
-     * @param array  $headers
-     * @param array  $cookies
-     *
-     * @return ResponseInterface
-     */
-    protected function postJson($uri, $json, array $headers = [], array $cookies = [])
-    {
-        $headers[self::HEADER_CONTENT_TYPE] = MediaTypeInterface::JSON_API_MEDIA_TYPE;
-        return $this->call('POST', $uri, [], [], $headers, $cookies, [], [], $this->streamFromString($json));
-    }
-
-    /**
-     * @param string $uri
-     * @param string $json
-     * @param array  $headers
-     * @param array  $cookies
-     *
-     * @return ResponseInterface
-     */
-    protected function putJson($uri, $json, array $headers = [], array $cookies = [])
-    {
-        $headers[self::HEADER_CONTENT_TYPE] = MediaTypeInterface::JSON_API_MEDIA_TYPE;
-        return $this->call('PUT', $uri, [], [], $headers, $cookies, [], [], $this->streamFromString($json));
-    }
-
-    /**
-     * @param string $uri
-     * @param string $json
-     * @param array  $headers
-     * @param array  $cookies
-     *
-     * @return ResponseInterface
-     */
-    protected function patchJson($uri, $json, array $headers = [], array $cookies = [])
-    {
-        $headers[self::HEADER_CONTENT_TYPE] = MediaTypeInterface::JSON_API_MEDIA_TYPE;
-        return $this->call('PATCH', $uri, [], [], $headers, $cookies, [], [], $this->streamFromString($json));
-    }
-
-    /**
-     * @param string $email
-     * @param string $password
-     *
      * @return string
      */
-    protected function setUserToken($email, $password)
+    protected function getAdminOAuthToken(): string
     {
-        $formData = [
-            UsersController::FORM_EMAIL    => $email,
-            UsersController::FORM_PASSWORD => $password,
-        ];
-        $response = $this->post('/authenticate', $formData);
+        $response = $this->post('/token', [
+            'grant_type' => 'password',
+            'username'   => 'kurt.murray@berge.biz',
+            'password'   => UsersSeed::DEFAULT_PASSWORD,
+        ]);
+
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertNotEmpty($token = (string)$response->getBody());
+        $this->assertNotEquals(false, $token = json_decode((string)$response->getBody()));
+        $this->assertNotEmpty($token = $token->access_token);
 
         return $token;
     }
 
     /**
-     * @param string $token
-     *
-     * @return array
+     * @return string
      */
-    protected function getAuthorizationHeaders($token)
+    protected function getModeratorOAuthToken(): string
     {
-        return ['Authorization' => 'Bearer ' . $token];
+        $response = $this->post('/token', [
+            'grant_type' => 'password',
+            'username'   => 'ybins@yahoo.com',
+            'password'   => UsersSeed::DEFAULT_PASSWORD,
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertNotEquals(false, $token = json_decode((string)$response->getBody()));
+        $this->assertNotEmpty($token = $token->access_token);
+
+        return $token;
     }
 
     /**
-     * @return array
+     * @return string
      */
-    protected function createAdminAuthHeaders()
+    protected function getPlainUserOAuthToken(): string
     {
-        return $this->getAuthorizationHeaders($this->setUserToken('admin@admins.tld', 'password'));
-    }
+        $response = $this->post('/token', [
+            'grant_type' => 'password',
+            'username'   => 'denesik.stewart@gmail.com',
+            'password'   => UsersSeed::DEFAULT_PASSWORD,
+        ]);
 
-    /**
-     * @return array
-     */
-    protected function createUserAuthHeaders()
-    {
-        return $this->getAuthorizationHeaders($this->setUserToken('user@users.tld', 'password'));
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertNotEquals(false, $token = json_decode((string)$response->getBody()));
+        $this->assertNotEmpty($token = $token->access_token);
+
+        return $token;
     }
 }

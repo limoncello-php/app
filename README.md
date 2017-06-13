@@ -1,24 +1,16 @@
-## Quick start JSON API application
+[![License](https://img.shields.io/packagist/l/limoncello-php/app.svg)](https://packagist.org/packages/limoncello-php/app)
 
-Limoncello Flute is a [JSON API](http://jsonapi.org/) quick start application.
- 
-This application integrated with
-- [JSON API implementation](https://github.com/neomerx/json-api)
-- [Cross-Origin Resource Sharing](https://github.com/neomerx/cors-psr7) (CORS)
+### Summary
 
-Based on
-- [Zend Diactoros](https://github.com/zendframework/zend-diactoros)
-- [Doctrine](http://www.doctrine-project.org/)
-- [Pimple](http://pimple.sensiolabs.org/)
-- [Monolog](https://github.com/Seldaek/monolog)
-- [FastRoute](https://github.com/nikic/FastRoute)
-- Built with :heart: [Limoncello](https://github.com/limoncello-php/app)
+Limoncello App is a quick start application for [Limoncello](https://github.com/limoncello-php/framework) PHP framework.
 
-It could be a great start if you are planning to develop JSON API.
+The demo application is a simple message board which implements
 
-The application includes
-- CRUD operations for a few sample resources with input data validation.
+- [JSON API](http://jsonapi.org/) CRUD operations (create, read, update and delete) for a few sample resources with `to-one`, `to-many` and `many-to-many` relationship types.
 - Support for such JSON API [features](http://jsonapi.org/format/#fetching) as resource inclusion, sparse field sets, sorting, filtering and pagination.
+- Database migrations and seedings.
+- OAuth 2.0 server authentication and role authorization.
+- Cross-Origin Resource Sharing (CORS).
 - JSON API errors.
 - API tests.
 
@@ -28,66 +20,60 @@ Supported features
 - Filters could be applied to attributes and primaries in relationships (all major relationship types such as `belongsTo`, `hasMany` and `belongsToMany`). Supported operators `=`, `eq`, `equals`, `!=`, `neq`, `not-equals`, `<`, `lt`, `less-than`, `<=`, `lte`, `less-or-equals`, `>`, `gt`, `greater-than`, `>=`, `gte`, `greater-or-equals`, `like`, `not-like`, `in`, `not-in`, `is-null`, `not-null`.
 - Pagination works for main resources and resources in relationships. Limits for maximum number of resources are configurable.
 
+Server API documentation is [here](https://documenter.getpostman.com/view/53867/limoncello-app/6Z3usWQ).
+
+Based on
+- [Zend Diactoros](https://github.com/zendframework/zend-diactoros)
+- [Doctrine](http://www.doctrine-project.org/)
+- [Pimple](http://pimple.sensiolabs.org/)
+- [Monolog](https://github.com/Seldaek/monolog)
+- [FastRoute](https://github.com/nikic/FastRoute)
+- [Twig](https://twig.sensiolabs.org/)
+- [JSON API implementation](https://github.com/neomerx/json-api)
+- [Cross-Origin Resource Sharing](https://github.com/neomerx/cors-psr7)
+- Built with :heart: [Limoncello](https://github.com/limoncello-php/framework)
+
+It could be a great start if you are planning to develop JSON API.
+
 ### Installation
 
-Install [docker-compose](https://docs.docker.com/compose/)
-
-Clone the project
-
-Start local web server at [http://localhost:8080](http://localhost:8080) with
+#### 1 Create project
 
 ```bash
-$ composer install && composer stage-up
+$ composer create-project --prefer-dist limoncello-php/app app_name && cd app_name
 ```
 
-> Note: use `$ composer stage-down` to stop the servers.
+#### 2 Run server
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/064046759f3d14d4def7#?env%5Blocal%5D=W3sia2V5Ijoic2VydmVyIiwidmFsdWUiOiJodHRwOi8vbG9jYWxob3N0Ojg4ODgvIiwidHlwZSI6InRleHQiLCJuYW1lIjoic2VydmVyIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJ0b2tlbiIsInR5cGUiOiJ0ZXh0IiwidmFsdWUiOiJmTHZRelFKaXRuSElYUUl0MiIsImVuYWJsZWQiOnRydWV9XQ==)
+Application runs PHP built-in server on port 8080
 
-The application comes with [Postman](https://www.getpostman.com/) collection of various CRUD operations you can do with the server (link above).
+```bash
+$ composer serve
+```
 
-That is a screen-shot of how it might look.
+> Port could be configured in `composer.json`
+
+The easiest way to play with the server is `Postman`.
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/e7ba014d506f62918b0f#?env%5Blocal%20HTTP%20(8080)%5D=W3siZW5hYmxlZCI6dHJ1ZSwia2V5Ijoic2VydmVyIiwidmFsdWUiOiJsb2NhbGhvc3Q6ODA4MCIsInR5cGUiOiJ0ZXh0In0seyJlbmFibGVkIjp0cnVlLCJrZXkiOiJ0b2tlbiIsInZhbHVlIjoiMjlhNDU0OGZkZWY1NDFiNWZiYjA3ODhjYzM2YzBiM2U1OTNlODY5ODk5YjA1IiwidHlwZSI6InRleHQifV0=)
+
+API documentation and code snippets [here](https://documenter.getpostman.com/view/53867/limoncello-app/6Z3usWQ).
 
 ![Requests in Postman](resources/img/screen-shot.png)
 
-### Local Development
 
-When developed locally some of the command might be useful (for full list see `composer.json`)
+#### 3 Turn on production mode (optional)
 
-Reset and migrate database schema with data seeding
-
-```bash
-$ composer db
-```
-
-individual commands are
-
-```bash
-$ composer db-reset && composer db-migrate && composer db-seed
-```
-
-local development environment (MySQL server only) could be set up / shut down with
-
-```bash
-$ composer local-up
-```
-
-and
-
-```bash
-$ composer local-down
-```
-
-application could be switched to `production` mode and back to `development` with
+**By default** the application is installed in **development mode** (less performance, tests and development libraries are available). Application could be switched into **production mode** (higher performance, no tests, no development libraries) with command
 
 ```bash
 $ composer build
 ```
 
-and
+### Testing
 
 ```bash
-$ composer develop
+$ composer test
 ```
 
 ### License

@@ -1,9 +1,8 @@
 {
     "name": "limoncello-php/app",
-    "homepage": "https://github.com/neomerx/limoncello-flute",
-    "keywords": ["json api", "json", "api", "PSR7", "limoncello"],
+    "homepage": "https://github.com/limoncello-php/app",
     "support": {
-        "issues": "https://github.com/neomerx/limoncello-flute/issues"
+        "issues": "https://github.com/limoncello-php/app/issues"
     },
     "license": "MIT",
     "authors": [
@@ -13,30 +12,41 @@
         }
     ],
     "require": {
-        "php": ">=5.6.0",
-        "monolog/monolog": "^1.18",
-        "limoncello-php/framework": "^0.4.0",
-        "limoncello-php/templates": "^0.2.0",
-        "limoncello-php/json-api": "^0.3.0",
-        "limoncello-php/auth": "^0.1.0",
-        "vlucas/phpdotenv": "^2.4"
+        "php": ">=7.0.0",
+        "vlucas/phpdotenv": "^2.3",
+
+        "limoncello-php/application": "^0.6.14",
+        "limoncello-php/auth": "^0.6.14",
+        "limoncello-php/commands": "^0.6.14",
+        "limoncello-php/container": "^0.6.14",
+        "limoncello-php/contracts": "^0.6.14",
+        "limoncello-php/core": "^0.6.14",
+        "limoncello-php/crypt": "^0.6.14",
+        "limoncello-php/data": "^0.6.14",
+        "limoncello-php/events": "^0.6.14",
+        "limoncello-php/flute": "^0.6.14",
+        "limoncello-php/l10n": "^0.6.14",
+        "limoncello-php/oauth-server": "^0.6.14",
+        "limoncello-php/passport": "^0.6.14",
+        "limoncello-php/templates": "^0.6.14",
+        "limoncello-php/validation": "^0.6.14"
     },
     "require-dev": {
+        "limoncello-php/testing": "^0.6.14",
         "filp/whoops": "^2.1",
-        "limoncello-php/testing": "^0.1.0",
-        "squizlabs/php_codesniffer": "^2.7",
+        "squizlabs/php_codesniffer": "^2.8",
+        "phpmd/phpmd": "^2.6",
         "composer/composer": "^1.0",
-        "phpunit/phpunit": "^4.0 || ^5.0",
-        "mockery/mockery": "^0.9.5",
-        "fzaninotto/faker": "^1.6",
-        "phpmd/phpmd" : "@stable"
+        "phpunit/phpunit": "^5.0",
+        "mockery/mockery": "^0.9.4",
+        "doctrine/dbal": "^2.5.0",
+        "fzaninotto/faker": "dev-master"
     },
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "App\\I18n\\": "resources/lang/",
-            "Config\\": "config/",
-            "Cached\\": "storage/cache/scripts/"
+            "Settings\\": "settings/",
+            "Cached\\": "storage/cache/settings/"
         }
     },
     "autoload-dev": {
@@ -44,41 +54,35 @@
             "Tests\\": "tests/"
         }
     },
+    "extra": {
+        "application": {
+            "commands_cache": "storage/cache/settings/commands_cache.php"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    },
     "scripts": {
         "post-root-package-install": [
-            "php -r \"copy('.env.sample', '.env');\""
+            "php -r \"file_exists('.env') || copy('.env.sample', '.env');\""
         ],
+        "post-create-project-cmd": [
+            "@composer l:commands connect",
+            "@composer db"
+        ],
+        "post-update-cmd": ["@composer l:commands connect"],
 
         "serve": "php -S 0.0.0.0:8080 -t public/ public/index.php",
-        "develop": ["@cache-clear", "@composer update --optimize-autoloader --quiet"],
-        "build": ["@cache-renew", "@composer update --no-dev --optimize-autoloader --quiet"],
-        "cache-renew": ["@cache-clear", "@cache-create"],
-        "cache-clear": ["@cache-routes-clear", "@cache-config-clear", "@cache-templates-clear", "@model-schemes-clear"],
-        "cache-create": ["@cache-routes-create", "@cache-config-create", "@cache-templates-create", "@model-schemes-create"],
-        "cache-routes-create": "App\\Commands\\CacheRoutes::cache",
-        "cache-routes-clear": "App\\Commands\\CacheRoutes::clear",
-        "cache-config-create": "App\\Commands\\CacheConfig::cache",
-        "cache-config-clear": "App\\Commands\\CacheConfig::clear",
-        "cache-templates-create": "App\\Commands\\CacheTemplates::cache",
-        "cache-templates-clear": "App\\Commands\\CacheTemplates::clear",
-        "model-schemes-create": "App\\Commands\\CacheModelSchemes::cache",
-        "model-schemes-clear": "App\\Commands\\CacheModelSchemes::clear",
 
-        "db": ["@db-reset", "@db-migrate", "@db-seed"],
-        "db-reset": "App\\Commands\\Database::reset",
-        "db-migrate": "App\\Commands\\Database::migrate",
-        "db-seed": "App\\Commands\\Database::seed",
+        "develop": ["@composer l:app clear-cache", "@composer update --optimize-autoloader --quiet"],
+        "build": ["@composer l:app cache", "@composer update --no-dev --optimize-autoloader --quiet"],
 
-        "local-up": ["docker-compose -f docker-compose-local.yml up -d", "echo waiting 10s && sleep 10s", "@db"],
-        "local-down": "docker-compose -f docker-compose-local.yml down",
-        "stage-up": ["docker-compose -f docker-compose-stage.yml up -d", "echo waiting 10s && sleep 10s", "@stage-db"],
-        "stage-down": "docker-compose -f docker-compose-stage.yml down",
-        "stage-db": "docker-compose -f docker-compose-stage.yml run --rm fpm php /usr/local/bin/composer db",
+        "db": ["@composer l:db rollback", "@composer l:db migrate", "@composer l:db seed"],
 
         "test": ["@test-unit", "@test-cs", "@test-md"],
         "test-unit": "./vendor/bin/phpunit --coverage-text",
         "test-cs": "./vendor/bin/phpcs -p -s --standard=PSR2 ./app ./tests",
         "test-md": "./vendor/bin/phpmd ./app text codesize,controversial,cleancode,design,unusedcode,naming",
-        "ab-home": "ab -c 10 -t 5 http://127.0.0.1:8080/"
+        "stress": "wrk -t10 -d5s -c400 http://127.0.0.1:8080/"
     }
 }

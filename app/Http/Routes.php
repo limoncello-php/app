@@ -1,121 +1,125 @@
 <?php namespace App\Http;
 
-use App\Http\Controllers\BaseController;
 use App\Http\Controllers\BoardsController;
 use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\UsersController;
-use App\Http\Controllers\HomeController;
-use App\Schemes\BoardSchema;
-use App\Schemes\PostSchema;
-use App\Schemes\RoleSchema;
-use App\Schemes\UserSchema;
-use Limoncello\Core\Contracts\Routing\GroupInterface as GI;
-use Limoncello\Core\Contracts\Routing\GroupInterface;
-use Limoncello\Core\Contracts\Routing\RouteInterface as RI;
-use Limoncello\Core\Contracts\Routing\RouteInterface;
-use Limoncello\Core\Routing\Group;
-use Limoncello\JsonApi\Contracts\Http\ControllerInterface;
-use Limoncello\JsonApi\Contracts\Schema\SchemaInterface;
-use Neomerx\JsonApi\Contracts\Document\DocumentInterface;
+use App\Json\Exceptions\ApiHandler;
+use App\Json\Schemes\BoardScheme;
+use App\Json\Schemes\PostScheme;
+use App\Json\Schemes\UserScheme;
+use Limoncello\Application\Commands\DataCommand;
+use Limoncello\Commands\CommandRoutesTrait;
+use Limoncello\Contracts\Application\RoutesConfiguratorInterface;
+use Limoncello\Contracts\Routing\GroupInterface as GI;
+use Limoncello\Contracts\Routing\RouteInterface as RI;
+use Limoncello\Flute\Http\Traits\FluteRoutesTrait;
+use Limoncello\Flute\Package\FluteContainerConfigurator;
+use Settings\Commands;
 
 /**
  * @package App
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-trait Routes
+class Routes implements RoutesConfiguratorInterface
 {
+    use FluteRoutesTrait, CommandRoutesTrait;
+
+    /** API URI prefix */
+    const API_URI_PREFIX = '/api/v1';
+
     /**
      * This middleware will be executed on every request even when no matching route is found.
      *
-     * @return callable[]
+     * @return string[]
      */
-    protected function getGlobalMiddleware()
+    public static function getMiddleware(): array
     {
         return [
-            Middleware\Cors::class . '::handle',
+            //ClassName::class,
         ];
     }
 
     /**
-     * @return GI
+     * @param GI $routes
+     *
+     * @return void
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function getRoutes()
+    public static function configureRoutes(GI $routes)
     {
-        // This closure automates adding routes for CRUD operations.
-        // As routes are cached it does not slow down the app.
-        $addResource = function (GroupInterface $group, $controllerClass) {
-            /** @var BaseController $controllerClass */
-            /** @var SchemaInterface $schemaClass */
-            $schemaClass = $controllerClass::SCHEMA_CLASS;
-            $subUri      = $schemaClass::TYPE;
-            /** @var string $controllerClass */
-            /** @var string $schemaClass */
+        // Every group, controller and even method may have custom `Request` factory and `Container` configurator.
+        // So you can have your own `CommentRequest` which would be created for `CommentsController` only.
+        // Or you may configure container to have `PaymentGageInterface` available only in `PaymentsController`.
+        // Also custom middleware could be specified for group, controller or method.
 
-            // methods that changes data (create/update/delete) require authentication (middleware)
-            $authParams = [
-                RouteInterface::PARAM_MIDDLEWARE_LIST => [Middleware\AuthenticationRequired::class . '::handle']
-            ];
+        $routes
 
-            $indexSlug = '/{' . BaseController::ROUTE_KEY_INDEX . '}';
-            $group
-                ->get($subUri, [$controllerClass, ControllerInterface::METHOD_INDEX])
-                ->post($subUri, [$controllerClass, ControllerInterface::METHOD_CREATE], $authParams)
-                ->get($subUri . $indexSlug, [$controllerClass, ControllerInterface::METHOD_READ])
-                ->patch($subUri . $indexSlug, [$controllerClass, ControllerInterface::METHOD_UPDATE], $authParams)
-                ->delete($subUri . $indexSlug, [$controllerClass, ControllerInterface::METHOD_DELETE], $authParams);
-        };
-
-        $addRelationship = function (GroupInterface $group, $relationshipName, $controllerClass, $method) {
-            /** @var BaseController $controllerClass */
-            /** @var SchemaInterface $schemaClass */
-            $schemaClass = $controllerClass::SCHEMA_CLASS;
-            $subUri      = $schemaClass::TYPE;
-            /** @var string $controllerClass */
-            /** @var string $schemaClass */
-
-            // `related` URI is needed for ember to pick up actual relationship resources when we send URLs.
-            $resourceIdUri = $subUri . '/{' . BaseController::ROUTE_KEY_INDEX . '}/';
-            $selfUri       = $resourceIdUri . DocumentInterface::KEYWORD_RELATIONSHIPS . '/' . $relationshipName;
-            $relatedUri    = $resourceIdUri . $relationshipName;
-
-            $group->get($selfUri, [$controllerClass, $method]);
-            $group->get($relatedUri, [$controllerClass, $method]);
-        };
-
-        return (new Group())
             // This handler is very simple and we don't need `ServerRequestInterface`
             // so we can instruct not to create it for us.
-            ->get('/', [HomeController::class, 'index'], [
-                RI::PARAM_REQUEST_FACTORY         => null,
-                RI::PARAM_CONTAINER_CONFIGURATORS => [HomeController::class . '::welcomeConfigurator'],
-            ])
-            ->post('/authenticate', [UsersController::class, 'authenticate'], [
-                RI::PARAM_CONTAINER_CONFIGURATORS => [BaseController::class . '::containerConfigurator'],
+            ->get('/', HomeController::INDEX_HANDLER, [
+                RI::PARAM_REQUEST_FACTORY => null,
             ])
 
-            ->group(BaseController::API_URI_PREFIX, function (GroupInterface $group) use (
-                $addResource,
-                $addRelationship
-            ) {
+            // Container could be configured individually for each handler.
+            // It helps to keep containers smaller and the application faster.
+            ->get('/welcome', HomeController::WELCOME_HANDLER, [
+                RI::PARAM_CONTAINER_CONFIGURATORS => [HomeController::CONTAINER_EXTRA_CONFIGURATOR],
+            ])
 
-                $addResource($group, BoardsController::class);
-                $addRelationship($group, BoardSchema::REL_POSTS, BoardsController::class, 'readPosts');
+            // JSON API group
+            // This group uses custom container configurator and exception handler to
+            // provide error information in JSON API format.
+            ->group(self::API_URI_PREFIX, function (GI $routes) {
 
-                $addResource($group, CommentsController::class);
+                self::resource($routes, BoardsController::class);
+                self::relationship($routes, BoardScheme::REL_POSTS, BoardsController::class, 'readPosts');
 
-                $addResource($group, PostsController::class);
-                $addRelationship($group, PostSchema::REL_COMMENTS, PostsController::class, 'readComments');
+                self::resource($routes, PostsController::class);
+                self::relationship($routes, PostScheme::REL_COMMENTS, PostsController::class, 'readComments');
 
-                $addResource($group, RolesController::class);
-                $addRelationship($group, RoleSchema::REL_USERS, RolesController::class, 'readUsers');
+                self::resource($routes, CommentsController::class);
 
-                $addResource($group, UsersController::class);
-                $addRelationship($group, UserSchema::REL_POSTS, UsersController::class, 'readPosts');
-                $addRelationship($group, UserSchema::REL_COMMENTS, UsersController::class, 'readComments');
+                self::resource($routes, UsersController::class);
+                self::relationship($routes, UserScheme::REL_POSTS, UsersController::class, 'readPosts');
+                self::relationship($routes, UserScheme::REL_COMMENTS, UsersController::class, 'readComments');
+
+                self::resource($routes, RolesController::class);
             }, [
-                GroupInterface::PARAM_CONTAINER_CONFIGURATORS => [BaseController::class . '::containerConfigurator'],
-                GroupInterface::PARAM_MIDDLEWARE_LIST => [Middleware\TokenAuthentication::class . '::handle'],
-            ]);
+                GI::PARAM_CONTAINER_CONFIGURATORS => [FluteContainerConfigurator::CONFIGURE_EXCEPTION_HANDLER],
+                GI::PARAM_MIDDLEWARE_LIST         => [ApiHandler::HANDLER],
+            ])
+        ;
+
+        // Groups and subgroups are also supported.
+        // Custom middleware, configurators and request factories are supported on
+        // all levels from group to individual method.
+        //
+        //->group('api/v1', function (GI $group) {
+        //    $group
+        //        ->get($uriPath, $controllerClass . '::index')
+        //        ->post($uriPath, $controllerClass . '::create')
+        //        ->get($uriPath . '/{idx}', $controllerClass . '::read')
+        //        ->patch($uriPath . '/{idx}', $controllerClass . '::update')
+        //        ->delete($uriPath . '/{idx}', $controllerClass . '::delete');
+        //}, [
+        //      // Custom middleware for routes in the group
+        //      GI::PARAM_MIDDLEWARE_LIST         => [ callable[] ],
+        //      GI::PARAM_NAME_PREFIX             => 'custom/uri/prefix/for/all/routs',
+        //      GI::PARAM_CONTAINER_CONFIGURATORS =>  [ callable[] ],
+        //
+        //      // Default `ServerRequestInterface` factory could replaced with custom so
+        //      // you can have your own `AppOrRouteSpecificRequest`. If your app do not
+        //      // use $request you may set `null` and request won't be created then. It
+        //      // might give you a small performance improvement.
+        //      GI::PARAM_REQUEST_FACTORY => callable|null,
+        //]);
+
+        // Configure container for limoncello `db` command so we can use data `Faker` for data seeding.
+        self::commandContainer($routes, DataCommand::NAME, Commands::CONFIGURATOR);
     }
 }

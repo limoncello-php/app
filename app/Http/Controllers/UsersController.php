@@ -1,70 +1,58 @@
 <?php namespace App\Http\Controllers;
 
-use App\Api\UsersApi as Api;
-use App\Http\Validators\UsersValidator as Validator;
-use App\Schemes\UserSchema as Schema;
-use Interop\Container\ContainerInterface;
+use App\Data\Models\User as Model;
+use App\Json\Api\UsersApi as Api;
+use App\Json\Schemes\UserScheme as Scheme;
+use App\Json\Validators\UsersValidator as Validator;
+use Limoncello\Flute\Http\BaseController;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\EmptyResponse;
-use Zend\Diactoros\Response\JsonResponse;
 
 /**
  * @package App
+ *
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class UsersController extends BaseController
 {
     /** @inheritdoc */
     const API_CLASS = Api::class;
 
-    const SCHEMA_CLASS = Schema::class;
-
     /** @inheritdoc */
-    const VALIDATOR_CLASS = Validator::class;
-
-    /** Form key */
-    const FORM_EMAIL = 'email';
-
-    /** Form key */
-    const FORM_PASSWORD = 'password';
+    const SCHEMA_CLASS = Scheme::class;
 
     /**
-     * @param array                  $routeParams
-     * @param ContainerInterface     $container
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
+     * @inheritdoc
      */
-    public static function authenticate(
-        array $routeParams,
+    public static function parseInputOnCreate(
         ContainerInterface $container,
         ServerRequestInterface $request
-    ) {
-        // suppress unused variable
-        $routeParams ?: null;
+    ): array {
+        return static::prepareCaptures(
+            Validator::onCreateValidator($container)->assert(static::parseJson($container, $request))->getCaptures(),
+            Model::FIELD_ID,
+            Validator::captureNames()
+        );
+    }
 
-        $formData = $request->getParsedBody();
-        if (is_array($formData) === false ||
-            array_key_exists(self::FORM_EMAIL, $formData) === false ||
-            array_key_exists(self::FORM_PASSWORD, $formData) === false
-        ) {
-            return new EmptyResponse(400);
-        }
+    /**
+     * @inheritdoc
+     */
+    public static function parseInputOnUpdate(
+        $index,
+        ContainerInterface $container,
+        ServerRequestInterface $request
+    ): array {
+        $captures = Validator::onUpdateValidator($index, $container)
+            ->assert(static::parseJson($container, $request))
+            ->getCaptures();
 
-        $email    = $formData[self::FORM_EMAIL];
-        $password = $formData[self::FORM_PASSWORD];
-        if (is_string($email) === false || is_string($password) === false) {
-            return new EmptyResponse(400);
-        }
-
-        /** @var Api $api */
-        $api   = static::createApi($container);
-        $token = $api->authenticate($email, $password);
-        if ($token === null) {
-            return new EmptyResponse(401);
-        }
-
-        return new JsonResponse($token);
+        return static::prepareCaptures(
+            $captures,
+            Model::FIELD_ID,
+            Validator::captureNames()
+        );
     }
 
     /**
@@ -78,9 +66,9 @@ class UsersController extends BaseController
         array $routeParams,
         ContainerInterface $container,
         ServerRequestInterface $request
-    ) {
+    ): ResponseInterface {
         $index    = $routeParams[static::ROUTE_KEY_INDEX];
-        $response = static::readRelationship($index, Schema::REL_POSTS, $container, $request);
+        $response = static::readRelationship($index, Scheme::REL_POSTS, $container, $request);
 
         return $response;
     }
@@ -96,49 +84,10 @@ class UsersController extends BaseController
         array $routeParams,
         ContainerInterface $container,
         ServerRequestInterface $request
-    ) {
+    ): ResponseInterface {
         $index    = $routeParams[static::ROUTE_KEY_INDEX];
-        $response = static::readRelationship($index, Schema::REL_COMMENTS, $container, $request);
+        $response = static::readRelationship($index, Scheme::REL_COMMENTS, $container, $request);
 
         return $response;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function parseInputOnCreate(
-        ContainerInterface $container,
-        ServerRequestInterface $request
-    ) {
-        $validator = static::getValidator($container);
-        $json      = static::parseJson($container, $request);
-        $captures  = $validator->parseAndValidateUserOnCreate($json);
-
-        return $captures;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function parseInputOnUpdate(
-        $index,
-        ContainerInterface $container,
-        ServerRequestInterface $request
-    ) {
-        $validator = static::getValidator($container);
-        $json      = static::parseJson($container, $request);
-        $captures  = $validator->parseAndValidateUserOnUpdate($index, $json);
-
-        return $captures;
-    }
-
-    /**
-     * @param ContainerInterface $container
-     *
-     * @return Validator
-     */
-    protected static function getValidator(ContainerInterface $container)
-    {
-        return static::createValidatorFromClass(static::VALIDATOR_CLASS, $container);
     }
 }

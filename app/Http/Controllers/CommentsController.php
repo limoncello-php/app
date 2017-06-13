@@ -1,23 +1,25 @@
 <?php namespace App\Http\Controllers;
 
-use App\Api\CommentsApi as Api;
-use App\Http\Validators\CommentsValidator as Validator;
-use App\Schemes\CommentSchema as Schema;
-use Interop\Container\ContainerInterface;
+use App\Data\Models\Comment as Model;
+use App\Json\Api\CommentsApi as Api;
+use App\Json\Schemes\CommentScheme as Scheme;
+use App\Json\Validators\CommentsValidator as Validator;
+use Limoncello\Flute\Http\BaseController;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @package App
+ *
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class CommentsController extends BaseController
 {
     /** @inheritdoc */
     const API_CLASS = Api::class;
 
-    const SCHEMA_CLASS = Schema::class;
-
     /** @inheritdoc */
-    const VALIDATOR_CLASS = Validator::class;
+    const SCHEMA_CLASS = Scheme::class;
 
     /**
      * @inheritdoc
@@ -25,12 +27,14 @@ class CommentsController extends BaseController
     public static function parseInputOnCreate(
         ContainerInterface $container,
         ServerRequestInterface $request
-    ) {
-        $validator = static::getValidator($container);
-        $json      = static::parseJson($container, $request);
-        $captures  = $validator->parseAndValidateOnCreate($json);
-
-        return $captures;
+    ): array {
+        return static::prepareCaptures(
+            Validator::onCreateValidator($container)
+                ->assert(static::parseJson($container, $request))
+                ->getCaptures(),
+            Model::FIELD_ID,
+            Validator::captureNames()
+        );
     }
 
     /**
@@ -40,21 +44,15 @@ class CommentsController extends BaseController
         $index,
         ContainerInterface $container,
         ServerRequestInterface $request
-    ) {
-        $validator = static::getValidator($container);
-        $json      = static::parseJson($container, $request);
-        $captures  = $validator->parseAndValidateOnUpdate($index, $json);
+    ): array {
+        $captures = Validator::onUpdateValidator($index, $container)
+            ->assert(static::parseJson($container, $request))
+            ->getCaptures();
 
-        return $captures;
-    }
-
-    /**
-     * @param ContainerInterface $container
-     *
-     * @return Validator
-     */
-    protected static function getValidator(ContainerInterface $container)
-    {
-        return static::createValidatorFromClass(static::VALIDATOR_CLASS, $container);
+        return static::prepareCaptures(
+            $captures,
+            Model::FIELD_ID,
+            Validator::captureNames()
+        );
     }
 }

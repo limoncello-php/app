@@ -1,0 +1,41 @@
+# Usefull links
+# =============
+# https://hub.docker.com/_/php/
+# https://docs.docker.com/compose/overview/
+# https://docs.docker.com/compose/compose-file/
+#
+# Usefull commands
+# ================
+#
+# Start containers
+# $ docker-compose up -d
+#
+# View running containers
+# $ docker-compose ps
+#
+# Connect into command line of running container
+# $ docker-compose run <container_name> bash
+# where <name> could be db_limoncello_app, etc.
+# Tip: `Ctrl+p` + `Ctrl+q` + `Enter` (to exit container bash)
+#
+# Stop containers
+# $ docker-compose down
+#
+# Remove images
+# $ docker rmi db_limoncello_app
+#
+# Run non-default docker-compose file
+# $ docker-compose -f <file_name.yml> up -d
+# $ docker-compose -f <file_name.yml> down
+# $ docker-compose -f <file_name.yml> stop
+
+db:
+  image: percona
+  container_name: db_limoncello_app
+  ports:
+    - "3306:3306"
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_USER: passport
+    MYSQL_PASSWORD: secret
+    MYSQL_DATABASE: limoncello_app
