@@ -88,7 +88,7 @@ abstract class CommentsValidator extends BaseAppValidator
     /**
      * @return RuleInterface
      */
-    protected function postId()
+    protected function postId(): RuleInterface
     {
         return $this->primary(Post::TABLE_NAME, Post::FIELD_ID);
     }

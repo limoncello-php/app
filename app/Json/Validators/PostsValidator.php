@@ -98,7 +98,7 @@ abstract class PostsValidator extends BaseAppValidator
     /**
      * @return RuleInterface
      */
-    protected function boardId()
+    protected function boardId(): RuleInterface
     {
         return $this->primary(Board::TABLE_NAME, Board::FIELD_ID);
     }

@@ -18,7 +18,7 @@ abstract class BaseAppValidator extends Validator
      *
      * @return RuleInterface
      */
-    protected function isText($maxLength = null)
+    protected function isText($maxLength = null): RuleInterface
     {
         return static::andX(static::isString(), static::stringLength(null, $maxLength));
     }
@@ -26,7 +26,7 @@ abstract class BaseAppValidator extends Validator
     /**
      * @return RuleInterface
      */
-    protected function isEmail()
+    protected function isEmail(): RuleInterface
     {
         $condition = function ($input) {
             $result = filter_var($input, FILTER_VALIDATE_EMAIL) !== false;
@@ -44,7 +44,7 @@ abstract class BaseAppValidator extends Validator
      *
      * @return RuleInterface
      */
-    protected function isUnique($table, $primary, $messageCode = MessageCodes::INVALID_VALUE)
+    protected function isUnique($table, $primary, $messageCode = MessageCodes::INVALID_VALUE): RuleInterface
     {
         return $this->callableX(function ($index) use ($table, $primary) {
             return $this->exists($table, $primary, $index) === false;
@@ -58,7 +58,7 @@ abstract class BaseAppValidator extends Validator
      *
      * @return RuleInterface
      */
-    protected function doesExist($table, $primary, $messageCode = MessageCodes::INVALID_VALUE)
+    protected function doesExist($table, $primary, $messageCode = MessageCodes::INVALID_VALUE): RuleInterface
     {
         return $this->callableX(function ($index) use ($table, $primary) {
             return $this->exists($table, $primary, $index) === true;
@@ -71,7 +71,7 @@ abstract class BaseAppValidator extends Validator
      *
      * @return RuleInterface
      */
-    protected function primary($table, $primary)
+    protected function primary($table, $primary): RuleInterface
     {
         return static::andX(static::isString(), static::callableX(function ($index) use ($table, $primary) {
             return $this->exists($table, $primary, $index);
@@ -85,7 +85,7 @@ abstract class BaseAppValidator extends Validator
      *
      * @return bool
      */
-    private function exists($tableName, $columnName, $value)
+    private function exists($tableName, $columnName, $value): bool
     {
         /** @var Connection $connection */
         $connection = $this->getContainer()->get(Connection::class);

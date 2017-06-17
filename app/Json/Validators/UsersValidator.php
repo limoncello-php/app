@@ -92,7 +92,7 @@ abstract class UsersValidator extends BaseAppValidator
     /**
      * @return RuleInterface
      */
-    protected function firstName()
+    protected function firstName(): RuleInterface
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_FIRST_NAME];
 
@@ -102,7 +102,7 @@ abstract class UsersValidator extends BaseAppValidator
     /**
      * @return RuleInterface
      */
-    protected function lastName()
+    protected function lastName(): RuleInterface
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_LAST_NAME];
 
@@ -112,7 +112,7 @@ abstract class UsersValidator extends BaseAppValidator
     /**
      * @return RuleInterface
      */
-    protected function email()
+    protected function email(): RuleInterface
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_EMAIL];
         $isEmail   = $this->andX(
@@ -126,7 +126,7 @@ abstract class UsersValidator extends BaseAppValidator
     /**
      * @return RuleInterface
      */
-    protected function password()
+    protected function password(): RuleInterface
     {
         return $this->toString($this->stringLength(Model::MIN_PASSWORD_LENGTH));
     }
@@ -134,7 +134,7 @@ abstract class UsersValidator extends BaseAppValidator
     /**
      * @return RuleInterface
      */
-    protected function roleId()
+    protected function roleId(): RuleInterface
     {
         return $this->primary(Role::TABLE_NAME, Role::FIELD_ID);
     }
