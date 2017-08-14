@@ -49,6 +49,7 @@ class Application extends ApplicationSettings
                 //\Limoncello\Application\Packages\PDO\PdoProvider::class,
                 \Limoncello\Application\Packages\Cors\CorsProvider::class,
                 \Limoncello\Application\Packages\Data\DataProvider::class,
+                \Limoncello\Application\Packages\L10n\L10nProvider::class,
                 \Limoncello\Application\Packages\Monolog\MonologFileProvider::class,
                 \Limoncello\Application\Packages\FileSystem\FileSystemProvider::class,
                 \Limoncello\Crypt\Package\HasherProvider::class,

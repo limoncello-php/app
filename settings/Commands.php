@@ -16,7 +16,7 @@ class Commands implements ContainerConfiguratorInterface
     /**
      * @inheritdoc
      */
-    public static function configureContainer(LimoncelloContainerInterface $container)
+    public static function configureContainer(LimoncelloContainerInterface $container): void
     {
         $container[Generator::class] = function () {
             return Factory::create(Factory::DEFAULT_LOCALE);

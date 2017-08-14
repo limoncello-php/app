@@ -44,13 +44,11 @@ class Routes implements RoutesConfiguratorInterface
     }
 
     /**
-     * @param GI $routes
-     *
-     * @return void
+     * @inheritdoc
      *
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function configureRoutes(GI $routes)
+    public static function configureRoutes(GI $routes): void
     {
         // Every group, controller and even method may have custom `Request` factory and `Container` configurator.
         // So you can have your own `CommentRequest` which would be created for `CommentsController` only.

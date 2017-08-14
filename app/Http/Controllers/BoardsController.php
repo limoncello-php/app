@@ -1,9 +1,9 @@
 <?php namespace App\Http\Controllers;
 
-use App\Data\Models\Board as Model;
 use App\Json\Api\BoardsApi as Api;
 use App\Json\Schemes\BoardScheme as Scheme;
-use App\Json\Validators\BoardsValidator as Validator;
+use App\Json\Validators\BoardCreate;
+use App\Json\Validators\BoardUpdate;
 use Limoncello\Flute\Http\BaseController;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -22,40 +22,11 @@ class BoardsController extends BaseController
     /** @inheritdoc */
     const SCHEMA_CLASS = Scheme::class;
 
-    /**
-     * @inheritdoc
-     */
-    public static function parseInputOnCreate(
-        ContainerInterface $container,
-        ServerRequestInterface $request
-    ): array {
-        return static::prepareCaptures(
-            Validator::onCreateValidator($container)
-                ->assert(static::parseJson($container, $request))
-                ->getCaptures(),
-            Model::FIELD_ID,
-            Validator::captureNames()
-        );
-    }
+    /** @inheritdoc */
+    const ON_CREATE_VALIDATION_RULES_SET_CLASS = BoardCreate::class;
 
-    /**
-     * @inheritdoc
-     */
-    public static function parseInputOnUpdate(
-        $index,
-        ContainerInterface $container,
-        ServerRequestInterface $request
-    ): array {
-        $captures = Validator::onUpdateValidator($index, $container)
-            ->assert(static::parseJson($container, $request))
-            ->getCaptures();
-
-        return static::prepareCaptures(
-            $captures,
-            Model::FIELD_ID,
-            Validator::captureNames()
-        );
-    }
+    /** @inheritdoc */
+    const ON_UPDATE_VALIDATION_RULES_SET_CLASS = BoardUpdate::class;
 
     /**
      * @param array                  $routeParams

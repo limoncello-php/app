@@ -23,7 +23,7 @@ class RolesSeed implements SeedInterface
     /**
      * @inheritdoc
      */
-    public function run()
+    public function run(): void
     {
         $now = $this->now();
         $this->seedRowData(Model::TABLE_NAME, [

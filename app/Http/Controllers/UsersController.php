@@ -1,9 +1,9 @@
 <?php namespace App\Http\Controllers;
 
-use App\Data\Models\User as Model;
 use App\Json\Api\UsersApi as Api;
 use App\Json\Schemes\UserScheme as Scheme;
-use App\Json\Validators\UsersValidator as Validator;
+use App\Json\Validators\UserCreate;
+use App\Json\Validators\UserUpdate;
 use Limoncello\Flute\Http\BaseController;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -22,38 +22,11 @@ class UsersController extends BaseController
     /** @inheritdoc */
     const SCHEMA_CLASS = Scheme::class;
 
-    /**
-     * @inheritdoc
-     */
-    public static function parseInputOnCreate(
-        ContainerInterface $container,
-        ServerRequestInterface $request
-    ): array {
-        return static::prepareCaptures(
-            Validator::onCreateValidator($container)->assert(static::parseJson($container, $request))->getCaptures(),
-            Model::FIELD_ID,
-            Validator::captureNames()
-        );
-    }
+    /** @inheritdoc */
+    const ON_CREATE_VALIDATION_RULES_SET_CLASS = UserCreate::class;
 
-    /**
-     * @inheritdoc
-     */
-    public static function parseInputOnUpdate(
-        $index,
-        ContainerInterface $container,
-        ServerRequestInterface $request
-    ): array {
-        $captures = Validator::onUpdateValidator($index, $container)
-            ->assert(static::parseJson($container, $request))
-            ->getCaptures();
-
-        return static::prepareCaptures(
-            $captures,
-            Model::FIELD_ID,
-            Validator::captureNames()
-        );
-    }
+    /** @inheritdoc */
+    const ON_UPDATE_VALIDATION_RULES_SET_CLASS = UserUpdate::class;
 
     /**
      * @param array                  $routeParams

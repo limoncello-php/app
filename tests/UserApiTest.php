@@ -5,6 +5,7 @@ use App\Data\Seeds\RolesSeed;
 use App\Data\Seeds\UsersSeed;
 use App\Json\Schemes\UserScheme;
 use Limoncello\Testing\JsonApiCallsTrait;
+use Neomerx\JsonApi\Exceptions\JsonApiException;
 
 /**
  * @package Tests
@@ -120,6 +121,47 @@ EOT;
             ->where(User::FIELD_ID . '=' . $query->createPositionalParameter($userId))
             ->execute();
         $this->assertNotEmpty($statement->fetch());
+    }
+
+    /**
+     * Test User's API.
+     */
+    public function testCreateInvalidData()
+    {
+        $this->setPreventCommits();
+
+        $password  = 'secret';
+        $email     = "it_does_not_look_like_an_email";
+        $jsonInput = <<<EOT
+        {
+            "data" : {
+                "type" : "users",
+                "attributes" : {
+                    "first-name" : "John",
+                    "last-name"  : "Dow",
+                    "email"      : "$email",
+                    "password"   : "$password"
+                },
+                "relationships": {
+                    "role": {
+                        "data": { "type": "roles", "id": "user" }
+                    }
+                }
+            }
+        }
+EOT;
+        $headers = ['Authorization' => 'Bearer ' . $this->getAdminOAuthToken()];
+
+        $exception = null;
+        try {
+            $this->postJsonApi(self::API_URI, $jsonInput, $headers);
+        } catch (JsonApiException $exception) {
+        }
+
+        $this->assertNotNull($exception);
+        $this->assertCount(1, $exception->getErrors());
+        $error = $exception->getErrors()->getArrayCopy()[0];
+        $this->assertEquals('The value should be a valid email address.', $error->getDetail());
     }
 
     /**

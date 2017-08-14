@@ -22,6 +22,14 @@ class JsonApi extends FluteSettings
     /**
      * @inheritdoc
      */
+    protected function getRuleSetsPath(): string
+    {
+        return implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Json', 'Validators', '*.php']);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function get(): array
     {
         $settings = parent::get();

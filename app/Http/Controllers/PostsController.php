@@ -1,9 +1,9 @@
 <?php namespace App\Http\Controllers;
 
-use App\Data\Models\Post as Model;
 use App\Json\Api\PostsApi as Api;
 use App\Json\Schemes\PostScheme as Scheme;
-use App\Json\Validators\PostsValidator as Validator;
+use App\Json\Validators\PostCreate;
+use App\Json\Validators\PostUpdate;
 use Limoncello\Flute\Http\BaseController;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -22,40 +22,11 @@ class PostsController extends BaseController
     /** @inheritdoc */
     const SCHEMA_CLASS = Scheme::class;
 
-    /**
-     * @inheritdoc
-     */
-    public static function parseInputOnCreate(
-        ContainerInterface $container,
-        ServerRequestInterface $request
-    ): array {
-        return static::prepareCaptures(
-            Validator::onCreateValidator($container)
-                ->assert(static::parseJson($container, $request))
-                ->getCaptures(),
-            Model::FIELD_ID,
-            Validator::captureNames()
-        );
-    }
+    /** @inheritdoc */
+    const ON_CREATE_VALIDATION_RULES_SET_CLASS = PostCreate::class;
 
-    /**
-     * @inheritdoc
-     */
-    public static function parseInputOnUpdate(
-        $index,
-        ContainerInterface $container,
-        ServerRequestInterface $request
-    ): array {
-        $captures = Validator::onUpdateValidator($index, $container)
-            ->assert(static::parseJson($container, $request))
-            ->getCaptures();
-
-        return static::prepareCaptures(
-            $captures,
-            Model::FIELD_ID,
-            Validator::captureNames()
-        );
-    }
+    /** @inheritdoc */
+    const ON_UPDATE_VALIDATION_RULES_SET_CLASS = PostUpdate::class;
 
     /**
      * @param array                  $routeParams

@@ -20,7 +20,7 @@ class PassportSeed implements SeedInterface
     /**
      * @inheritdoc
      */
-    public function run()
+    public function run(): void
     {
         /** @var PassportServerIntegrationInterface $integration */
         $container   = $this->getContainer();

@@ -21,7 +21,7 @@ class UsersSeed implements SeedInterface
     /**
      * @inheritdoc
      */
-    public function run()
+    public function run(): void
     {
         $this->seedModelsData(self::NUMBER_OF_RECORDS, Model::class, function (ContainerInterface $container) {
             /** @var Generator $faker */

@@ -25,7 +25,7 @@ class RoleScope implements ModelInterface, CommonFields
     /**
      * @inheritdoc
      */
-    public static function getTableName()
+    public static function getTableName(): string
     {
         return static::TABLE_NAME;
     }
@@ -33,7 +33,7 @@ class RoleScope implements ModelInterface, CommonFields
     /**
      * @inheritdoc
      */
-    public static function getPrimaryKeyName()
+    public static function getPrimaryKeyName(): string
     {
         return static::FIELD_ID;
     }
@@ -41,7 +41,7 @@ class RoleScope implements ModelInterface, CommonFields
     /**
      * @inheritdoc
      */
-    public static function getAttributeTypes()
+    public static function getAttributeTypes(): array
     {
         return [
             self::FIELD_ID         => Type::INTEGER,
@@ -56,7 +56,7 @@ class RoleScope implements ModelInterface, CommonFields
     /**
      * @inheritdoc
      */
-    public static function getAttributeLengths()
+    public static function getAttributeLengths(): array
     {
         return [
             self::FIELD_ID_SCOPE => 255,
@@ -66,7 +66,7 @@ class RoleScope implements ModelInterface, CommonFields
     /**
      * @inheritdoc
      */
-    public static function getRelationships()
+    public static function getRelationships(): array
     {
         return [];
     }

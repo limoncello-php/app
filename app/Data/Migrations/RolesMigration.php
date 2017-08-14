@@ -14,7 +14,7 @@ class RolesMigration implements MigrationInterface
     /**
      * @inheritdoc
      */
-    public function migrate()
+    public function migrate(): void
     {
         $this->createTable(Model::class, [
             $this->primaryString(Model::FIELD_ID),
@@ -26,7 +26,7 @@ class RolesMigration implements MigrationInterface
     /**
      * @inheritdoc
      */
-    public function rollback()
+    public function rollback(): void
     {
         $this->dropTableIfExists(Model::class);
     }
