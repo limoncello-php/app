@@ -20,6 +20,8 @@ Supported features
 - Filters could be applied to attributes and primaries in relationships (all major relationship types such as `belongsTo`, `hasMany` and `belongsToMany`). Supported operators `=`, `eq`, `equals`, `!=`, `neq`, `not-equals`, `<`, `lt`, `less-than`, `<=`, `lte`, `less-or-equals`, `>`, `gt`, `greater-than`, `>=`, `gte`, `greater-or-equals`, `like`, `not-like`, `in`, `not-in`, `is-null`, `not-null`.
 - Pagination works for main resources and resources in relationships. Limits for maximum number of resources are configurable.
 
+> Note: By default inclusion deepness is [artificially limited](https://github.com/limoncello-php/app/issues/6) to one level for security reasons. Feel free to adjust inclusion strategy to meet your requirements.
+
 Server API documentation is [here](https://documenter.getpostman.com/view/53867/limoncello-app/6Z3usWQ).
 
 Based on
