@@ -4,7 +4,6 @@ use App\Json\Api\PostsApi as Api;
 use App\Json\Schemes\PostScheme as Scheme;
 use App\Json\Validators\PostCreate;
 use App\Json\Validators\PostUpdate;
-use Limoncello\Flute\Http\BaseController;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

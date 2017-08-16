@@ -39,7 +39,10 @@ class PostApiTest extends TestCase
                 ],
             ],
             'sort'    => '+id,-title',   // example of how multiple sorting conditions could be applied
-            'include' => 'comments',     // 'comments.user' or 'comments.user,comments.post' would also work
+
+            // example of how to add includes
+            // also the controller will limit the deepness of include paths and ignore anything deeper than first level
+            'include' => 'comments,comments.user,comments.post',
         ];
         $response = $this->get(self::API_URI, $queryParams);
 
@@ -52,7 +55,7 @@ class PostApiTest extends TestCase
         $this->assertEquals(2, $resource->id);
         $this->assertCount(4, $resource->relationships->comments->data);
 
-        // check response has included posts as well
+        // check response has included posts as well and ignored deeper paths
         $this->assertCount(9, $resources->included);
     }
 

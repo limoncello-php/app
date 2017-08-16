@@ -4,7 +4,6 @@ use App\Json\Api\CommentsApi as Api;
 use App\Json\Schemes\CommentScheme as Scheme;
 use App\Json\Validators\CommentCreate;
 use App\Json\Validators\CommentUpdate;
-use Limoncello\Flute\Http\BaseController;
 
 /**
  * @package App

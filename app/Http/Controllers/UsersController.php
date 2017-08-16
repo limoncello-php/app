@@ -4,7 +4,6 @@ use App\Json\Api\UsersApi as Api;
 use App\Json\Schemes\UserScheme as Scheme;
 use App\Json\Validators\UserCreate;
 use App\Json\Validators\UserUpdate;
-use Limoncello\Flute\Http\BaseController;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

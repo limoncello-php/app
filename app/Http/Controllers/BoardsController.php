@@ -4,7 +4,6 @@ use App\Json\Api\BoardsApi as Api;
 use App\Json\Schemes\BoardScheme as Scheme;
 use App\Json\Validators\BoardCreate;
 use App\Json\Validators\BoardUpdate;
-use Limoncello\Flute\Http\BaseController;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

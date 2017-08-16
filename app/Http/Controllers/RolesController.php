@@ -4,7 +4,6 @@ use App\Json\Api\RolesApi as Api;
 use App\Json\Schemes\RoleScheme as Scheme;
 use App\Json\Validators\RoleCreate;
 use App\Json\Validators\RoleUpdate;
-use Limoncello\Flute\Http\BaseController;
 
 /**
  * @package App
