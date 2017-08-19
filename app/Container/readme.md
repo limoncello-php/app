@@ -13,7 +13,7 @@ use Settings\SomeSettings;
 
 class CustomConfigurator implements ContainerConfiguratorInterface
 {
-    public static function configureContainer(LimoncelloContainerInterface $container)
+    public static function configureContainer(LimoncelloContainerInterface $container): void
     {
         $container[SomeInterface::class] = function (PsrContainerInterface $container) {
             $settings = $container->get(SettingsProviderInterface::class)->get(SomeSettings::class);
