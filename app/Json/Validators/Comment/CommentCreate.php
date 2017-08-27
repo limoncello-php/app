@@ -1,7 +1,7 @@
-<?php namespace App\Json\Validators;
+<?php namespace App\Json\Validators\Comment;
 
-use App\Json\Schemes\UserScheme as Scheme;
-use App\Json\Validators\Rules\UserRules as v;
+use App\Json\Schemes\CommentScheme as Scheme;
+use App\Json\Validators\Comment\CommentRules as r;
 use Limoncello\Flute\Contracts\Validation\JsonApiRuleSetInterface;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
@@ -10,14 +10,14 @@ use Limoncello\Validation\Contracts\Rules\RuleInterface;
  *
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
-final class UserCreate implements JsonApiRuleSetInterface
+final class CommentCreate implements JsonApiRuleSetInterface
 {
     /**
      * @inheritdoc
      */
     public static function getTypeRule(): RuleInterface
     {
-        return v::isUserType();
+        return r::commentType();
     }
 
     /**
@@ -25,7 +25,7 @@ final class UserCreate implements JsonApiRuleSetInterface
      */
     public static function getIdRule(): RuleInterface
     {
-        return v::equals(null);
+        return r::equals(null);
     }
 
     /**
@@ -34,10 +34,7 @@ final class UserCreate implements JsonApiRuleSetInterface
     public static function getAttributeRules(): array
     {
         return [
-            Scheme::ATTR_FIRST_NAME => v::required(v::firstName()),
-            Scheme::ATTR_LAST_NAME  => v::required(v::lastName()),
-            Scheme::ATTR_EMAIL      => v::required(v::email()),
-            Scheme::V_ATTR_PASSWORD => v::required(v::password()),
+            Scheme::ATTR_TEXT => r::required(r::text()),
         ];
     }
 
@@ -47,7 +44,7 @@ final class UserCreate implements JsonApiRuleSetInterface
     public static function getToOneRelationshipRules(): array
     {
         return [
-            Scheme::REL_ROLE => v::required(v::isRoleRelationship()),
+            Scheme::REL_POST => r::required(r::postRelationship()),
         ];
     }
 

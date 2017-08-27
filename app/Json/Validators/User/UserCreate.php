@@ -1,7 +1,7 @@
-<?php namespace App\Json\Validators;
+<?php namespace App\Json\Validators\User;
 
-use App\Json\Schemes\BoardScheme as Scheme;
-use App\Json\Validators\Rules\BoardRules as v;
+use App\Json\Schemes\UserScheme as Scheme;
+use App\Json\Validators\User\UserRules as r;
 use Limoncello\Flute\Contracts\Validation\JsonApiRuleSetInterface;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
@@ -10,14 +10,14 @@ use Limoncello\Validation\Contracts\Rules\RuleInterface;
  *
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
-final class BoardUpdate implements JsonApiRuleSetInterface
+final class UserCreate implements JsonApiRuleSetInterface
 {
     /**
      * @inheritdoc
      */
     public static function getTypeRule(): RuleInterface
     {
-        return v::isBoardType();
+        return r::userType();
     }
 
     /**
@@ -25,7 +25,7 @@ final class BoardUpdate implements JsonApiRuleSetInterface
      */
     public static function getIdRule(): RuleInterface
     {
-        return v::isBoardId();
+        return r::equals(null);
     }
 
     /**
@@ -34,7 +34,10 @@ final class BoardUpdate implements JsonApiRuleSetInterface
     public static function getAttributeRules(): array
     {
         return [
-            Scheme::ATTR_TITLE => v::required(v::title()),
+            Scheme::ATTR_FIRST_NAME => r::required(r::firstName()),
+            Scheme::ATTR_LAST_NAME  => r::required(r::lastName()),
+            Scheme::ATTR_EMAIL      => r::required(r::email()),
+            Scheme::V_ATTR_PASSWORD => r::required(r::password()),
         ];
     }
 
@@ -43,7 +46,9 @@ final class BoardUpdate implements JsonApiRuleSetInterface
      */
     public static function getToOneRelationshipRules(): array
     {
-        return [];
+        return [
+            Scheme::REL_ROLE => r::required(r::roleRelationship()),
+        ];
     }
 
     /**

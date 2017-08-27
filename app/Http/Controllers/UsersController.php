@@ -2,8 +2,8 @@
 
 use App\Json\Api\UsersApi as Api;
 use App\Json\Schemes\UserScheme as Scheme;
-use App\Json\Validators\UserCreate;
-use App\Json\Validators\UserUpdate;
+use App\Json\Validators\User\UserCreate;
+use App\Json\Validators\User\UserUpdate;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

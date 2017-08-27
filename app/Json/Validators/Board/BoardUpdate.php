@@ -1,7 +1,7 @@
-<?php namespace App\Json\Validators;
+<?php namespace App\Json\Validators\Board;
 
-use App\Json\Schemes\PostScheme as Scheme;
-use App\Json\Validators\Rules\PostRules as v;
+use App\Json\Schemes\BoardScheme as Scheme;
+use App\Json\Validators\Board\BoardRules as r;
 use Limoncello\Flute\Contracts\Validation\JsonApiRuleSetInterface;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
@@ -10,14 +10,14 @@ use Limoncello\Validation\Contracts\Rules\RuleInterface;
  *
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
-final class PostUpdate implements JsonApiRuleSetInterface
+final class BoardUpdate implements JsonApiRuleSetInterface
 {
     /**
      * @inheritdoc
      */
     public static function getTypeRule(): RuleInterface
     {
-        return v::isPostType();
+        return r::boardType();
     }
 
     /**
@@ -25,7 +25,7 @@ final class PostUpdate implements JsonApiRuleSetInterface
      */
     public static function getIdRule(): RuleInterface
     {
-        return v::isPostId();
+        return r::boardId();
     }
 
     /**
@@ -34,8 +34,7 @@ final class PostUpdate implements JsonApiRuleSetInterface
     public static function getAttributeRules(): array
     {
         return [
-            Scheme::ATTR_TITLE => v::title(),
-            Scheme::ATTR_TEXT  => v::text(),
+            Scheme::ATTR_TITLE => r::required(r::title()),
         ];
     }
 
@@ -44,7 +43,6 @@ final class PostUpdate implements JsonApiRuleSetInterface
      */
     public static function getToOneRelationshipRules(): array
     {
-        // do not allow changing boards for existing posts
         return [];
     }
 

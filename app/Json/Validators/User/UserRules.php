@@ -1,44 +1,24 @@
-<?php namespace App\Json\Validators\Rules;
+<?php namespace App\Json\Validators\User;
 
 use App\Data\Models\User as Model;
-use App\Json\Schemes\RoleScheme;
 use App\Json\Schemes\UserScheme as Scheme;
-use Limoncello\Flute\Validation\Rules\ExistInDatabaseTrait;
-use Limoncello\Flute\Validation\Rules\RelationshipsTrait;
+use App\Json\Validators\AppErrorCodes;
+use App\Json\Validators\BaseRules;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
-use Limoncello\Validation\Rules;
 
 /**
  * @package App
  *
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
-final class UserRules extends Rules
+final class UserRules extends BaseRules
 {
-    use RelationshipsTrait, ExistInDatabaseTrait;
-
     /**
      * @return RuleInterface
      */
-    public static function isUserType(): RuleInterface
+    public static function userType(): RuleInterface
     {
         return self::equals(Scheme::TYPE);
-    }
-
-    /**
-     * @return RuleInterface
-     */
-    public static function isUserId(): RuleInterface
-    {
-        return self::stringToInt(self::exists(Model::TABLE_NAME, Model::FIELD_ID));
-    }
-
-    /**
-     * @return RuleInterface
-     */
-    public static function isRoleRelationship(): RuleInterface
-    {
-        return self::toOneRelationship(RoleScheme::TYPE, RoleRules::isRoleId());
     }
 
     /**
@@ -63,9 +43,9 @@ final class UserRules extends Rules
     public static function email(): RuleInterface
     {
         return self::isString(
-            self::andX(
-                self::stringLengthMax(Model::getAttributeLengths()[Model::FIELD_EMAIL]),
-                new IsEmailRule()
+            self::stringLengthMax(
+                Model::getAttributeLengths()[Model::FIELD_EMAIL],
+                self::filter(FILTER_VALIDATE_EMAIL, null, AppErrorCodes::IS_EMAIL)
             )
         );
     }

@@ -24,7 +24,7 @@ class JsonApi extends FluteSettings
      */
     protected function getRuleSetsPath(): string
     {
-        return implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Json', 'Validators', '*.php']);
+        return implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Json', 'Validators', '**', '*.php']);
     }
 
     /**

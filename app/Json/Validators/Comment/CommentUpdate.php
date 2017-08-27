@@ -1,7 +1,7 @@
-<?php namespace App\Json\Validators;
+<?php namespace App\Json\Validators\Comment;
 
-use App\Json\Schemes\RoleScheme as Scheme;
-use App\Json\Validators\Rules\RoleRules as v;
+use App\Json\Schemes\CommentScheme as Scheme;
+use App\Json\Validators\Comment\CommentRules as r;
 use Limoncello\Flute\Contracts\Validation\JsonApiRuleSetInterface;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
@@ -10,14 +10,14 @@ use Limoncello\Validation\Contracts\Rules\RuleInterface;
  *
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
-final class RoleUpdate implements JsonApiRuleSetInterface
+final class CommentUpdate implements JsonApiRuleSetInterface
 {
     /**
      * @inheritdoc
      */
     public static function getTypeRule(): RuleInterface
     {
-        return v::isRoleType();
+        return r::commentType();
     }
 
     /**
@@ -25,7 +25,7 @@ final class RoleUpdate implements JsonApiRuleSetInterface
      */
     public static function getIdRule(): RuleInterface
     {
-        return v::isRoleId();
+        return r::commentId();
     }
 
     /**
@@ -34,7 +34,7 @@ final class RoleUpdate implements JsonApiRuleSetInterface
     public static function getAttributeRules(): array
     {
         return [
-            Scheme::ATTR_DESCRIPTION => v::required(v::description()),
+            Scheme::ATTR_TEXT => r::required(r::text()),
         ];
     }
 
@@ -43,6 +43,7 @@ final class RoleUpdate implements JsonApiRuleSetInterface
      */
     public static function getToOneRelationshipRules(): array
     {
+        // do not allow changing posts for existing comments
         return [];
     }
 

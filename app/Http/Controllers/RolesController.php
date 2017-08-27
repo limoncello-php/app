@@ -2,8 +2,8 @@
 
 use App\Json\Api\RolesApi as Api;
 use App\Json\Schemes\RoleScheme as Scheme;
-use App\Json\Validators\RoleCreate;
-use App\Json\Validators\RoleUpdate;
+use App\Json\Validators\Role\RoleCreate;
+use App\Json\Validators\Role\RoleUpdate;
 
 /**
  * @package App

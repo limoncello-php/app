@@ -2,8 +2,8 @@
 
 use App\Json\Api\PostsApi as Api;
 use App\Json\Schemes\PostScheme as Scheme;
-use App\Json\Validators\PostCreate;
-use App\Json\Validators\PostUpdate;
+use App\Json\Validators\Post\PostCreate;
+use App\Json\Validators\Post\PostUpdate;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

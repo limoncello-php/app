@@ -2,8 +2,8 @@
 
 use App\Json\Api\BoardsApi as Api;
 use App\Json\Schemes\BoardScheme as Scheme;
-use App\Json\Validators\BoardCreate;
-use App\Json\Validators\BoardUpdate;
+use App\Json\Validators\Board\BoardCreate;
+use App\Json\Validators\Board\BoardUpdate;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

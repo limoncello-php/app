@@ -2,8 +2,8 @@
 
 use App\Json\Api\CommentsApi as Api;
 use App\Json\Schemes\CommentScheme as Scheme;
-use App\Json\Validators\CommentCreate;
-use App\Json\Validators\CommentUpdate;
+use App\Json\Validators\Comment\CommentCreate;
+use App\Json\Validators\Comment\CommentUpdate;
 
 /**
  * @package App

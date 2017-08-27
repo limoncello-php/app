@@ -1,7 +1,7 @@
-<?php namespace App\Json\Validators;
+<?php namespace App\Json\Validators\Role;
 
 use App\Json\Schemes\RoleScheme as Scheme;
-use App\Json\Validators\Rules\RoleRules as v;
+use App\Json\Validators\Role\RoleRules as r;
 use Limoncello\Flute\Contracts\Validation\JsonApiRuleSetInterface;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
@@ -10,14 +10,14 @@ use Limoncello\Validation\Contracts\Rules\RuleInterface;
  *
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
-final class RoleCreate implements JsonApiRuleSetInterface
+final class RoleUpdate implements JsonApiRuleSetInterface
 {
     /**
      * @inheritdoc
      */
     public static function getTypeRule(): RuleInterface
     {
-        return v::isRoleType();
+        return r::roleType();
     }
 
     /**
@@ -25,7 +25,7 @@ final class RoleCreate implements JsonApiRuleSetInterface
      */
     public static function getIdRule(): RuleInterface
     {
-        return v::isUniqueRoleId();
+        return r::roleId();
     }
 
     /**
@@ -34,7 +34,7 @@ final class RoleCreate implements JsonApiRuleSetInterface
     public static function getAttributeRules(): array
     {
         return [
-            Scheme::ATTR_DESCRIPTION => v::required(v::description()),
+            Scheme::ATTR_DESCRIPTION => r::required(r::description()),
         ];
     }
 

@@ -1,4 +1,4 @@
-<?php namespace App\Json\Validators\Rules;
+<?php namespace App\Json\Validators;
 
 use Limoncello\Flute\Contracts\Validation\ErrorCodes;
 
