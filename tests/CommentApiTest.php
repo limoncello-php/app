@@ -2,6 +2,7 @@
 
 use App\Data\Models\Comment;
 use App\Json\Schemes\CommentScheme;
+use Limoncello\Flute\Adapters\PaginationStrategy;
 use Limoncello\Testing\JsonApiCallsTrait;
 
 /**
@@ -74,12 +75,29 @@ class CommentApiTest extends TestCase
     }
 
     /**
+     * Test index with parameters.
+     */
+    public function testIndexWithTooManyItems()
+    {
+        $queryParams = [
+            'page' => [
+                'size' => '10000',
+            ],
+        ];
+        $response    = $this->get(self::API_URI, $queryParams);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertNotNull($resources = json_decode((string)$response->getBody()));
+        $this->assertCount(PaginationStrategy::MAX_LIMIT_SIZE, $resources->data);
+    }
+
+    /**
      * Test Comment's API.
      */
     public function testRead()
     {
-        $commentId   = '1';
-        $response = $this->get(self::API_URI . "/$commentId");
+        $commentId = '1';
+        $response  = $this->get(self::API_URI . "/$commentId");
         $this->assertEquals(200, $response->getStatusCode());
 
         $json = json_decode((string)$response->getBody());
