@@ -119,6 +119,29 @@ class UsersApi extends BaseAppApi
     }
 
     /**
+     * @inheritdoc
+     */
+    protected function getAuthorizationActionAndResourceTypeForRelationship(
+        $index,
+        string $name,
+        FilterParameterCollection $filterParams = null,
+        array $sortParams = null,
+        array $pagingParams = null
+    ): array {
+        // if you add new relationships available for reading
+        // don't forget to tell the authorization subsystem what are the corresponding auth actions.
+
+        if ($name === Model::REL_POSTS) {
+            $pair = [UserRules::ACTION_VIEW_USER_POSTS, Scheme::TYPE];
+        } else {
+            assert($name === Model::REL_COMMENTS);
+            $pair = [UserRules::ACTION_VIEW_USER_COMMENTS, Scheme::TYPE];
+        }
+
+        return $pair;
+    }
+
+    /**
      * @param array $attributes
      *
      * @return array

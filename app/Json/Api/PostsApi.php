@@ -78,4 +78,23 @@ class PostsApi extends BaseAppApi
 
         return parent::read($index, $filterParams, $includePaths);
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getAuthorizationActionAndResourceTypeForRelationship(
+        $index,
+        string $name,
+        FilterParameterCollection $filterParams = null,
+        array $sortParams = null,
+        array $pagingParams = null
+    ): array {
+        // if you add new relationships available for reading
+        // don't forget to tell the authorization subsystem what are the corresponding auth actions.
+
+        assert($name === Model::REL_COMMENTS);
+        $pair = [PostRules::ACTION_VIEW_POST_COMMENTS, Scheme::TYPE];
+
+        return $pair;
+    }
 }

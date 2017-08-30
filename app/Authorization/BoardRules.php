@@ -18,6 +18,9 @@ class BoardRules implements ResourceAuthorizationRulesInterface
     /** Action name */
     const ACTION_ADMIN_BOARDS = 'canAdminBoards';
 
+    /** Action name */
+    const ACTION_VIEW_BOARD_POSTS = 'canViewBoardPosts';
+
     /**
      * @inheritdoc
      */
@@ -46,5 +49,17 @@ class BoardRules implements ResourceAuthorizationRulesInterface
     public static function canAdminBoards(ContextInterface $context): bool
     {
         return self::hasScope($context, Passport::SCOPE_ADMIN_BOARDS);
+    }
+
+    /**
+     * @param ContextInterface $context
+     *
+     * @return bool
+     */
+    public static function canViewBoardPosts(ContextInterface $context): bool
+    {
+        assert($context);
+
+        return true;
     }
 }

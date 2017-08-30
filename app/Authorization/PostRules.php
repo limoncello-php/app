@@ -24,6 +24,9 @@ class PostRules implements ResourceAuthorizationRulesInterface
     /** Action name */
     const ACTION_EDIT_POST = 'canEditPost';
 
+    /** Action name */
+    const ACTION_VIEW_POST_COMMENTS = 'canViewPostComments';
+
     /**
      * @inheritdoc
      */
@@ -68,6 +71,18 @@ class PostRules implements ResourceAuthorizationRulesInterface
         return
             self::hasScope($context, Passport::SCOPE_ADMIN_MESSAGES) ||
             self::isCurrentUserPostAuthor($context);
+    }
+
+    /**
+     * @param ContextInterface $context
+     *
+     * @return bool
+     */
+    public static function canViewPostComments(ContextInterface $context): bool
+    {
+        assert($context);
+
+        return true;
     }
 
     /**

@@ -8,6 +8,8 @@ use Doctrine\DBAL\Types\Type;
 use Limoncello\Contracts\Authentication\AccountManagerInterface;
 use Limoncello\Contracts\Authorization\AuthorizationManagerInterface;
 use Limoncello\Flute\Api\Crud;
+use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
+use Limoncello\Flute\Http\Query\FilterParameterCollection;
 use Limoncello\Flute\Types\DateTimeJsonApiStringType;
 use Limoncello\Passport\Contracts\Authentication\PassportAccountInterface;
 
@@ -18,6 +20,55 @@ use Limoncello\Passport\Contracts\Authentication\PassportAccountInterface;
  */
 abstract class BaseAppApi extends Crud
 {
+    /**
+     * Should return authorization action name and resource type for reading a relationship.
+     *
+     * @param int|string                     $index
+     * @param string                         $name
+     * @param FilterParameterCollection|null $filterParams
+     * @param array|null                     $sortParams
+     * @param array|null                     $pagingParams
+     *
+     * @return array [string $action, string|null $resourceType]
+     */
+    abstract protected function getAuthorizationActionAndResourceTypeForRelationship(
+        $index,
+        string $name,
+        FilterParameterCollection $filterParams = null,
+        array $sortParams = null,
+        array $pagingParams = null
+    ): array;
+
+    /**
+     * Authorizes reading relationship.
+     *
+     * @param int|string                     $index
+     * @param string                         $name
+     * @param FilterParameterCollection|null $filterParams
+     * @param array|null                     $sortParams
+     * @param array|null                     $pagingParams
+     *
+     * @return PaginatedDataInterface
+     */
+    public function readRelationship(
+        $index,
+        string $name,
+        FilterParameterCollection $filterParams = null,
+        array $sortParams = null,
+        array $pagingParams = null
+    ): PaginatedDataInterface {
+        list ($action, $resourceType) = static::getAuthorizationActionAndResourceTypeForRelationship(
+            $index,
+            $name,
+            $filterParams,
+            $sortParams,
+            $pagingParams
+        );
+        $this->authorize($action, $resourceType, $index);
+
+        return parent::readRelationship($index, $name, $filterParams, $sortParams, $pagingParams);
+    }
+
     /**
      * Authorize action for current user.
      *

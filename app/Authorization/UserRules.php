@@ -18,6 +18,12 @@ class UserRules implements ResourceAuthorizationRulesInterface
     /** Action name */
     const ACTION_MANAGE_USERS = 'canManageUsers';
 
+    /** Action name */
+    const ACTION_VIEW_USER_POSTS = 'canViewUserPosts';
+
+    /** Action name */
+    const ACTION_VIEW_USER_COMMENTS = 'canViewUserComments';
+
     /**
      * @inheritdoc
      */
@@ -44,5 +50,25 @@ class UserRules implements ResourceAuthorizationRulesInterface
     public static function canManageUsers(ContextInterface $context): bool
     {
         return self::hasScope($context, Passport::SCOPE_ADMIN_USERS);
+    }
+
+    /**
+     * @param ContextInterface $context
+     *
+     * @return bool
+     */
+    public static function canViewUserPosts(ContextInterface $context): bool
+    {
+        return self::ctxHasCurrentAccount($context);
+    }
+
+    /**
+     * @param ContextInterface $context
+     *
+     * @return bool
+     */
+    public static function canViewUserComments(ContextInterface $context): bool
+    {
+        return self::ctxHasCurrentAccount($context);
     }
 }

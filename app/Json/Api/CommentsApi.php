@@ -78,4 +78,30 @@ class CommentsApi extends BaseAppApi
 
         return parent::read($index, $filterParams, $includePaths);
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getAuthorizationActionAndResourceTypeForRelationship(
+        $index,
+        string $name,
+        FilterParameterCollection $filterParams = null,
+        array $sortParams = null,
+        array $pagingParams = null
+    ): array {
+        // if you add new relationships available for reading
+        // don't forget to tell the authorization subsystem what are the corresponding auth actions.
+
+        //if ($name === Model::REL_1) {
+        //    $pair = [ModelAuthRules::ACTION_VIEW_REL_1, Scheme::TYPE];
+        //} else {
+        //    assert($name === Model::REL_2);
+        //    $pair = [ModelAuthRules::ACTION_VIEW_REL_2, Scheme::TYPE];
+        //}
+        //return $pair;
+
+        assert(false, "Authorization action is not configured for reading `$name` relationship.");
+
+        return [];
+    }
 }
