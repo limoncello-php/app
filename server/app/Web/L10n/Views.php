@@ -1,4 +1,4 @@
-<?php namespace App\Http\L10n;
+<?php namespace App\Web\L10n;
 
 /**
  * @package App\L10n

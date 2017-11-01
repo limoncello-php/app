@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers\Api;
+<?php namespace App\Json\Controllers;
 
 /**
  * @package App

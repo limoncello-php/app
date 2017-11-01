@@ -1,9 +1,9 @@
-<?php namespace App\Http\Controllers\Api;
+<?php namespace App\Json\Controllers;
 
-use App\Json\Api\UsersApi as Api;
-use App\Json\Schemes\UserScheme as Scheme;
-use App\Json\Validators\User\UserCreate;
-use App\Json\Validators\User\UserUpdate;
+use App\Api\PostsApi as Api;
+use App\Json\Schemes\PostScheme as Scheme;
+use App\Json\Validators\Post\PostCreate;
+use App\Json\Validators\Post\PostUpdate;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -14,7 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
-class UsersController extends BaseController
+class PostsController extends BaseController
 {
     /** @inheritdoc */
     const API_CLASS = Api::class;
@@ -23,30 +23,10 @@ class UsersController extends BaseController
     const SCHEMA_CLASS = Scheme::class;
 
     /** @inheritdoc */
-    const ON_CREATE_VALIDATION_RULES_SET_CLASS = UserCreate::class;
+    const ON_CREATE_VALIDATION_RULES_SET_CLASS = PostCreate::class;
 
     /** @inheritdoc */
-    const ON_UPDATE_VALIDATION_RULES_SET_CLASS = UserUpdate::class;
-
-    /**
-     * @param array                  $routeParams
-     * @param ContainerInterface     $container
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
-     */
-    public static function readPosts(
-        array $routeParams,
-        ContainerInterface $container,
-        ServerRequestInterface $request
-    ): ResponseInterface {
-        return static::readRelationship(
-            $routeParams[static::ROUTE_KEY_INDEX],
-            Scheme::REL_POSTS,
-            $container,
-            $request
-        );
-    }
+    const ON_UPDATE_VALIDATION_RULES_SET_CLASS = PostUpdate::class;
 
     /**
      * @param array                  $routeParams
@@ -79,17 +59,13 @@ class UsersController extends BaseController
         return parent::configureOnIndexParser($parser)
             ->withAllowedFilterFields([
                 Scheme::RESOURCE_ID,
-                Scheme::ATTR_FIRST_NAME,
-                Scheme::ATTR_LAST_NAME,
             ])
             ->withAllowedSortFields([
                 Scheme::RESOURCE_ID,
-                Scheme::ATTR_FIRST_NAME,
-                Scheme::ATTR_LAST_NAME,
+                Scheme::ATTR_TITLE,
             ])
             ->withAllowedIncludePaths([
                 Scheme::REL_COMMENTS,
-                Scheme::REL_POSTS,
             ]);
     }
 }

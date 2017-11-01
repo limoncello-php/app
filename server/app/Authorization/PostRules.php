@@ -1,8 +1,8 @@
 <?php namespace App\Authorization;
 
+use App\Api\PostsApi;
 use App\Data\Models\Post;
 use App\Data\Seeds\PassportSeed;
-use App\Json\Api\PostsApi;
 use App\Json\Schemes\PostScheme as Scheme;
 use Limoncello\Application\Contracts\Authorization\ResourceAuthorizationRulesInterface;
 use Limoncello\Auth\Contracts\Authorization\PolicyInformation\ContextInterface;

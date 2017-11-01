@@ -2,7 +2,6 @@
 
 use App\Data\Models\Comment;
 use App\Json\Schemes\CommentScheme;
-use Limoncello\Flute\Adapters\PaginationStrategy;
 use Limoncello\Testing\JsonApiCallsTrait;
 use Tests\TestCase;
 
@@ -89,7 +88,7 @@ class CommentApiTest extends TestCase
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNotNull($resources = json_decode((string)$response->getBody()));
-        $this->assertCount(PaginationStrategy::MAX_LIMIT_SIZE, $resources->data);
+        $this->assertCount(100, $resources->data);
     }
 
     /**
@@ -151,7 +150,7 @@ class CommentApiTest extends TestCase
             }
         }
 EOT;
-        $headers  = $this->getAdminOAuthHeader();
+        $headers   = $this->getAdminOAuthHeader();
 
         $response = $this->postJsonApi(self::API_URI, $jsonInput, $headers);
         $this->assertEquals(201, $response->getStatusCode());
@@ -193,7 +192,7 @@ EOT;
             }
         }
 EOT;
-        $headers  = $this->getAdminOAuthHeader();
+        $headers   = $this->getAdminOAuthHeader();
 
         $response = $this->patchJsonApi(self::API_URI . "/$index", $jsonInput, $headers);
         $this->assertEquals(200, $response->getStatusCode());

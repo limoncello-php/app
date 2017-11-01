@@ -1,9 +1,9 @@
-<?php namespace App\Http\Controllers\Api;
+<?php namespace App\Json\Controllers;
 
-use App\Json\Api\BoardsApi as Api;
-use App\Json\Schemes\BoardScheme as Scheme;
-use App\Json\Validators\Board\BoardCreate;
-use App\Json\Validators\Board\BoardUpdate;
+use App\Api\UsersApi as Api;
+use App\Json\Schemes\UserScheme as Scheme;
+use App\Json\Validators\User\UserCreate;
+use App\Json\Validators\User\UserUpdate;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -14,7 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
-class BoardsController extends BaseController
+class UsersController extends BaseController
 {
     /** @inheritdoc */
     const API_CLASS = Api::class;
@@ -23,10 +23,10 @@ class BoardsController extends BaseController
     const SCHEMA_CLASS = Scheme::class;
 
     /** @inheritdoc */
-    const ON_CREATE_VALIDATION_RULES_SET_CLASS = BoardCreate::class;
+    const ON_CREATE_VALIDATION_RULES_SET_CLASS = UserCreate::class;
 
     /** @inheritdoc */
-    const ON_UPDATE_VALIDATION_RULES_SET_CLASS = BoardUpdate::class;
+    const ON_UPDATE_VALIDATION_RULES_SET_CLASS = UserUpdate::class;
 
     /**
      * @param array                  $routeParams
@@ -49,6 +49,26 @@ class BoardsController extends BaseController
     }
 
     /**
+     * @param array                  $routeParams
+     * @param ContainerInterface     $container
+     * @param ServerRequestInterface $request
+     *
+     * @return ResponseInterface
+     */
+    public static function readComments(
+        array $routeParams,
+        ContainerInterface $container,
+        ServerRequestInterface $request
+    ): ResponseInterface {
+        return static::readRelationship(
+            $routeParams[static::ROUTE_KEY_INDEX],
+            Scheme::REL_COMMENTS,
+            $container,
+            $request
+        );
+    }
+
+    /**
      * @inheritdoc
      *
      * By default no filters, sorts and includes are allowed (will be ignored). We override this method
@@ -59,12 +79,16 @@ class BoardsController extends BaseController
         return parent::configureOnIndexParser($parser)
             ->withAllowedFilterFields([
                 Scheme::RESOURCE_ID,
+                Scheme::ATTR_FIRST_NAME,
+                Scheme::ATTR_LAST_NAME,
             ])
             ->withAllowedSortFields([
                 Scheme::RESOURCE_ID,
-                Scheme::ATTR_TITLE,
+                Scheme::ATTR_FIRST_NAME,
+                Scheme::ATTR_LAST_NAME,
             ])
             ->withAllowedIncludePaths([
+                Scheme::REL_COMMENTS,
                 Scheme::REL_POSTS,
             ]);
     }

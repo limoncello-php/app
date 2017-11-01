@@ -1,10 +1,10 @@
-<?php namespace App\Http\Controllers\Web;
+<?php namespace App\Web\Controllers;
 
+use App\Api\BoardsApi;
+use App\Api\PostsApi;
 use App\Data\Models\Board;
 use App\Data\Models\Post;
-use App\Http\L10n\Views;
-use App\Json\Api\BoardsApi;
-use App\Json\Api\PostsApi;
+use App\Web\L10n\Views;
 use Limoncello\Flute\Contracts\Http\Controller\ControllerIndexInterface;
 use Limoncello\Flute\Contracts\Http\Controller\ControllerReadInterface;
 use Limoncello\Flute\Contracts\Http\ControllerInterface;

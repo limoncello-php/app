@@ -1,15 +1,15 @@
-<?php namespace App\Json\Api;
+<?php namespace App\Api;
 
-use App\Authorization\RoleRules;
-use App\Data\Models\Role as Model;
-use App\Json\Schemes\RoleScheme as Scheme;
+use App\Authorization\CommentRules;
+use App\Data\Models\Comment as Model;
+use App\Json\Schemes\CommentScheme as Scheme;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
 use Psr\Container\ContainerInterface;
 
 /**
  * @package App
  */
-class RolesApi extends BaseApi
+class CommentsApi extends BaseApi
 {
     /**
      * @param ContainerInterface $container
@@ -24,9 +24,17 @@ class RolesApi extends BaseApi
      */
     public function create($index, iterable $attributes, iterable $toMany): string
     {
-        $this->authorize(RoleRules::ACTION_ADMIN_ROLES, Scheme::TYPE, $index);
+        $this->authorize(CommentRules::ACTION_CREATE_COMMENT, Scheme::TYPE, $index);
 
-        return parent::create($index, $attributes, $toMany);
+        $addCurrentUserId = function (iterable $attributes): iterable {
+            foreach ($attributes as $name => $value) {
+                yield $name => $value;
+            }
+
+            yield Model::FIELD_ID_USER => $this->getCurrentUserIdentity();
+        };
+
+        return parent::create($index, $addCurrentUserId($attributes), $toMany);
     }
 
     /**
@@ -34,7 +42,7 @@ class RolesApi extends BaseApi
      */
     public function update($index, iterable $attributes, iterable $toMany): int
     {
-        $this->authorize(RoleRules::ACTION_ADMIN_ROLES, Scheme::TYPE, $index);
+        $this->authorize(CommentRules::ACTION_EDIT_COMMENT, Scheme::TYPE, $index);
 
         return parent::update($index, $attributes, $toMany);
     }
@@ -44,7 +52,7 @@ class RolesApi extends BaseApi
      */
     public function remove($index): bool
     {
-        $this->authorize(RoleRules::ACTION_ADMIN_ROLES, Scheme::TYPE, $index);
+        $this->authorize(CommentRules::ACTION_EDIT_COMMENT, Scheme::TYPE, $index);
 
         return parent::remove($index);
     }
@@ -54,7 +62,7 @@ class RolesApi extends BaseApi
      */
     public function index(): PaginatedDataInterface
     {
-        $this->authorize(RoleRules::ACTION_VIEW_ROLES, Scheme::TYPE);
+        $this->authorize(CommentRules::ACTION_VIEW_COMMENTS, Scheme::TYPE);
 
         return parent::index();
     }
@@ -64,7 +72,7 @@ class RolesApi extends BaseApi
      */
     public function read($index)
     {
-        $this->authorize(RoleRules::ACTION_VIEW_ROLES, Scheme::TYPE, $index);
+        $this->authorize(CommentRules::ACTION_VIEW_COMMENTS, Scheme::TYPE, $index);
 
         return parent::read($index);
     }

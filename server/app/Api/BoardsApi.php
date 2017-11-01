@@ -1,15 +1,15 @@
-<?php namespace App\Json\Api;
+<?php namespace App\Api;
 
-use App\Authorization\PostRules;
-use App\Data\Models\Post as Model;
-use App\Json\Schemes\PostScheme as Scheme;
+use App\Authorization\BoardRules;
+use App\Data\Models\Board as Model;
+use App\Json\Schemes\BoardScheme as Scheme;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
 use Psr\Container\ContainerInterface;
 
 /**
  * @package App
  */
-class PostsApi extends BaseApi
+class BoardsApi extends BaseApi
 {
     /**
      * @param ContainerInterface $container
@@ -24,17 +24,9 @@ class PostsApi extends BaseApi
      */
     public function create($index, iterable $attributes, iterable $toMany): string
     {
-        $this->authorize(PostRules::ACTION_CREATE_POST, Scheme::TYPE, $index);
+        $this->authorize(BoardRules::ACTION_ADMIN_BOARDS, Scheme::TYPE, $index);
 
-        $addCurrentUserId = function (iterable $attributes): iterable {
-            foreach ($attributes as $name => $value) {
-                yield $name => $value;
-            }
-
-            yield Model::FIELD_ID_USER => $this->getCurrentUserIdentity();
-        };
-
-        return parent::create($index, $addCurrentUserId($attributes), $toMany);
+        return parent::create($index, $attributes, $toMany);
     }
 
     /**
@@ -42,7 +34,7 @@ class PostsApi extends BaseApi
      */
     public function update($index, iterable $attributes, iterable $toMany): int
     {
-        $this->authorize(PostRules::ACTION_EDIT_POST, Scheme::TYPE, $index);
+        $this->authorize(BoardRules::ACTION_ADMIN_BOARDS, Scheme::TYPE, $index);
 
         return parent::update($index, $attributes, $toMany);
     }
@@ -52,7 +44,7 @@ class PostsApi extends BaseApi
      */
     public function remove($index): bool
     {
-        $this->authorize(PostRules::ACTION_EDIT_POST, Scheme::TYPE, $index);
+        $this->authorize(BoardRules::ACTION_ADMIN_BOARDS, Scheme::TYPE, $index);
 
         return parent::remove($index);
     }
@@ -62,7 +54,7 @@ class PostsApi extends BaseApi
      */
     public function index(): PaginatedDataInterface
     {
-        $this->authorize(PostRules::ACTION_VIEW_POSTS, Scheme::TYPE);
+        $this->authorize(BoardRules::ACTION_VIEW_BOARDS, Scheme::TYPE);
 
         return parent::index();
     }
@@ -72,7 +64,7 @@ class PostsApi extends BaseApi
      */
     public function read($index)
     {
-        $this->authorize(PostRules::ACTION_VIEW_POSTS, Scheme::TYPE, $index);
+        $this->authorize(BoardRules::ACTION_VIEW_BOARDS, Scheme::TYPE, $index);
 
         return parent::read($index);
     }
@@ -88,8 +80,8 @@ class PostsApi extends BaseApi
         // if you add new relationships available for reading
         // don't forget to tell the authorization subsystem what are the corresponding auth actions.
 
-        assert($name === Model::REL_COMMENTS);
-        $pair = [PostRules::ACTION_VIEW_POST_COMMENTS, Scheme::TYPE];
+        assert($name === Model::REL_POSTS);
+        $pair = [BoardRules::ACTION_VIEW_BOARD_POSTS, Scheme::TYPE];
 
         return $pair;
     }

@@ -1,6 +1,6 @@
-<?php namespace App\Http\Controllers\Web;
+<?php namespace App\Web\Controllers;
 
-use App\Http\L10n\Views;
+use App\Web\L10n\Views;
 use Limoncello\Contracts\L10n\FormatterFactoryInterface;
 use Limoncello\Contracts\Templates\TemplatesInterface;
 use Limoncello\Flute\Contracts\Api\CrudInterface;

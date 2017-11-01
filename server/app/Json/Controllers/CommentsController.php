@@ -1,9 +1,9 @@
-<?php namespace App\Http\Controllers\Api;
+<?php namespace App\Json\Controllers;
 
-use App\Json\Api\RolesApi as Api;
-use App\Json\Schemes\RoleScheme as Scheme;
-use App\Json\Validators\Role\RoleCreate;
-use App\Json\Validators\Role\RoleUpdate;
+use App\Api\CommentsApi as Api;
+use App\Json\Schemes\CommentScheme as Scheme;
+use App\Json\Validators\Comment\CommentCreate;
+use App\Json\Validators\Comment\CommentUpdate;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
 
 /**
@@ -11,7 +11,7 @@ use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
  *
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
-class RolesController extends BaseController
+class CommentsController extends BaseController
 {
     /** @inheritdoc */
     const API_CLASS = Api::class;
@@ -20,10 +20,10 @@ class RolesController extends BaseController
     const SCHEMA_CLASS = Scheme::class;
 
     /** @inheritdoc */
-    const ON_CREATE_VALIDATION_RULES_SET_CLASS = RoleCreate::class;
+    const ON_CREATE_VALIDATION_RULES_SET_CLASS = CommentCreate::class;
 
     /** @inheritdoc */
-    const ON_UPDATE_VALIDATION_RULES_SET_CLASS = RoleUpdate::class;
+    const ON_UPDATE_VALIDATION_RULES_SET_CLASS = CommentUpdate::class;
 
     /**
      * @inheritdoc
@@ -36,11 +36,12 @@ class RolesController extends BaseController
         return parent::configureOnIndexParser($parser)
             ->withAllowedFilterFields([
                 Scheme::RESOURCE_ID,
-                Scheme::ATTR_DESCRIPTION,
+                Scheme::REL_POST,
+                Scheme::REL_USER,
             ])
             ->withAllowedSortFields([
                 Scheme::RESOURCE_ID,
-                Scheme::ATTR_DESCRIPTION,
+                Scheme::ATTR_TEXT,
             ]);
     }
 }

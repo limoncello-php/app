@@ -1,7 +1,7 @@
 <?php namespace App\Authentication;
 
+use App\Api\UsersApi;
 use App\Data\Models\User;
-use App\Json\Api\UsersApi;
 use Doctrine\DBAL\Connection;
 use Limoncello\Crypt\Contracts\HasherInterface;
 use Limoncello\Flute\Contracts\FactoryInterface;
@@ -104,7 +104,7 @@ final class OAuth
         $userId = $token->getUserIdentifier();
 
         /** @var FactoryInterface $factory */
-        $factory  = $container->get(FactoryInterface::class);
+        $factory = $container->get(FactoryInterface::class);
         /** @var UsersApi $usersApi */
         $usersApi = $factory->createApi(UsersApi::class);
 

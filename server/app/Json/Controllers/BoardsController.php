@@ -1,9 +1,9 @@
-<?php namespace App\Http\Controllers\Api;
+<?php namespace App\Json\Controllers;
 
-use App\Json\Api\PostsApi as Api;
-use App\Json\Schemes\PostScheme as Scheme;
-use App\Json\Validators\Post\PostCreate;
-use App\Json\Validators\Post\PostUpdate;
+use App\Api\BoardsApi as Api;
+use App\Json\Schemes\BoardScheme as Scheme;
+use App\Json\Validators\Board\BoardCreate;
+use App\Json\Validators\Board\BoardUpdate;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -14,7 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
-class PostsController extends BaseController
+class BoardsController extends BaseController
 {
     /** @inheritdoc */
     const API_CLASS = Api::class;
@@ -23,10 +23,10 @@ class PostsController extends BaseController
     const SCHEMA_CLASS = Scheme::class;
 
     /** @inheritdoc */
-    const ON_CREATE_VALIDATION_RULES_SET_CLASS = PostCreate::class;
+    const ON_CREATE_VALIDATION_RULES_SET_CLASS = BoardCreate::class;
 
     /** @inheritdoc */
-    const ON_UPDATE_VALIDATION_RULES_SET_CLASS = PostUpdate::class;
+    const ON_UPDATE_VALIDATION_RULES_SET_CLASS = BoardUpdate::class;
 
     /**
      * @param array                  $routeParams
@@ -35,14 +35,14 @@ class PostsController extends BaseController
      *
      * @return ResponseInterface
      */
-    public static function readComments(
+    public static function readPosts(
         array $routeParams,
         ContainerInterface $container,
         ServerRequestInterface $request
     ): ResponseInterface {
         return static::readRelationship(
             $routeParams[static::ROUTE_KEY_INDEX],
-            Scheme::REL_COMMENTS,
+            Scheme::REL_POSTS,
             $container,
             $request
         );
@@ -65,7 +65,7 @@ class PostsController extends BaseController
                 Scheme::ATTR_TITLE,
             ])
             ->withAllowedIncludePaths([
-                Scheme::REL_COMMENTS,
+                Scheme::REL_POSTS,
             ]);
     }
 }

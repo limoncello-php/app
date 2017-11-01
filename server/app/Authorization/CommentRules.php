@@ -1,8 +1,8 @@
 <?php namespace App\Authorization;
 
+use App\Api\CommentsApi;
 use App\Data\Models\Comment;
 use App\Data\Seeds\PassportSeed;
-use App\Json\Api\CommentsApi;
 use App\Json\Schemes\CommentScheme as Scheme;
 use Limoncello\Application\Contracts\Authorization\ResourceAuthorizationRulesInterface;
 use Limoncello\Auth\Contracts\Authorization\PolicyInformation\ContextInterface;

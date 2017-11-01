@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers\Web;
+<?php namespace App\Web\Controllers;
 
 use Limoncello\Flute\Contracts\Adapters\PaginationStrategyInterface;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;

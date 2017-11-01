@@ -1,15 +1,15 @@
-<?php namespace App\Json\Api;
+<?php namespace App\Api;
 
-use App\Authorization\BoardRules;
-use App\Data\Models\Board as Model;
-use App\Json\Schemes\BoardScheme as Scheme;
+use App\Authorization\RoleRules;
+use App\Data\Models\Role as Model;
+use App\Json\Schemes\RoleScheme as Scheme;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
 use Psr\Container\ContainerInterface;
 
 /**
  * @package App
  */
-class BoardsApi extends BaseApi
+class RolesApi extends BaseApi
 {
     /**
      * @param ContainerInterface $container
@@ -24,7 +24,7 @@ class BoardsApi extends BaseApi
      */
     public function create($index, iterable $attributes, iterable $toMany): string
     {
-        $this->authorize(BoardRules::ACTION_ADMIN_BOARDS, Scheme::TYPE, $index);
+        $this->authorize(RoleRules::ACTION_ADMIN_ROLES, Scheme::TYPE, $index);
 
         return parent::create($index, $attributes, $toMany);
     }
@@ -34,7 +34,7 @@ class BoardsApi extends BaseApi
      */
     public function update($index, iterable $attributes, iterable $toMany): int
     {
-        $this->authorize(BoardRules::ACTION_ADMIN_BOARDS, Scheme::TYPE, $index);
+        $this->authorize(RoleRules::ACTION_ADMIN_ROLES, Scheme::TYPE, $index);
 
         return parent::update($index, $attributes, $toMany);
     }
@@ -44,7 +44,7 @@ class BoardsApi extends BaseApi
      */
     public function remove($index): bool
     {
-        $this->authorize(BoardRules::ACTION_ADMIN_BOARDS, Scheme::TYPE, $index);
+        $this->authorize(RoleRules::ACTION_ADMIN_ROLES, Scheme::TYPE, $index);
 
         return parent::remove($index);
     }
@@ -54,7 +54,7 @@ class BoardsApi extends BaseApi
      */
     public function index(): PaginatedDataInterface
     {
-        $this->authorize(BoardRules::ACTION_VIEW_BOARDS, Scheme::TYPE);
+        $this->authorize(RoleRules::ACTION_VIEW_ROLES, Scheme::TYPE);
 
         return parent::index();
     }
@@ -64,7 +64,7 @@ class BoardsApi extends BaseApi
      */
     public function read($index)
     {
-        $this->authorize(BoardRules::ACTION_VIEW_BOARDS, Scheme::TYPE, $index);
+        $this->authorize(RoleRules::ACTION_VIEW_ROLES, Scheme::TYPE, $index);
 
         return parent::read($index);
     }
@@ -80,9 +80,16 @@ class BoardsApi extends BaseApi
         // if you add new relationships available for reading
         // don't forget to tell the authorization subsystem what are the corresponding auth actions.
 
-        assert($name === Model::REL_POSTS);
-        $pair = [BoardRules::ACTION_VIEW_BOARD_POSTS, Scheme::TYPE];
+        //if ($name === Model::REL_1) {
+        //    $pair = [ModelAuthRules::ACTION_VIEW_REL_1, Scheme::TYPE];
+        //} else {
+        //    assert($name === Model::REL_2);
+        //    $pair = [ModelAuthRules::ACTION_VIEW_REL_2, Scheme::TYPE];
+        //}
+        //return $pair;
 
-        return $pair;
+        assert(false, "Authorization action is not configured for reading `$name` relationship.");
+
+        return [];
     }
 }

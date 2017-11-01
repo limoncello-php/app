@@ -1,4 +1,4 @@
-<?php namespace App\Json\Api;
+<?php namespace App\Api;
 
 use App\Data\Models\CommonFields;
 use DateTimeImmutable;

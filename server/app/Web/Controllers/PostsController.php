@@ -1,10 +1,10 @@
-<?php namespace App\Http\Controllers\Web;
+<?php namespace App\Web\Controllers;
 
+use App\Api\CommentsApi;
+use App\Api\PostsApi;
 use App\Data\Models\Comment;
 use App\Data\Models\Post;
-use App\Http\L10n\Views;
-use App\Json\Api\CommentsApi;
-use App\Json\Api\PostsApi;
+use App\Web\L10n\Views;
 use Limoncello\Flute\Contracts\Http\Controller\ControllerReadInterface as CRI;
 use Limoncello\Flute\Contracts\Http\ControllerInterface;
 use Limoncello\Flute\Http\Query\FilterParameter;

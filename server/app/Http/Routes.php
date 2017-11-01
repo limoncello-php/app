@@ -1,15 +1,15 @@
 <?php namespace App\Http;
 
-use App\Http\Controllers\Api\BoardsController as ApiBoardsController;
-use App\Http\Controllers\Api\CommentsController as ApiCommentsController;
-use App\Http\Controllers\Api\PostsController as ApiPostsController;
-use App\Http\Controllers\Api\RolesController as ApiRolesController;
-use App\Http\Controllers\Api\UsersController as ApiUsersController;
-use App\Http\Controllers\Web\BoardsController as WebBoardsController;
-use App\Http\Controllers\Web\PostsController as WebPostsController;
+use App\Json\Controllers\BoardsController as ApiBoardsController;
+use App\Json\Controllers\CommentsController as ApiCommentsController;
+use App\Json\Controllers\PostsController as ApiPostsController;
+use App\Json\Controllers\RolesController as ApiRolesController;
+use App\Json\Controllers\UsersController as ApiUsersController;
 use App\Json\Schemes\BoardScheme;
 use App\Json\Schemes\PostScheme;
 use App\Json\Schemes\UserScheme;
+use App\Web\Controllers\BoardsController as WebBoardsController;
+use App\Web\Controllers\PostsController as WebPostsController;
 use Limoncello\Application\Commands\DataCommand;
 use Limoncello\Application\Packages\Application\WhoopsContainerConfigurator;
 use Limoncello\Commands\CommandRoutesTrait;
