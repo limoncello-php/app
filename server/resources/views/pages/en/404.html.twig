@@ -1,0 +1,11 @@
+{% extends 'pages/en/master.html.twig' %}
+
+{% block title %}Not Found{% endblock %}
+
+{% block content %}
+    <article class="not-found">
+        <h1>{{ title   | default("404") }}</h1>
+        <h2>{{ message | default("Not found") }}</h2>
+        <h3>{{ details | default("") }}</h3>
+    </article>
+{% endblock %}

@@ -14,49 +14,33 @@
     "require": {
         "php": ">=7.1.0",
         "vlucas/phpdotenv": "^2.3",
-
-        "limoncello-php/application": "^0.7.1",
-        "limoncello-php/auth": "^0.7.1",
-        "limoncello-php/commands": "^0.7.1",
-        "limoncello-php/container": "^0.7.1",
-        "limoncello-php/contracts": "^0.7.1",
-        "limoncello-php/core": "^0.7.1",
-        "limoncello-php/crypt": "^0.7.1",
-        "limoncello-php/data": "^0.7.1",
-        "limoncello-php/events": "^0.7.1",
-        "limoncello-php/flute": "^0.7.1",
-        "limoncello-php/l10n": "^0.7.1",
-        "limoncello-php/oauth-server": "^0.7.1",
-        "limoncello-php/passport": "^0.7.1",
-        "limoncello-php/templates": "^0.7.1",
-        "limoncello-php/validation": "^0.7.1"
+        "limoncello-php/framework": "^0.8.0"
     },
     "require-dev": {
-        "limoncello-php/testing": "^0.7.1",
+        "limoncello-php/testing": "^0.8.0",
         "filp/whoops": "^2.1",
         "squizlabs/php_codesniffer": "^3.0",
         "phpmd/phpmd": "^2.6",
-        "composer/composer": "^1.0",
         "phpunit/phpunit": "^6.0",
-        "mockery/mockery": "^0.9.4",
+        "mockery/mockery": "^1.0",
         "doctrine/dbal": "^2.5.0",
-        "fzaninotto/faker": "dev-master"
+        "fzaninotto/faker": "^1.7"
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
-            "Settings\\": "settings/",
-            "Cached\\": "storage/cache/settings/"
+            "App\\": "server/app/",
+            "Settings\\": "server/settings/",
+            "Cached\\": "server/storage/cache/settings/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\": "server/tests/"
         }
     },
     "extra": {
         "application": {
-            "commands_cache": "storage/cache/settings/commands_cache.php"
+            "commands_cache": "server/storage/cache/settings/commands_cache.php"
         }
     },
     "config": {

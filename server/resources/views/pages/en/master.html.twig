@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="/assets/styles.css" type="text/css" rel="stylesheet">
+
+    <!--link rel="canonical" href="https://"-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    {% if master_canonical_sub_url %}
+        <link rel="canonical" href="{{ _origin_uri ~ master_canonical_sub_url }}" />
+    {% endif %}
+    <!--link rel="stylesheet" type="text/css" href="styles/inline.css"-->
+
+    <!--link rel="manifest" href="/manifest.json"-->
+
+    <!--meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Weather PWA">
+    <link rel="apple-touch-icon" href="images/icons/icon-152x152.png"-->
+
+    <!--meta name="msapplication-TileImage" content="images/icons/icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#2F3BA2"-->
+</head>
+
+<body>
+
+<div class="container">
+    <header class="header">
+        <nav class="header_hamburger">
+            <button class="hamburger" type="button">
+                <span class="hamburger-box"><span class="hamburger-inner"></span></span>
+            </button>
+        </nav>
+        <h1 class="header_logo"><a href="/">Magazine<sup>TM</sup></a></h1>
+        <div class="header_links">
+            <a href="https://github.com/limoncello-php/app" target="_blank">
+                <i class="fa fa-github fa-2x" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div class="popup">
+            <div class="arrow-up"></div>
+            <fieldset class="login-set">
+                <h1>Login to Your Account</h1>
+                <label><input type="email" placeholder="name@awesome.email" required="required"/></label>
+                <label><input type="password" placeholder="password" required="required"/></label>
+                <input type="submit" value="Login"/>
+                <h2></h2>
+            </fieldset>
+            <fieldset class="logout-set" hidden>
+                <input type="submit" value="Logout"/>
+            </fieldset>
+        </div>
+
+    </header>
+
+    <aside class="adv-content">
+        <a href="https://placeholder.com"><img src="http://via.placeholder.com/234x60?text=Baner+234x60" width="234px" height="60px"></a>
+    </aside>
+
+    {% block content %}
+    {% endblock %}
+
+    <aside class="adv-supplementary">
+        <a href="https://placeholder.com"><img src="http://via.placeholder.com/240x240?text=Baner+240x240" width="240px" height="240px"></a>
+    </aside>
+
+    <footer class="footer">
+        <a href="#">Terms of Use</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">About Us</a>
+        <a href="#">Contacts</a>
+    </footer>
+
+</div>
+
+<script src="/assets/index.js"></script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

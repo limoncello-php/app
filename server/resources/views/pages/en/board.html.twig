@@ -1,0 +1,32 @@
+{% extends 'pages/en/master.html.twig' %}
+
+{% block title %}{{ board.title }}{% endblock %}
+
+{% block content %}
+    <main class="content-board" data-board-id="{{ board.id_board }}">
+        <div class="content-board_posts">
+            {% for post in posts %}
+                <article class="content-board_posts_post" data-post-id="{{ post.id_post }}"
+                         data-author-id="{{ post.user.id_user }}">
+                    <a href="/posts/{{ post.id_post }}"><h1>{{ post.title }}</h1></a>
+                    <h2>{{ post.text|length > 120 ? post.text|slice(0, 117) ~ '...' : post.text }}</h2>
+                    <h3>{{ post.user.first_name ~ ' ' ~ post.user.last_name }}</h3>
+                    <time data-timestamp="{{ post.created_at.getValue().getTimestamp() }}">{{ post.created_at.getValue() | date }}</time>
+                    <button>Delete</button>
+                </article>
+            {% endfor %}
+        </div>
+
+        <article class="content-board_new-post" data-board-id="{{ board.id_board }}">
+            <div><label><input type="text" placeholder="Post Title"></label></div>
+            <div><label><textarea placeholder="Post Text"></textarea></label></div>
+            <button>Submit</button>
+            <h1></h1>
+        </article>
+
+        <nav>
+            {% if prevLink %}<a href="{{ prevLink }}">Prev</a>{% endif %}
+            {% if nextLink %}<a href="{{ nextLink }}">Next</a>{% endif %}
+        </nav>
+    </main>
+{% endblock %}

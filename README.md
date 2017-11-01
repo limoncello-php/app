@@ -1,10 +1,12 @@
 [![License](https://img.shields.io/packagist/l/limoncello-php/app.svg)](https://packagist.org/packages/limoncello-php/app)
 
+<a href="https://github.com/limoncello-php/framework" target="_blank"><img src="https://github.com/limoncello-php/app/blob/master/server/resources/img/limoncello.png" alt="Limoncello PHP" title="Limoncello PHP" align="right" width="200" height="200" /></a>
+
 ### Summary
 
-Limoncello App is a quick start application for [Limoncello](https://github.com/limoncello-php/framework) PHP framework.
+Limoncello App is a fully featured OAuth 2.0 [JSON API](http://jsonapi.org/) quick start application.
 
-The demo application is a simple message board which implements
+The demo application is a simple message board which demonstrates
 
 - [JSON API](http://jsonapi.org/) CRUD operations (create, read, update and delete) for a few sample resources with `to-one`, `to-many` and `many-to-many` relationship types.
 - Support for such JSON API [features](http://jsonapi.org/format/#fetching) as resource inclusion, sparse field sets, sorting, filtering and pagination.
@@ -16,8 +18,8 @@ The demo application is a simple message board which implements
 
 Supported features
 - Multiple nested paths resource inclusion (e.g. `posts,posts.user,posts.comments.user`).
-- Sorting by multiple attributes.
-- Filters could be applied to attributes and primaries in relationships (all major relationship types such as `belongsTo`, `hasMany` and `belongsToMany`). Supported operators `=`, `eq`, `equals`, `!=`, `neq`, `not-equals`, `<`, `lt`, `less-than`, `<=`, `lte`, `less-or-equals`, `>`, `gt`, `greater-than`, `>=`, `gte`, `greater-or-equals`, `like`, `not-like`, `in`, `not-in`, `is-null`, `not-null`.
+- Filtering and sorting by multiple attributes in resources and its relationships.
+- Supported operators `=`, `eq`, `equals`, `!=`, `neq`, `not-equals`, `<`, `lt`, `less-than`, `<=`, `lte`, `less-or-equals`, `>`, `gt`, `greater-than`, `>=`, `gte`, `greater-or-equals`, `like`, `not-like`, `in`, `not-in`, `is-null`, `not-null`.
 - Pagination works for main resources and resources in relationships. Limits for maximum number of resources are configurable.
 
 > Note: By default inclusion deepness is [artificially limited](https://github.com/limoncello-php/app/issues/6) to one level for security reasons. Feel free to adjust inclusion strategy to meet your requirements.
@@ -36,6 +38,8 @@ Based on
 - Built with :heart: [Limoncello](https://github.com/limoncello-php/framework)
 
 It could be a great start if you are planning to develop JSON API.
+
+Feel free to ask questions and thank you for supporting the project with :star:.
 
 ### Installation
 
@@ -61,7 +65,7 @@ The easiest way to play with the server is `Postman`.
 
 API documentation and code snippets [here](https://documenter.getpostman.com/view/53867/limoncello-app/6Z3usWQ).
 
-![Requests in Postman](resources/img/screen-shot.png)
+![Requests in Postman](server/resources/img/screen-shot.png)
 
 
 #### 3 Turn on production mode (optional)

@@ -1,5 +1,7 @@
-storage/local.sqlite
+server/storage/local.sqlite
 .idea/
+node_modules/
 vendor/
-composer.lock
 .env
+composer.lock
+package-lock.json

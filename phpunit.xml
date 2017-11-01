@@ -12,12 +12,12 @@
 		 syntaxCheck="true">
 	<testsuites>
 		<testsuite name="All">
-			<directory>./tests/</directory>
+			<directory>./server/tests/</directory>
 		</testsuite>
 	</testsuites>
 	<filter>
 		<whitelist>
-			<directory suffix=".php">app/</directory>
+			<directory suffix=".php">server/app/</directory>
 		</whitelist>
 	</filter>
 	<!--logging>
