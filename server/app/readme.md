@@ -1,8 +1,12 @@
 `Data` folder contains application database models, database migrations and seedings.
 
-`Http` folder contains HTTP routing and controllers.
+`Http` folder contains HTTP routing.
 
-`Json` folder contains your [JSON API](http://jsonapi.org/) implementation code including `Validators` for input data, mapping JSON data to Models with `Schemes` and `API` level. 
+`Api` folder contains implementation for application API such as CRUD (Create, Read, Update and Delete) operations.
+
+`Json` folder contains your [JSON API](http://jsonapi.org/) implementation code including controllers, `Validators` for input data, mapping JSON data to Models with `Schemes` and `API` level.
+
+`Web` folder contains web forms implementation including controllers and `Validators` for input form data.  
 
 `Authorization` folder contains rules for authorization user actions.
 
