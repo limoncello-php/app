@@ -1,0 +1,41 @@
+{
+  "name": "limoncello-client-demo",
+  "version": "0.8.0",
+  "description": "Limoncello Client Demo Application",
+  "main": "./public/assets/index.js",
+  "scripts": {
+    "dev-serve": "webpack-dev-server --config ./client/webpack/webpack.config.dev.js --open",
+    "php-serve": "php -S 0.0.0.0:8090 -t public public/index.php",
+    "serve": "npm run php-serve & npm run dev-serve",
+    "watch": "webpack --config ./client/webpack/webpack.config.dev.js --watch",
+    "build": "webpack --config ./client/webpack/webpack.config.prod.js"
+  },
+  "author": "info@neomerx.com",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^7.0.46",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-minify": "^0.2.0",
+    "babel-minify-webpack-plugin": "^0.2.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-minify": "^0.2.0",
+    "clean-webpack-plugin": "^0.1.17",
+    "css-loader": "^0.28.7",
+    "eslint": "^4.10.0",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^0.11.2",
+    "font-awesome": "^4.7.0",
+    "hamburgers": "^0.9.1",
+    "node-sass": "^4.5.3",
+    "postcss-loader": "^2.0.8",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.18.2",
+    "timeago.js": "^3.0.2",
+    "ts-loader": "^2.3.7",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.3"
+  }
+}

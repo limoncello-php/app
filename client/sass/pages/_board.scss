@@ -1,0 +1,89 @@
+@import '../variables';
+@import "masterpage";
+
+.content-board {
+  grid-area: content;
+
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+
+  article {
+    margin: 10px;
+    padding: 10px;
+    font-family: 'Roboto Slab', serif;
+    font-size: small;
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+
+    > h1 {
+      font-family: 'Nunito', sans-serif;
+      font-size: medium;
+      color: $primary-font-color;
+    }
+
+    li {
+      list-style-type: none;
+    }
+
+    a {
+      color: $secondary-font-color;
+    }
+  }
+
+  .content-board_posts {
+    .content-board_posts_post {
+      // delete post
+      button {
+        width: 6em;
+        display: none;
+        visibility: hidden;
+
+        &.is-active {
+          display: inherit;
+          visibility: inherit;
+        }
+      }
+    }
+  }
+
+  .content-board_new-post {
+    display: none;
+    visibility: hidden;
+
+    &.is-active {
+      display: inherit;
+      visibility: inherit;
+    }
+
+    // title
+    input {
+      width: 50%;
+      margin-bottom: 10px;
+      min-width: $min-width;
+    }
+
+    // text
+    textarea {
+      resize: none;
+      width: 100%;
+      min-height: 200px;
+      margin-bottom: 10px;
+      min-width: $min-width;
+    }
+
+    // submit post
+    button {
+      width: 6em;
+    }
+
+    // error
+    h1 {
+      display: none;
+      visibility: hidden;
+
+      &.is-active {
+        display: inherit;
+        visibility: inherit;
+      }
+    }
+  }
+}
