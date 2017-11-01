@@ -28,7 +28,7 @@ final class UserRules extends BaseRules
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_FIRST_NAME];
 
-        return self::isString(self::sanitizeText(self::stringLengthMax($maxLength)));
+        return self::isSanitizedString(self::stringLengthMax($maxLength));
     }
 
     /**
@@ -38,7 +38,7 @@ final class UserRules extends BaseRules
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_LAST_NAME];
 
-        return self::isString(self::sanitizeText(self::stringLengthMax($maxLength)));
+        return self::isSanitizedString(self::stringLengthMax($maxLength));
     }
 
     /**

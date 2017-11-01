@@ -27,10 +27,10 @@ final class BoardRules extends BaseRules
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_TITLE];
 
-        return self::isString(self::sanitizeText(self::stringLengthMax($maxLength, self::unique(
+        return self::isSanitizedString(self::stringLengthMax($maxLength, self::unique(
             Model::TABLE_NAME,
             Model::FIELD_TITLE
-        ))));
+        )));
     }
 
     /**
@@ -40,6 +40,6 @@ final class BoardRules extends BaseRules
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_IMG_URL];
 
-        return self::isString(self::sanitizeUrl(self::stringLengthMax($maxLength)));
+        return self::isSanitizedUrl(self::stringLengthMax($maxLength));
     }
 }

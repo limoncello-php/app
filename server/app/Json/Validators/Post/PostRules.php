@@ -27,7 +27,7 @@ final class PostRules extends BaseRules
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_TITLE];
 
-        return self::isString(self::sanitizeText(self::stringLengthMax($maxLength)));
+        return self::isSanitizedString(self::stringLengthMax($maxLength));
     }
 
     /**
@@ -35,6 +35,6 @@ final class PostRules extends BaseRules
      */
     public static function text(): RuleInterface
     {
-        return self::isString(self::sanitizeText());
+        return self::isSanitizedString();
     }
 }

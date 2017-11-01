@@ -76,7 +76,7 @@ class BaseRules extends Rules
      */
     public static function roleId(): RuleInterface
     {
-        return self::isString(self::exists(Role::TABLE_NAME, Role::FIELD_ID));
+        return self::isSanitizedString(self::exists(Role::TABLE_NAME, Role::FIELD_ID));
     }
 
     /**
@@ -118,9 +118,9 @@ class BaseRules extends Rules
      *
      * @return RuleInterface
      */
-    public static function sanitizeUrl(RuleInterface $next = null): RuleInterface
+    public static function isSanitizedUrl(RuleInterface $next = null): RuleInterface
     {
-        return self::filter(FILTER_SANITIZE_URL, null, ErrorCodes::INVALID_VALUE, $next);
+        return self::isString(self::filter(FILTER_SANITIZE_URL, null, ErrorCodes::INVALID_VALUE, $next));
     }
 
     /**
@@ -128,8 +128,10 @@ class BaseRules extends Rules
      *
      * @return RuleInterface
      */
-    public static function sanitizeText(RuleInterface $next = null): RuleInterface
+    public static function isSanitizedString(RuleInterface $next = null): RuleInterface
     {
-        return self::filter(FILTER_SANITIZE_FULL_SPECIAL_CHARS, null, ErrorCodes::INVALID_VALUE, $next);
+        return self::isString(
+            self::filter(FILTER_SANITIZE_FULL_SPECIAL_CHARS, null, ErrorCodes::INVALID_VALUE, $next)
+        );
     }
 }

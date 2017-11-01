@@ -24,6 +24,6 @@ final class CommentRules extends BaseRules
      */
     public static function text(): RuleInterface
     {
-        return self::isString(self::sanitizeText());
+        return self::isSanitizedString();
     }
 }
