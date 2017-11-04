@@ -1,4 +1,4 @@
-<?php namespace App\Json\Validators;
+<?php namespace App\Validation;
 
 use App\Data\Models\Board;
 use App\Data\Models\Comment;
@@ -76,7 +76,7 @@ class BaseRules extends Rules
      */
     public static function roleId(): RuleInterface
     {
-        return self::isSanitizedString(self::exists(Role::TABLE_NAME, Role::FIELD_ID));
+        return self::asSanitizedString(self::exists(Role::TABLE_NAME, Role::FIELD_ID));
     }
 
     /**
@@ -118,7 +118,7 @@ class BaseRules extends Rules
      *
      * @return RuleInterface
      */
-    public static function isSanitizedUrl(RuleInterface $next = null): RuleInterface
+    public static function asSanitizedUrl(RuleInterface $next = null): RuleInterface
     {
         return self::isString(self::filter(FILTER_SANITIZE_URL, null, ErrorCodes::INVALID_VALUE, $next));
     }
@@ -128,7 +128,7 @@ class BaseRules extends Rules
      *
      * @return RuleInterface
      */
-    public static function isSanitizedString(RuleInterface $next = null): RuleInterface
+    public static function asSanitizedString(RuleInterface $next = null): RuleInterface
     {
         return self::isString(
             self::filter(FILTER_SANITIZE_FULL_SPECIAL_CHARS, null, ErrorCodes::INVALID_VALUE, $next)

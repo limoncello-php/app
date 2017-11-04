@@ -2,6 +2,7 @@
 
 use App\Application;
 use Doctrine\DBAL\Connection;
+use Limoncello\Application\Contracts\Cookie\CookieFunctionsInterface;
 use Limoncello\Application\Contracts\Session\SessionFunctionsInterface;
 use Limoncello\Contracts\Container\ContainerInterface;
 use Limoncello\Contracts\Core\ApplicationInterface;
@@ -12,6 +13,7 @@ use Limoncello\Testing\MeasureExecutionTimeTrait;
 use Limoncello\Testing\Sapi;
 use Limoncello\Testing\TestCaseTrait;
 use Mockery;
+use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 
 /**
@@ -32,6 +34,11 @@ class TestCase extends \PHPUnit\Framework\TestCase
      * @var Connection|null
      */
     private $sharedConnection = null;
+
+    /**
+     * @var null|ContainerInterface
+     */
+    private $appContainer = null;
 
     /**
      * @inheritdoc
@@ -61,21 +68,32 @@ class TestCase extends \PHPUnit\Framework\TestCase
         };
         $this->addOnContainerConfiguredEvent($interceptConnection);
 
-        // in testing environment replace PHP session functions with mocks
+        // in testing environment replace PHP session & cookie functions with mocks
         $replaceSessionFunctions = function (ApplicationInterface $app, ContainerInterface $container) {
             assert($app);
+            $doNothing = function () {
+            };
             if ($container->has(SessionFunctionsInterface::class) === true) {
-                $doNothing = function () {
-                };
-
                 /** @var SessionFunctionsInterface $functions */
                 $functions = $container->get(SessionFunctionsInterface::class);
                 $functions
                     ->setStartCallable($doNothing)
                     ->setWriteCloseCallable($doNothing);
             }
+            if ($container->has(CookieFunctionsInterface::class) === true) {
+                /** @var CookieFunctionsInterface $functions */
+                $functions = $container->get(CookieFunctionsInterface::class);
+                $functions
+                    ->setWriteCookieCallable($doNothing)
+                    ->setWriteRawCookieCallable($doNothing);
+            }
         };
         $this->addOnContainerConfiguredEvent($replaceSessionFunctions);
+
+        $this->addOnContainerConfiguredEvent(function (ApplicationInterface $app, ContainerInterface $container) {
+            assert($app);
+            $this->appContainer = $container;
+        });
     }
 
     /**
@@ -90,6 +108,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
         }
         $this->sharedConnection     = null;
         $this->shouldPreventCommits = false;
+        $this->appContainer         = null;
         $this->resetEventHandlers();
 
         Mockery::close();
@@ -108,11 +127,21 @@ class TestCase extends \PHPUnit\Framework\TestCase
     /**
      * Returns database connection used used by application within current test. Needs 'prevent commits' to be set.
      *
-     * @return Connection|null
+     * @return Connection
      */
-    protected function getCapturedConnection()
+    protected function getCapturedConnection(): ?Connection
     {
         return $this->sharedConnection;
+    }
+
+    /**
+     * Returns application container.
+     *
+     * @return PsrContainerInterface
+     */
+    protected function getAppContainer(): PsrContainerInterface
+    {
+        return $this->appContainer;
     }
 
     /**

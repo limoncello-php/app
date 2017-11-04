@@ -1,7 +1,6 @@
-<?php namespace App\Json\Validators\Comment;
+<?php namespace App\Validation;
 
 use App\Json\Schemes\CommentScheme as Scheme;
-use App\Json\Validators\BaseRules;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
 /**
@@ -24,6 +23,6 @@ final class CommentRules extends BaseRules
      */
     public static function text(): RuleInterface
     {
-        return self::isSanitizedString();
+        return self::asSanitizedString();
     }
 }

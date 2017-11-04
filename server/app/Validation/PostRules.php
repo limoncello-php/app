@@ -1,8 +1,7 @@
-<?php namespace App\Json\Validators\Post;
+<?php namespace App\Validation;
 
 use App\Data\Models\Post as Model;
 use App\Json\Schemes\PostScheme as Scheme;
-use App\Json\Validators\BaseRules;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
 /**
@@ -27,7 +26,7 @@ final class PostRules extends BaseRules
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_TITLE];
 
-        return self::isSanitizedString(self::stringLengthMax($maxLength));
+        return self::asSanitizedString(self::stringLengthMax($maxLength));
     }
 
     /**
@@ -35,6 +34,6 @@ final class PostRules extends BaseRules
      */
     public static function text(): RuleInterface
     {
-        return self::isSanitizedString();
+        return self::asSanitizedString();
     }
 }

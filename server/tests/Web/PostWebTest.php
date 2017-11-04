@@ -14,7 +14,7 @@ class PostWebTest extends TestCase
      */
     public function testRead(): void
     {
-        $postId = 3;
+        $postId   = 3;
         $response = $this->get(self::SUB_URL . "/$postId");
 
         $this->assertEquals(200, $response->getStatusCode());

@@ -1,7 +1,7 @@
 <?php namespace App\Json\Validators\Board;
 
 use App\Json\Schemes\BoardScheme as Scheme;
-use App\Json\Validators\Board\BoardRules as r;
+use App\Validation\BoardRules as r;
 use Limoncello\Flute\Contracts\Validation\JsonApiRuleSetInterface;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 

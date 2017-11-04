@@ -1,9 +1,7 @@
-<?php namespace App\Json\Validators\User;
+<?php namespace App\Validation;
 
 use App\Data\Models\User as Model;
 use App\Json\Schemes\UserScheme as Scheme;
-use App\Json\Validators\AppErrorCodes;
-use App\Json\Validators\BaseRules;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
 /**
@@ -28,7 +26,7 @@ final class UserRules extends BaseRules
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_FIRST_NAME];
 
-        return self::isSanitizedString(self::stringLengthMax($maxLength));
+        return self::asSanitizedString(self::stringLengthMax($maxLength));
     }
 
     /**
@@ -38,7 +36,7 @@ final class UserRules extends BaseRules
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_LAST_NAME];
 
-        return self::isSanitizedString(self::stringLengthMax($maxLength));
+        return self::asSanitizedString(self::stringLengthMax($maxLength));
     }
 
     /**
@@ -51,7 +49,7 @@ final class UserRules extends BaseRules
         return self::isString(
             self::stringLengthMax(
                 $maxLength,
-                self::filter(FILTER_VALIDATE_EMAIL, null, AppErrorCodes::IS_EMAIL)
+                self::filter(FILTER_VALIDATE_EMAIL, null, ErrorCodes::IS_EMAIL)
             )
         );
     }

@@ -1,6 +1,6 @@
 `Data` folder contains application database models, database migrations and seedings.
 
-`Http` folder contains HTTP routing.
+`Routes` folder contains routing for web and API.
 
 `Api` folder contains implementation for application API such as CRUD (Create, Read, Update and Delete) operations.
 

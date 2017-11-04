@@ -1,7 +1,7 @@
 <?php namespace App\Json\Validators\Comment;
 
 use App\Json\Schemes\CommentScheme as Scheme;
-use App\Json\Validators\Comment\CommentRules as r;
+use App\Validation\CommentRules as r;
 use Limoncello\Flute\Contracts\Validation\JsonApiRuleSetInterface;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 

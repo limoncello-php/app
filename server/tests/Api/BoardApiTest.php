@@ -20,9 +20,10 @@ class BoardApiTest extends TestCase
     public function testIndex()
     {
         $response = $this->get(self::API_URI);
-        $this->assertEquals(200, $response->getStatusCode());
 
-        $json = json_decode((string)$response->getBody());
+        $body = (string)$response->getBody();
+        $this->assertEquals(200, $response->getStatusCode());
+        $json = json_decode($body);
         $this->assertObjectHasAttribute('data', $json);
         $this->assertCount(9, $json->data);
     }

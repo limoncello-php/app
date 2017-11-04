@@ -1,8 +1,7 @@
-<?php namespace App\Json\Validators\Board;
+<?php namespace App\Validation;
 
 use App\Data\Models\Board as Model;
 use App\Json\Schemes\BoardScheme as Scheme;
-use App\Json\Validators\BaseRules;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
 /**
@@ -27,7 +26,7 @@ final class BoardRules extends BaseRules
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_TITLE];
 
-        return self::isSanitizedString(self::stringLengthMax($maxLength, self::unique(
+        return self::asSanitizedString(self::stringLengthMax($maxLength, self::unique(
             Model::TABLE_NAME,
             Model::FIELD_TITLE
         )));
@@ -40,6 +39,6 @@ final class BoardRules extends BaseRules
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_IMG_URL];
 
-        return self::isSanitizedUrl(self::stringLengthMax($maxLength));
+        return self::asSanitizedUrl(self::stringLengthMax($maxLength));
     }
 }

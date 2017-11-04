@@ -1,7 +1,7 @@
 <?php namespace App\Json\Validators\Post;
 
 use App\Json\Schemes\PostScheme as Scheme;
-use App\Json\Validators\Post\PostRules as r;
+use App\Validation\PostRules as r;
 use Limoncello\Flute\Contracts\Validation\JsonApiRuleSetInterface;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 

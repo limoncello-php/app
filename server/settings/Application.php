@@ -30,7 +30,7 @@ class Application implements ApplicationSettingsInterface
     {
         (new Dotenv(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..'])))->load();
 
-        $routesPath     = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Http', '*Routes.php']);
+        $routesPath     = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Routes', '*Routes.php']);
         $confPath       = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Container', '*.php']);
         $commandsFolder = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Commands']);
         $cacheFolder    = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'storage', 'cache', 'settings']);
@@ -48,12 +48,13 @@ class Application implements ApplicationSettingsInterface
                 \Limoncello\Application\Packages\Application\ApplicationProvider::class,
                 \Limoncello\Application\Packages\Authorization\AuthorizationProvider::class,
                 //\Limoncello\Application\Packages\PDO\PdoProvider::class,
-                //\Limoncello\Application\Packages\Cookies\CookieProvider::class,
+                \Limoncello\Application\Packages\Cookies\CookieProvider::class,
                 \Limoncello\Application\Packages\Cors\CorsProvider::class,
                 \Limoncello\Application\Packages\Data\DataProvider::class,
                 \Limoncello\Application\Packages\L10n\L10nProvider::class,
                 \Limoncello\Application\Packages\Monolog\MonologFileProvider::class,
                 \Limoncello\Application\Packages\FileSystem\FileSystemProvider::class,
+                \Limoncello\Application\Packages\FormValidation\FormValidationProvider::class,
                 //\Limoncello\Application\Packages\Session\SessionProvider::class,
                 \Limoncello\Crypt\Package\HasherProvider::class,
                 //\Limoncello\Crypt\Package\SymmetricCryptProvider::class,

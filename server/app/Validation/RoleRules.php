@@ -1,8 +1,7 @@
-<?php namespace App\Json\Validators\Role;
+<?php namespace App\Validation;
 
 use App\Data\Models\Role as Model;
 use App\Json\Schemes\RoleScheme as Scheme;
-use App\Json\Validators\BaseRules;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
 /**
@@ -27,7 +26,7 @@ final class RoleRules extends BaseRules
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_DESCRIPTION];
 
-        return self::isSanitizedString(self::stringLengthMax($maxLength));
+        return self::asSanitizedString(self::stringLengthMax($maxLength));
     }
 
     /**
@@ -35,6 +34,6 @@ final class RoleRules extends BaseRules
      */
     public static function isUniqueRoleId(): RuleInterface
     {
-        return self::isSanitizedString(self::unique(Model::TABLE_NAME, Model::FIELD_ID));
+        return self::asSanitizedString(self::unique(Model::TABLE_NAME, Model::FIELD_ID));
     }
 }

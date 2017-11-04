@@ -1,7 +1,7 @@
 <?php namespace Settings;
 
-use App\Http\Routes;
 use App\Json\Exceptions\ThrowableConverter;
+use App\Routes\ApiRoutes;
 use Limoncello\Application\Exceptions\AuthorizationException;
 use Limoncello\Core\Reflection\ClassIsTrait;
 use Limoncello\Flute\Package\FluteSettings;
@@ -25,7 +25,7 @@ class JsonApi extends FluteSettings
 
         return [
 
-                static::KEY_URI_PREFIX                                => Routes::API_URI_PREFIX,
+                static::KEY_URI_PREFIX                                => ApiRoutes::API_URI_PREFIX,
                 static::KEY_THROWABLE_TO_JSON_API_EXCEPTION_CONVERTER => ThrowableConverter::class,
                 static::KEY_SCHEMES_FOLDER                            => $schemesFolder,
                 static::KEY_VALIDATORS_FOLDER                         => $validatorsFolder,
