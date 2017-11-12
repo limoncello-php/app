@@ -1,12 +1,12 @@
 <?php namespace Settings;
 
 use Dotenv\Dotenv;
-use Limoncello\Contracts\Application\ApplicationSettingsInterface;
+use Limoncello\Contracts\Application\ApplicationConfigurationInterface;
 
 /**
  * @package Settings
  */
-class Application implements ApplicationSettingsInterface
+class Application implements ApplicationConfigurationInterface
 {
     /** Application origin HTTP scheme */
     const ORIGIN_SCHEME = 'http';
