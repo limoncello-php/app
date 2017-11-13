@@ -3,6 +3,8 @@
 use App\Web\L10n\Views;
 use Limoncello\Application\Contracts\Validation\FormValidatorFactoryInterface;
 use Limoncello\Application\Contracts\Validation\FormValidatorInterface;
+use Limoncello\Contracts\Application\ApplicationConfigurationInterface as A;
+use Limoncello\Contracts\Application\CacheSettingsProviderInterface;
 use Limoncello\Contracts\L10n\FormatterFactoryInterface;
 use Limoncello\Contracts\Templates\TemplatesInterface;
 use Limoncello\Flute\Contracts\Api\CrudInterface;
@@ -10,7 +12,6 @@ use Limoncello\Flute\Contracts\FactoryInterface;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
 use Limoncello\Templates\TwigTemplates;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
-use Settings\Application;
 use Twig_Extensions_Extension_Text;
 
 /**
@@ -45,8 +46,12 @@ abstract class BaseController
             $templates->getTwig()->addExtension(new Twig_Extensions_Extension_Text());
         }
 
+        /** @var CacheSettingsProviderInterface $provider */
+        $provider  = $container->get(CacheSettingsProviderInterface::class);
+        $originUri = $provider->getApplicationConfiguration()[A::KEY_APP_ORIGIN_URI];
+
         $defaultParams = [
-            '_origin_uri' => Application::ORIGIN_URI,
+            '_origin_uri' => $originUri,
         ];
 
         $body = $templates->render($templateName, $parameters + $defaultParams);

@@ -14,18 +14,10 @@ class Cors extends CorsSettings
     protected function getSettings(): array
     {
         (new Dotenv(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..'])))->load();
+
         return [
                 static::KEY_LOG_IS_ENABLED => filter_var(getenv('APP_ENABLE_LOGS'), FILTER_VALIDATE_BOOLEAN),
-                /**
-                 * Array should be in parse_url() result format.
-                 *
-                 * @see http://php.net/manual/function.parse-url.php
-                 */
-                static::KEY_SERVER_ORIGIN  => [
-                    static::KEY_SERVER_ORIGIN_SCHEME => Application::ORIGIN_SCHEME,
-                    static::KEY_SERVER_ORIGIN_HOST   => Application::ORIGIN_HOST,
-                    static::KEY_SERVER_ORIGIN_PORT   => (string)Application::ORIGIN_PORT,
-                ],
+
                 /**
                  * A list of allowed request origins (lower-cased, no trail slashes).
                  * Value `true` enables and value `null` disables origin.
@@ -39,6 +31,7 @@ class Cors extends CorsSettings
                 static::KEY_ALLOWED_ORIGINS => [
                     static::VALUE_ALLOW_ORIGIN_ALL => true,
                 ],
+
                 /**
                  * A list of allowed request methods (case sensitive).
                  * Value `true` enables and value `null` disables method.
@@ -69,6 +62,7 @@ class Cors extends CorsSettings
                     'PUT'    => true,
                     'DELETE' => true,
                 ],
+
                 /**
                  * A list of allowed request headers (lower-cased).
                  * Value `true` enables and value `null` disables header.
@@ -95,6 +89,7 @@ class Cors extends CorsSettings
                     'authorization' => true,
                     'origin'        => true,
                 ],
+
                 /**
                  * A list of headers (case insensitive) which will be made accessible to
                  * user agent (browser) in response. Value `true` enables and value `null` disables header.
@@ -110,6 +105,7 @@ class Cors extends CorsSettings
                 static::KEY_EXPOSED_HEADERS => [
                     'content-type' => true,
                 ],
+
             ] + parent::getSettings();
     }
 }

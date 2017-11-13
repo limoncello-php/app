@@ -18,7 +18,8 @@ class Session extends SessionSettings
 
         return [
 
-                static::KEY_COOKIE_SECURE => '1',
+                static::KEY_COOKIE_SECURE   => '',
+                static::KEY_COOKIE_LIFETIME => '0',
 
             ] + parent::getSettings();
     }

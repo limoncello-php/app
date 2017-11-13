@@ -8,18 +8,6 @@ use Limoncello\Contracts\Application\ApplicationConfigurationInterface;
  */
 class Application implements ApplicationConfigurationInterface
 {
-    /** Application origin HTTP scheme */
-    const ORIGIN_SCHEME = 'http';
-
-    /** Application origin HTTP host */
-    const ORIGIN_HOST = 'localhost';
-
-    /** Application origin HTTP port */
-    const ORIGIN_PORT = 8080;
-
-    /** Application origin HTTP URI */
-    const ORIGIN_URI = self::ORIGIN_SCHEME . '://' . self::ORIGIN_HOST . ':' . self::ORIGIN_PORT;
-
     /** @var callable */
     const CACHE_CALLABLE = '\\Cached\\Application::get';
 
@@ -35,6 +23,11 @@ class Application implements ApplicationConfigurationInterface
         $commandsFolder = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Commands']);
         $cacheFolder    = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'storage', 'cache', 'settings']);
 
+        $originScheme = getenv('APP_ORIGIN_SCHEME');
+        $originHost   = getenv('APP_ORIGIN_HOST');
+        $originPort   = getenv('APP_ORIGIN_PORT');
+        $originUri    = filter_var("$originScheme://$originHost:$originPort", FILTER_VALIDATE_URL);
+
         return [
             static::KEY_APP_NAME                     => getenv('APP_NAME'),
             static::KEY_IS_LOG_ENABLED               => filter_var(getenv('APP_ENABLE_LOGS'), FILTER_VALIDATE_BOOLEAN),
@@ -44,6 +37,10 @@ class Application implements ApplicationConfigurationInterface
             static::KEY_CACHE_FOLDER                 => $cacheFolder,
             static::KEY_CACHE_CALLABLE               => static::CACHE_CALLABLE,
             static::KEY_COMMANDS_FOLDER              => $commandsFolder,
+            static::KEY_APP_ORIGIN_SCHEME            => $originScheme,
+            static::KEY_APP_ORIGIN_HOST              => $originHost,
+            static::KEY_APP_ORIGIN_PORT              => $originPort,
+            static::KEY_APP_ORIGIN_URI               => $originUri,
             static::KEY_PROVIDER_CLASSES             => [
                 \Limoncello\Application\Packages\Application\ApplicationProvider::class,
                 \Limoncello\Application\Packages\Authorization\AuthorizationProvider::class,
