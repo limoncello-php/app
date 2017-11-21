@@ -1,15 +1,18 @@
 <?php namespace App\Web\Controllers;
 
 use App\Web\L10n\Views;
-use Limoncello\Application\Contracts\Validation\FormValidatorFactoryInterface;
-use Limoncello\Application\Contracts\Validation\FormValidatorInterface;
 use Limoncello\Contracts\Application\ApplicationConfigurationInterface as A;
 use Limoncello\Contracts\Application\CacheSettingsProviderInterface;
 use Limoncello\Contracts\L10n\FormatterFactoryInterface;
 use Limoncello\Contracts\Templates\TemplatesInterface;
 use Limoncello\Flute\Contracts\Api\CrudInterface;
 use Limoncello\Flute\Contracts\FactoryInterface;
+use Limoncello\Flute\Contracts\Http\Query\ParametersMapperInterface;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
+use Limoncello\Flute\Contracts\Http\Query\QueryValidatorFactoryInterface;
+use Limoncello\Flute\Contracts\Http\Query\QueryValidatorInterface;
+use Limoncello\Flute\Contracts\Validation\FormValidatorFactoryInterface;
+use Limoncello\Flute\Contracts\Validation\FormValidatorInterface;
 use Limoncello\Templates\TwigTemplates;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Twig_Extensions_Extension_Text;
@@ -94,6 +97,26 @@ abstract class BaseController
 
     /**
      * @param PsrContainerInterface $container
+     * @param string                $className
+     * @param array                 $queryParameters
+     *
+     * @return QueryValidatorInterface
+     */
+    protected static function createQueryValidator(
+        PsrContainerInterface $container,
+        string $className,
+        array $queryParameters
+    ): QueryValidatorInterface {
+        /** @var QueryValidatorFactoryInterface $factory */
+        $factory   = $container->get(QueryValidatorFactoryInterface::class);
+        $validator = $factory->createValidator($className);
+        $validator->parse($queryParameters);
+
+        return $validator;
+    }
+
+    /**
+     * @param PsrContainerInterface $container
      * @param string                $apiClass
      *
      * @return CrudInterface
@@ -105,5 +128,22 @@ abstract class BaseController
         $api     = $factory->createApi($apiClass);
 
         return $api;
+    }
+
+    /**
+     * @param PsrContainerInterface $container
+     * @param string                $jsonType
+     *
+     * @return ParametersMapperInterface
+     */
+    protected static function createParameterMapper(
+        PsrContainerInterface $container,
+        string $jsonType
+    ): ParametersMapperInterface {
+        /** @var ParametersMapperInterface $mapper */
+        $mapper = $container->get(ParametersMapperInterface::class);
+        $mapper->selectRootSchemeByResourceType($jsonType);
+
+        return $mapper;
     }
 }

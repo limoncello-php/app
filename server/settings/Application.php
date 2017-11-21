@@ -51,7 +51,6 @@ class Application implements ApplicationConfigurationInterface
                 \Limoncello\Application\Packages\L10n\L10nProvider::class,
                 \Limoncello\Application\Packages\Monolog\MonologFileProvider::class,
                 \Limoncello\Application\Packages\FileSystem\FileSystemProvider::class,
-                \Limoncello\Application\Packages\FormValidation\FormValidationProvider::class,
                 //\Limoncello\Application\Packages\Session\SessionProvider::class,
                 \Limoncello\Crypt\Package\HasherProvider::class,
                 //\Limoncello\Crypt\Package\SymmetricCryptProvider::class,

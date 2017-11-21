@@ -1,6 +1,6 @@
 <?php
 
-use App\Validation\ErrorCodes;
+use App\Validation\Rules\ErrorCodes;
 use Limoncello\Flute\Resources\Messages\En\Validation;
 
 return Validation::getMessages() + [

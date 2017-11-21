@@ -1,5 +1,6 @@
 <?php namespace Tests\Web;
 
+use App\Json\Schemes\BoardScheme;
 use Tests\TestCase;
 
 /**
@@ -22,8 +23,31 @@ class BoardWebTest extends TestCase
         }, $time);
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertContains('Unde dolore tempore', (string)$response->getBody());
+        $this->assertContains('Regions', (string)$response->getBody());
         $this->assertLessThan(0.5, $time, 'Our home page has become sloppy.');
+    }
+
+    /**
+     * Test index page.
+     */
+    public function testIndexWithFilters(): void
+    {
+        $queryParams = [
+            'filter' => [
+                BoardScheme::ATTR_TITLE => [
+                    'not-like' => '%Regions%',
+                ],
+                BoardScheme::ATTR_CREATED_AT => [
+                    'less-than' => '2100-02-03T04:05:06+0000',
+                ],
+            ],
+        ];
+
+        // execution time measurement example
+        $response = $this->get(self::ROOT_SUB_URL, $queryParams);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertNotContains('Regions', (string)$response->getBody());
     }
 
     /**

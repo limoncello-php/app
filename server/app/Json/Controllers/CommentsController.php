@@ -2,8 +2,8 @@
 
 use App\Api\CommentsApi as Api;
 use App\Json\Schemes\CommentScheme as Scheme;
-use App\Json\Validators\Comment\CommentCreate;
-use App\Json\Validators\Comment\CommentUpdate;
+use App\Validation\JsonValidators\Comment\CommentCreate;
+use App\Validation\JsonValidators\Comment\CommentUpdate;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
 
 /**

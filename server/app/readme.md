@@ -4,9 +4,11 @@
 
 `Api` folder contains implementation for application API such as CRUD (Create, Read, Update and Delete) operations.
 
-`Json` folder contains your [JSON API](http://jsonapi.org/) implementation code including controllers, `Validators` for input data, mapping JSON data to Models with `Schemes` and `API` level.
+`Json` folder contains your [JSON API](http://jsonapi.org/) implementation code including controllers, mapping JSON data to Models with `Schemes` and `API` level.
 
-`Web` folder contains web forms implementation including controllers and `Validators` for input form data.  
+`Web` folder contains web forms implementation including controllers.
+
+`Validation` folder contains validation rules and validators for HTTP Query parameters, JSON API inputs and Web forms.  
 
 `Authorization` folder contains rules for authorization user actions.
 

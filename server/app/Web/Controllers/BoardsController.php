@@ -4,6 +4,8 @@ use App\Api\BoardsApi;
 use App\Api\PostsApi;
 use App\Data\Models\Board;
 use App\Data\Models\Post;
+use App\Json\Schemes\BoardScheme;
+use App\Validation\QueryValidators\Board\ReadBoards;
 use App\Web\L10n\Views;
 use Limoncello\Flute\Contracts\Http\Controller\ControllerIndexInterface;
 use Limoncello\Flute\Contracts\Http\Controller\ControllerReadInterface;
@@ -35,12 +37,17 @@ class BoardsController extends BaseController implements ControllerIndexInterfac
         ServerRequestInterface $request
     ): ResponseInterface {
         // read resources with pagination and data from relationships
-        $parser          = self::createQueryParser($container, $request->getQueryParams());
-        $paginatedBoards = self::createApi($container, BoardsApi::class)
+        $parser    = self::createQueryValidator($container, ReadBoards::class, $request->getQueryParams());
+        $mapper    = self::createParameterMapper($container, BoardScheme::TYPE);
+        $boardsApi = self::createApi($container, BoardsApi::class);
+
+        $mapper->applyQueryParameters($parser, $boardsApi);
+
+        $paginatedBoards = $boardsApi
             ->withIncludes([[Board::REL_POSTS]])
-            ->withPaging($parser->getPagingOffset(), $parser->getPagingLimit())
             ->index();
-        $boards          = $paginatedBoards->getData();
+
+        $boards = $paginatedBoards->getData();
 
         // if no data return 404
         if (empty($boards) === true) {

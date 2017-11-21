@@ -10,8 +10,6 @@ The overall process is
 
 `Schemes` folder contains descriptions for mapping between JSON API fields and application Model ones.
 
-`Validators` folder contains validation rules for input JSON API data.
-
 Controller methods should have the following signature
 
 ```php

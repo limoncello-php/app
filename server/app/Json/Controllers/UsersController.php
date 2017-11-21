@@ -2,8 +2,8 @@
 
 use App\Api\UsersApi as Api;
 use App\Json\Schemes\UserScheme as Scheme;
-use App\Json\Validators\User\UserCreate;
-use App\Json\Validators\User\UserUpdate;
+use App\Validation\JsonValidators\User\UserCreate;
+use App\Validation\JsonValidators\User\UserUpdate;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;

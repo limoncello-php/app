@@ -2,8 +2,8 @@
 
 use App\Api\RolesApi as Api;
 use App\Json\Schemes\RoleScheme as Scheme;
-use App\Json\Validators\Role\RoleCreate;
-use App\Json\Validators\Role\RoleUpdate;
+use App\Validation\JsonValidators\Role\RoleCreate;
+use App\Validation\JsonValidators\Role\RoleUpdate;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
 
 /**

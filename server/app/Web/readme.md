@@ -5,8 +5,6 @@ The overall process is
 
 `Controllers` folder contains HTTP controllers.
 
-`Validators` folder contains validation rules for input JSON API data.
-
 Controller methods should have the following signature
 
 ```php
