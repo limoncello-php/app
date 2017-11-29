@@ -25,7 +25,6 @@ trait PaginationLinksTrait
         ];
 
         if ($data->isCollection() === true && (0 < $data->getOffset() || $data->hasMoreItems() === true)) {
-
             parse_str($originalUri->getQuery(), $queryParams);
 
             $pageSize    = $data->getLimit();

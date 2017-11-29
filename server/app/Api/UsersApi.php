@@ -128,7 +128,8 @@ class UsersApi extends BaseApi
      *
      * @return iterable
      */
-    private function getReplacePasswordWithHash(iterable $attributes) : iterable {
+    private function getReplacePasswordWithHash(iterable $attributes) : iterable
+    {
         // in attributes were captured validated input password we need to convert it into password hash
         foreach ($attributes as $name => $value) {
             if ($name === Scheme::CAPTURE_NAME_PASSWORD) {
