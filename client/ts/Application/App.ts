@@ -1,8 +1,8 @@
 import {JsonApiError} from '../JsonApi/JsonApiError';
-import {TokenInterface} from '../Contracts/OAuth/TokenInterface';
+import {TokenInterface} from '../Contracts/TokenInterface';
 import {SettingsInterface} from '../Contracts/SettingsInterface';
 import {ApplicationInterface} from '../Contracts/ApplicationInterface';
-import {AuthorizationInterface} from '../Contracts/OAuth/AuthorizationInterface';
+import {AuthorizerInterface} from '@limoncello-framework/oauth-client';
 
 /**
  * A key for auth token in local storage.
@@ -72,13 +72,13 @@ export class App implements ApplicationInterface {
     /**
      * @internal
      */
-    private readonly _auth: AuthorizationInterface;
+    private readonly _auth: AuthorizerInterface;
 
     /**
      * @param {SettingsInterface} settings
-     * @param {AuthorizationInterface} authorization
+     * @param {AuthorizerInterface} authorization
      */
-    public constructor(settings: SettingsInterface, authorization: AuthorizationInterface) {
+    public constructor(settings: SettingsInterface, authorization: AuthorizerInterface) {
         this._settings = settings;
         this._auth = authorization;
 
@@ -317,7 +317,7 @@ export class App implements ApplicationInterface {
 
         // if got valid token add it
         if (this.hasAuthToken === true) {
-            (fetchOptions.headers as Headers).append("Authorization", "Bearer " + this.authToken.access_token);
+            (fetchOptions.headers as Headers).append("Authorizer", "Bearer " + this.authToken.access_token);
         }
 
         return fetch(url, fetchOptions)
@@ -424,7 +424,7 @@ export class App implements ApplicationInterface {
      *
      * @internal
      */
-    private get auth(): AuthorizationInterface {
+    private get auth(): AuthorizerInterface {
         return this._auth;
     }
 

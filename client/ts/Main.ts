@@ -2,7 +2,7 @@ import './../sass/main.scss';
 
 import {Events} from './Dom/Events';
 import {App} from './Application/App';
-import {Authorization} from './OAuth/Authorization';
+import {Authorizer} from './OAuth/Authorizer';
 import {SettingsInterface} from './Contracts/SettingsInterface';
 
 (() => {
@@ -36,7 +36,7 @@ import {SettingsInterface} from './Contracts/SettingsInterface';
         cacheFetchOptions: cacheFetchOptions,
     };
 
-    const auth = new Authorization(settings.tokenUrl, settings.tokenFetchOptions);
+    const auth = new Authorizer(settings.tokenUrl, settings.tokenFetchOptions);
     const app = new App(settings, auth);
 
     new Events(app);

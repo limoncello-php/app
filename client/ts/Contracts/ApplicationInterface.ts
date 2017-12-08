@@ -1,4 +1,4 @@
-import {TokenInterface} from './OAuth/TokenInterface';
+import {TokenInterface} from './TokenInterface';
 import {SettingsInterface} from './SettingsInterface';
 
 /**
