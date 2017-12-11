@@ -5,7 +5,7 @@
   "main": "./public/assets/index.js",
   "scripts": {
     "dev-serve": "webpack-dev-server --config ./client/webpack/webpack.config.dev.js --open",
-    "php-serve": "php -S 0.0.0.0:8090 -t ./public/ index.php",
+    "php-serve": "php -S 0.0.0.0:8090 -t public",
     "serve": "npm run php-serve & npm run dev-serve",
     "watch": "webpack --config ./client/webpack/webpack.config.dev.js --watch",
     "build": "webpack --config ./client/webpack/webpack.config.prod.js"
