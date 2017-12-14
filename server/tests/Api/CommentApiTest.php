@@ -81,7 +81,7 @@ class CommentApiTest extends TestCase
     {
         $queryParams = [
             'page' => [
-                'size' => '10000',
+                'limit' => '10000',
             ],
         ];
         $response    = $this->get(self::API_URI, $queryParams);

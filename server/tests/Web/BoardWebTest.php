@@ -57,8 +57,8 @@ class BoardWebTest extends TestCase
     {
         $queryParams = [
             'page' => [
-                'skip' => '5',
-                'size' => '10',
+                'offset' => '5',
+                'limit'  => '10',
             ],
         ];
 

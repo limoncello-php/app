@@ -31,8 +31,8 @@ trait PaginationLinksTrait
             $linkClosure = function (int $offset) use ($originalUri, $pageSize, $queryParams): UriInterface {
                 $paramsWithPaging = array_merge($queryParams, [
                     QueryParametersParserInterface::PARAM_PAGE => [
-                        PaginationStrategyInterface::PARAM_PAGING_SKIP => $offset,
-                        PaginationStrategyInterface::PARAM_PAGING_SIZE => $pageSize,
+                        PaginationStrategyInterface::PARAM_PAGING_OFFSET => $offset,
+                        PaginationStrategyInterface::PARAM_PAGING_LIMIT  => $pageSize,
                     ],
                 ]);
 
