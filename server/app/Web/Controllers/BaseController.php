@@ -14,7 +14,9 @@ use Limoncello\Flute\Contracts\Http\Query\QueryValidatorInterface;
 use Limoncello\Flute\Contracts\Validation\FormValidatorFactoryInterface;
 use Limoncello\Flute\Contracts\Validation\FormValidatorInterface;
 use Limoncello\Templates\TwigTemplates;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Twig_Extensions_Extension_Text;
 
 /**
@@ -31,6 +33,9 @@ abstract class BaseController
      * @param string                $viewsNamespace
      *
      * @return string
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected static function view(
         PsrContainerInterface $container,
@@ -67,6 +72,9 @@ abstract class BaseController
      * @param string                $formValidatorClass
      *
      * @return FormValidatorInterface
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected static function validator(
         PsrContainerInterface $container,
@@ -84,6 +92,9 @@ abstract class BaseController
      * @param array                 $queryParameters
      *
      * @return QueryParserInterface
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected static function createQueryParser(
         PsrContainerInterface $container,
@@ -101,6 +112,9 @@ abstract class BaseController
      * @param array                 $queryParameters
      *
      * @return QueryValidatorInterface
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected static function createQueryValidator(
         PsrContainerInterface $container,
@@ -120,6 +134,9 @@ abstract class BaseController
      * @param string                $apiClass
      *
      * @return CrudInterface
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected static function createApi(PsrContainerInterface $container, string $apiClass): CrudInterface
     {
@@ -135,6 +152,9 @@ abstract class BaseController
      * @param string                $jsonType
      *
      * @return ParametersMapperInterface
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected static function createParameterMapper(
         PsrContainerInterface $container,

@@ -7,6 +7,8 @@ use App\Json\Schemes\PostScheme as Scheme;
 use Limoncello\Application\Contracts\Authorization\ResourceAuthorizationRulesInterface;
 use Limoncello\Auth\Contracts\Authorization\PolicyInformation\ContextInterface;
 use Limoncello\Flute\Contracts\FactoryInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * @package App
@@ -63,6 +65,9 @@ class PostRules implements ResourceAuthorizationRulesInterface
      * @param ContextInterface $context
      *
      * @return bool
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public static function canEditPost(ContextInterface $context): bool
     {
@@ -89,6 +94,9 @@ class PostRules implements ResourceAuthorizationRulesInterface
      * @param ContextInterface $context
      *
      * @return bool
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     private static function isCurrentUserPostAuthor(ContextInterface $context): bool
     {

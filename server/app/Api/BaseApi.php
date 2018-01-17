@@ -3,15 +3,19 @@
 use App\Data\Models\CommonFields;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Types\Type;
 use Limoncello\Contracts\Authentication\AccountManagerInterface;
 use Limoncello\Contracts\Authorization\AuthorizationManagerInterface;
+use Limoncello\Contracts\Exceptions\AuthorizationExceptionInterface;
 use Limoncello\Flute\Adapters\ModelQueryBuilder;
 use Limoncello\Flute\Api\Crud;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
 use Limoncello\Flute\Types\JsonApiDateTimeType;
 use Limoncello\Passport\Contracts\Authentication\PassportAccountInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * @package App
@@ -62,6 +66,10 @@ abstract class BaseApi extends Crud
      * @param string|int|null $resourceIdentity
      *
      * @return void
+     *
+     * @throws AuthorizationExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function authorize(string $action, string $resourceType = null, $resourceIdentity = null)
     {
@@ -106,6 +114,8 @@ abstract class BaseApi extends Crud
      * @param ModelQueryBuilder $builder
      *
      * @return ModelQueryBuilder
+     *
+     * @throws DBALException
      */
     protected function addCreatedAt(ModelQueryBuilder $builder): ModelQueryBuilder
     {
@@ -120,6 +130,8 @@ abstract class BaseApi extends Crud
      * @param ModelQueryBuilder $builder
      *
      * @return ModelQueryBuilder
+     *
+     * @throws DBALException
      */
     protected function addUpdatedAt(ModelQueryBuilder $builder): ModelQueryBuilder
     {
@@ -136,6 +148,8 @@ abstract class BaseApi extends Crud
      *
      * @return string
      *
+     * @throws DBALException
+     *
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function convertDateTimeToDbValue(QueryBuilder $builder, DateTimeInterface $dateTime): string
@@ -150,6 +164,9 @@ abstract class BaseApi extends Crud
      * The method assumes an account is logged in and therefore has less checks.
      *
      * @return int|string|null
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function getCurrentUserIdentity()
     {

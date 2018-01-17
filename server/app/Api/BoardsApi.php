@@ -4,7 +4,9 @@ use App\Authorization\BoardRules;
 use App\Data\Models\Board as Model;
 use App\Json\Schemes\BoardScheme as Scheme;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * @package App
@@ -13,6 +15,9 @@ class BoardsApi extends BaseApi
 {
     /**
      * @param ContainerInterface $container
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function __construct(ContainerInterface $container)
     {

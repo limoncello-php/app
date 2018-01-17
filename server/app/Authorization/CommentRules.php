@@ -7,6 +7,8 @@ use App\Json\Schemes\CommentScheme as Scheme;
 use Limoncello\Application\Contracts\Authorization\ResourceAuthorizationRulesInterface;
 use Limoncello\Auth\Contracts\Authorization\PolicyInformation\ContextInterface;
 use Limoncello\Flute\Contracts\FactoryInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * @package App
@@ -60,6 +62,9 @@ class CommentRules implements ResourceAuthorizationRulesInterface
      * @param ContextInterface $context
      *
      * @return bool
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public static function canEditComment(ContextInterface $context): bool
     {
@@ -74,6 +79,9 @@ class CommentRules implements ResourceAuthorizationRulesInterface
      * @param ContextInterface $context
      *
      * @return bool
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     private static function isCurrentUserCommentAuthor(ContextInterface $context): bool
     {

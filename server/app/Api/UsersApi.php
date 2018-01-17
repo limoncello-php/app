@@ -8,7 +8,9 @@ use Doctrine\DBAL\Connection;
 use Limoncello\Crypt\Contracts\HasherInterface;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
 use PDO;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * @package App
@@ -17,6 +19,9 @@ class UsersApi extends BaseApi
 {
     /**
      * @param ContainerInterface $container
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function __construct(ContainerInterface $container)
     {
@@ -77,6 +82,9 @@ class UsersApi extends BaseApi
      * @param int $userId
      *
      * @return array
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function readScopes(int $userId): array
     {
@@ -127,6 +135,9 @@ class UsersApi extends BaseApi
      * @param iterable $attributes
      *
      * @return iterable
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     private function getReplacePasswordWithHash(iterable $attributes) : iterable
     {

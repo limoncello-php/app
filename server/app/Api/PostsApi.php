@@ -4,7 +4,9 @@ use App\Authorization\PostRules;
 use App\Data\Models\Post as Model;
 use App\Json\Schemes\PostScheme as Scheme;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * @package App
@@ -13,6 +15,9 @@ class PostsApi extends BaseApi
 {
     /**
      * @param ContainerInterface $container
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function __construct(ContainerInterface $container)
     {

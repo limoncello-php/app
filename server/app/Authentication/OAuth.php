@@ -7,7 +7,9 @@ use Limoncello\Crypt\Contracts\HasherInterface;
 use Limoncello\Flute\Contracts\FactoryInterface;
 use Limoncello\Passport\Contracts\Entities\TokenInterface;
 use PDO;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * @package App
@@ -29,6 +31,9 @@ final class OAuth
      * @param string             $password
      *
      * @return int|null
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public static function validateUser(ContainerInterface $container, string $userName, string $password)
     {
@@ -60,9 +65,12 @@ final class OAuth
      * @param int                $userId
      * @param array|null         $scope
      *
-     * @return null
+     * @return null|array
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public static function validateScope(ContainerInterface $container, int $userId, array $scope = null)
+    public static function validateScope(ContainerInterface $container, int $userId, array $scope = null): ?array
     {
         assert($container || $userId || $scope);
 
@@ -98,6 +106,9 @@ final class OAuth
      * @param TokenInterface     $token
      *
      * @return array
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public static function getTokenCustomProperties(ContainerInterface $container, TokenInterface $token): array
     {
