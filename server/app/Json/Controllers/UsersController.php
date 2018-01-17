@@ -1,11 +1,14 @@
 <?php namespace App\Json\Controllers;
 
 use App\Api\UsersApi as Api;
+use App\Data\Models\User as Model;
 use App\Json\Schemes\UserScheme as Scheme;
 use App\Validation\JsonValidators\User\UserCreate;
 use App\Validation\JsonValidators\User\UserUpdate;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -34,6 +37,9 @@ class UsersController extends BaseController
      * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public static function readPosts(
         array $routeParams,
@@ -42,7 +48,7 @@ class UsersController extends BaseController
     ): ResponseInterface {
         return static::readRelationship(
             $routeParams[static::ROUTE_KEY_INDEX],
-            Scheme::REL_POSTS,
+            Model::REL_POSTS,
             $container,
             $request
         );
@@ -54,6 +60,9 @@ class UsersController extends BaseController
      * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public static function readComments(
         array $routeParams,
@@ -62,7 +71,7 @@ class UsersController extends BaseController
     ): ResponseInterface {
         return static::readRelationship(
             $routeParams[static::ROUTE_KEY_INDEX],
-            Scheme::REL_COMMENTS,
+            Model::REL_COMMENTS,
             $container,
             $request
         );

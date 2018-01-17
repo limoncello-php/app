@@ -1,11 +1,14 @@
 <?php namespace App\Json\Controllers;
 
 use App\Api\PostsApi as Api;
+use App\Data\Models\Post as Model;
 use App\Json\Schemes\PostScheme as Scheme;
 use App\Validation\JsonValidators\Post\PostCreate;
 use App\Validation\JsonValidators\Post\PostUpdate;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -34,6 +37,9 @@ class PostsController extends BaseController
      * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public static function readComments(
         array $routeParams,
@@ -42,7 +48,7 @@ class PostsController extends BaseController
     ): ResponseInterface {
         return static::readRelationship(
             $routeParams[static::ROUTE_KEY_INDEX],
-            Scheme::REL_COMMENTS,
+            Model::REL_COMMENTS,
             $container,
             $request
         );

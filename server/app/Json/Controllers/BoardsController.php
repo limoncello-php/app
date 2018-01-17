@@ -1,11 +1,14 @@
 <?php namespace App\Json\Controllers;
 
 use App\Api\BoardsApi as Api;
+use App\Data\Models\Board as Model;
 use App\Json\Schemes\BoardScheme as Scheme;
 use App\Validation\JsonValidators\Board\BoardCreate;
 use App\Validation\JsonValidators\Board\BoardUpdate;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -34,6 +37,9 @@ class BoardsController extends BaseController
      * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public static function readPosts(
         array $routeParams,
@@ -42,7 +48,7 @@ class BoardsController extends BaseController
     ): ResponseInterface {
         return static::readRelationship(
             $routeParams[static::ROUTE_KEY_INDEX],
-            Scheme::REL_POSTS,
+            Model::REL_POSTS,
             $container,
             $request
         );
