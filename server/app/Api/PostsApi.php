@@ -31,15 +31,9 @@ class PostsApi extends BaseApi
     {
         $this->authorize(PostRules::ACTION_CREATE_POST, Scheme::TYPE, $index);
 
-        $addCurrentUserId = function (iterable $attributes): iterable {
-            foreach ($attributes as $name => $value) {
-                yield $name => $value;
-            }
+        $withUserId = $this->addIterable($attributes, [Model::FIELD_ID_USER => $this->getCurrentUserIdentity()]);
 
-            yield Model::FIELD_ID_USER => $this->getCurrentUserIdentity();
-        };
-
-        return parent::create($index, $addCurrentUserId($attributes), $toMany);
+        return parent::create($index, $withUserId, $toMany);
     }
 
     /**
