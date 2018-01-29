@@ -3,7 +3,7 @@
 use Limoncello\Flute\Contracts\Adapters\PaginationStrategyInterface;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
 use Neomerx\JsonApi\Contracts\Document\DocumentInterface;
-use Neomerx\JsonApi\Contracts\Http\Query\QueryParametersParserInterface;
+use Neomerx\JsonApi\Contracts\Http\Query\BaseQueryParserInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
@@ -30,7 +30,7 @@ trait PaginationLinksTrait
             $pageSize    = $data->getLimit();
             $linkClosure = function (int $offset) use ($originalUri, $pageSize, $queryParams): UriInterface {
                 $paramsWithPaging = array_merge($queryParams, [
-                    QueryParametersParserInterface::PARAM_PAGE => [
+                    BaseQueryParserInterface::PARAM_PAGE => [
                         PaginationStrategyInterface::PARAM_PAGING_OFFSET => $offset,
                         PaginationStrategyInterface::PARAM_PAGING_LIMIT  => $pageSize,
                     ],

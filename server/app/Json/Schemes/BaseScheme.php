@@ -25,7 +25,7 @@ abstract class BaseScheme extends Schema
      *
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function getId($resource)
+    public function getId($resource): ?string
     {
         assert(get_class($resource) === static::MODEL);
         assert($this->classImplements(static::MODEL, ModelInterface::class) === true);

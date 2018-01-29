@@ -36,7 +36,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
     private $sharedConnection = null;
 
     /**
-     * @var null|ContainerInterface
+     * @var null|PsrContainerInterface
      */
     private $appContainer = null;
 
