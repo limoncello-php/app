@@ -7,7 +7,7 @@ use Limoncello\Flute\Schema\Schema;
 /**
  * @package App
  */
-abstract class BaseScheme extends Schema
+abstract class BaseSchema extends Schema
 {
     use ClassIsTrait;
 

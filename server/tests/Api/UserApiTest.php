@@ -3,7 +3,7 @@
 use App\Data\Models\User;
 use App\Data\Seeds\RolesSeed;
 use App\Data\Seeds\UsersSeed;
-use App\Json\Schemes\UserScheme;
+use App\Json\Schemes\UserSchema;
 use Limoncello\Contracts\Http\ThrowableResponseInterface;
 use Limoncello\Testing\JsonApiCallsTrait;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
@@ -16,7 +16,7 @@ class UserApiTest extends TestCase
 {
     use JsonApiCallsTrait;
 
-    const API_URI = '/api/v1/' . UserScheme::TYPE;
+    const API_URI = '/api/v1/' . UserSchema::TYPE;
 
     /**
      * Test User's API.
@@ -52,7 +52,7 @@ class UserApiTest extends TestCase
         $json = json_decode((string)$response->getBody());
         $this->assertObjectHasAttribute('data', $json);
         $this->assertEquals($userId, $json->data->id);
-        $this->assertEquals(UserScheme::TYPE, $json->data->type);
+        $this->assertEquals(UserSchema::TYPE, $json->data->type);
     }
 
     /**

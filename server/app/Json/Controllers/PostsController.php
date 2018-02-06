@@ -2,7 +2,7 @@
 
 use App\Api\PostsApi as Api;
 use App\Data\Models\Post as Model;
-use App\Json\Schemes\PostScheme as Scheme;
+use App\Json\Schemes\PostSchema as Schema;
 use App\Validation\JsonValidators\Post\PostCreate;
 use App\Validation\JsonValidators\Post\PostUpdate;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
@@ -23,7 +23,7 @@ class PostsController extends BaseController
     const API_CLASS = Api::class;
 
     /** @inheritdoc */
-    const SCHEMA_CLASS = Scheme::class;
+    const SCHEMA_CLASS = Schema::class;
 
     /** @inheritdoc */
     const ON_CREATE_VALIDATION_RULES_SET_CLASS = PostCreate::class;
@@ -46,12 +46,11 @@ class PostsController extends BaseController
         ContainerInterface $container,
         ServerRequestInterface $request
     ): ResponseInterface {
-        return static::readRelationship(
-            $routeParams[static::ROUTE_KEY_INDEX],
-            Model::REL_COMMENTS,
-            $container,
-            $request
-        );
+        $apiHandler = function (Api $api) use ($routeParams) {
+            return $api->readComments($routeParams[static::ROUTE_KEY_INDEX]);
+        };
+
+        return static::readRelationshipWithClosure($apiHandler, Model::REL_COMMENTS, $container, $request);
     }
 
     /**
@@ -64,14 +63,14 @@ class PostsController extends BaseController
     {
         return parent::configureOnIndexParser($parser)
             ->withAllowedFilterFields([
-                Scheme::RESOURCE_ID,
+                Schema::RESOURCE_ID,
             ])
             ->withAllowedSortFields([
-                Scheme::RESOURCE_ID,
-                Scheme::ATTR_TITLE,
+                Schema::RESOURCE_ID,
+                Schema::ATTR_TITLE,
             ])
             ->withAllowedIncludePaths([
-                Scheme::REL_COMMENTS,
+                Schema::REL_COMMENTS,
             ]);
     }
 }

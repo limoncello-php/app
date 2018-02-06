@@ -18,7 +18,12 @@ interface Views
     /**
      * Template ID.
      */
-    const BOARDS_PAGE = self::NOT_FOUND_PAGE + 1;
+    const HOME_PAGE = self::NOT_FOUND_PAGE + 1;
+
+    /**
+     * Template ID.
+     */
+    const BOARDS_PAGE = self::HOME_PAGE + 1;
 
     /**
      * Template ID.

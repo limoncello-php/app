@@ -2,7 +2,7 @@
 
 use App\Data\Models\Role;
 use App\Data\Seeds\RolesSeed;
-use App\Json\Schemes\RoleScheme;
+use App\Json\Schemes\RoleSchema;
 use Limoncello\Testing\JsonApiCallsTrait;
 use Tests\TestCase;
 
@@ -13,7 +13,7 @@ class RoleApiTest extends TestCase
 {
     use JsonApiCallsTrait;
 
-    const API_URI = '/api/v1/' . RoleScheme::TYPE;
+    const API_URI = '/api/v1/' . RoleSchema::TYPE;
 
     /**
      * Test Role's API.
@@ -40,7 +40,7 @@ class RoleApiTest extends TestCase
         $json = json_decode((string)$response->getBody());
         $this->assertObjectHasAttribute('data', $json);
         $this->assertEquals($roleId, $json->data->id);
-        $this->assertEquals(RoleScheme::TYPE, $json->data->type);
+        $this->assertEquals(RoleSchema::TYPE, $json->data->type);
     }
 
     /**

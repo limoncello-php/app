@@ -1,7 +1,7 @@
 <?php namespace App\Validation\Rules;
 
 use App\Data\Models\Board as Model;
-use App\Json\Schemes\BoardScheme as Scheme;
+use App\Json\Schemes\BoardSchema as Schema;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
 /**
@@ -16,7 +16,7 @@ final class BoardRules extends BaseRules
      */
     public static function boardType(): RuleInterface
     {
-        return self::equals(Scheme::TYPE);
+        return self::equals(Schema::TYPE);
     }
 
     /**

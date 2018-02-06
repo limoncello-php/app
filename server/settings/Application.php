@@ -18,7 +18,10 @@ class Application implements ApplicationConfigurationInterface
     {
         (new Dotenv(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..'])))->load();
 
-        $routesPath     = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Routes', '*Routes.php']);
+        $routesMask     = '*Routes.php';
+        $routesFolder   = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Routes']);
+        $webCtrlFolder  = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Web', 'Controllers']);
+        $routesPath     = implode(DIRECTORY_SEPARATOR, [$routesFolder, $routesMask]);
         $confPath       = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Container', '*.php']);
         $commandsFolder = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Commands']);
         $cacheFolder    = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'storage', 'cache', 'settings']);
@@ -32,6 +35,9 @@ class Application implements ApplicationConfigurationInterface
             static::KEY_APP_NAME                     => getenv('APP_NAME'),
             static::KEY_IS_LOG_ENABLED               => filter_var(getenv('APP_ENABLE_LOGS'), FILTER_VALIDATE_BOOLEAN),
             static::KEY_IS_DEBUG                     => filter_var(getenv('APP_IS_DEBUG'), FILTER_VALIDATE_BOOLEAN),
+            static::KEY_ROUTES_FILE_MASK             => $routesMask,
+            static::KEY_ROUTES_FOLDER                => $routesFolder,
+            static::KEY_WEB_CONTROLLERS_FOLDER       => $webCtrlFolder,
             static::KEY_ROUTES_PATH                  => $routesPath,
             static::KEY_CONTAINER_CONFIGURATORS_PATH => $confPath,
             static::KEY_CACHE_FOLDER                 => $cacheFolder,

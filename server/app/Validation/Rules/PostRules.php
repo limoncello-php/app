@@ -1,7 +1,7 @@
 <?php namespace App\Validation\Rules;
 
 use App\Data\Models\Post as Model;
-use App\Json\Schemes\PostScheme as Scheme;
+use App\Json\Schemes\PostSchema as Schema;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
 /**
@@ -16,7 +16,7 @@ final class PostRules extends BaseRules
      */
     public static function postType(): RuleInterface
     {
-        return self::equals(Scheme::TYPE);
+        return self::equals(Schema::TYPE);
     }
 
     /**

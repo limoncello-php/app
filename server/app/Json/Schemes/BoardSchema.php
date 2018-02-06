@@ -5,7 +5,7 @@ use App\Data\Models\Board as Model;
 /**
  * @package App
  */
-class BoardScheme extends BaseScheme
+class BoardSchema extends BaseSchema
 {
     /** Type */
     const TYPE = 'boards';

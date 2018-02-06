@@ -3,8 +3,9 @@
 use App\Authorization\UserRules;
 use App\Data\Models\RoleScope;
 use App\Data\Models\User as Model;
-use App\Json\Schemes\UserScheme as Scheme;
+use App\Json\Schemes\UserSchema as Schema;
 use Doctrine\DBAL\Connection;
+use Limoncello\Contracts\Exceptions\AuthorizationExceptionInterface;
 use Limoncello\Crypt\Contracts\HasherInterface;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
 use PDO;
@@ -33,7 +34,7 @@ class UsersApi extends BaseApi
      */
     public function create($index, iterable $attributes, iterable $toMany): string
     {
-        $this->authorize(UserRules::ACTION_MANAGE_USERS, Scheme::TYPE);
+        $this->authorize(UserRules::ACTION_MANAGE_USERS, Schema::TYPE);
 
         return parent::create($index, $this->getReplacePasswordWithHash($attributes), $toMany);
     }
@@ -43,7 +44,7 @@ class UsersApi extends BaseApi
      */
     public function update($index, iterable $attributes, iterable $toMany): int
     {
-        $this->authorize(UserRules::ACTION_MANAGE_USERS, Scheme::TYPE, $index);
+        $this->authorize(UserRules::ACTION_MANAGE_USERS, Schema::TYPE, $index);
 
         return parent::update($index, $this->getReplacePasswordWithHash($attributes), $toMany);
     }
@@ -53,7 +54,7 @@ class UsersApi extends BaseApi
      */
     public function remove($index): bool
     {
-        $this->authorize(UserRules::ACTION_MANAGE_USERS, Scheme::TYPE, $index);
+        $this->authorize(UserRules::ACTION_MANAGE_USERS, Schema::TYPE, $index);
 
         return parent::remove($index);
     }
@@ -63,7 +64,7 @@ class UsersApi extends BaseApi
      */
     public function index(): PaginatedDataInterface
     {
-        $this->authorize(UserRules::ACTION_VIEW_USERS, Scheme::TYPE);
+        $this->authorize(UserRules::ACTION_VIEW_USERS, Schema::TYPE);
 
         return parent::index();
     }
@@ -73,7 +74,7 @@ class UsersApi extends BaseApi
      */
     public function read($index)
     {
-        $this->authorize(UserRules::ACTION_VIEW_USERS, Scheme::TYPE, $index);
+        $this->authorize(UserRules::ACTION_VIEW_USERS, Schema::TYPE, $index);
 
         return parent::read($index);
     }
@@ -111,24 +112,43 @@ class UsersApi extends BaseApi
     }
 
     /**
-     * @inheritdoc
+     * @param string|int    $index
+     * @param iterable|null $relationshipFilters
+     * @param iterable|null $relationshipSorts
+     *
+     * @return PaginatedDataInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws AuthorizationExceptionInterface
      */
-    protected function getAuthorizationActionAndResourceTypeForRelationship(
-        string $name,
+    public function readPosts(
+        $index,
         iterable $relationshipFilters = null,
         iterable $relationshipSorts = null
-    ): array {
-        // if you add new relationships available for reading
-        // don't forget to tell the authorization subsystem what are the corresponding auth actions.
+    ): PaginatedDataInterface {
+        $this->authorize(UserRules::ACTION_VIEW_USER_POSTS, Schema::TYPE, $index);
 
-        if ($name === Model::REL_POSTS) {
-            $pair = [UserRules::ACTION_VIEW_USER_POSTS, Scheme::TYPE];
-        } else {
-            assert($name === Model::REL_COMMENTS);
-            $pair = [UserRules::ACTION_VIEW_USER_COMMENTS, Scheme::TYPE];
-        }
+        return $this->readRelationshipInt($index, Model::REL_POSTS, $relationshipFilters, $relationshipSorts);
+    }
 
-        return $pair;
+    /**
+     * @param string|int    $index
+     * @param iterable|null $relationshipFilters
+     * @param iterable|null $relationshipSorts
+     *
+     * @return PaginatedDataInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws AuthorizationExceptionInterface
+     */
+    public function readComments(
+        $index,
+        iterable $relationshipFilters = null,
+        iterable $relationshipSorts = null
+    ): PaginatedDataInterface {
+        $this->authorize(UserRules::ACTION_VIEW_USER_COMMENTS, Schema::TYPE, $index);
+
+        return $this->readRelationshipInt($index, Model::REL_COMMENTS, $relationshipFilters, $relationshipSorts);
     }
 
     /**
@@ -143,7 +163,7 @@ class UsersApi extends BaseApi
     {
         // in attributes were captured validated input password we need to convert it into password hash
         foreach ($attributes as $name => $value) {
-            if ($name === Scheme::CAPTURE_NAME_PASSWORD) {
+            if ($name === Schema::CAPTURE_NAME_PASSWORD) {
                 /** @var HasherInterface $hasher */
                 $hasher = $this->getContainer()->get(HasherInterface::class);
                 $value  = $hasher->hash($value);

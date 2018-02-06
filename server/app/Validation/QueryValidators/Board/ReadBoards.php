@@ -1,6 +1,6 @@
 <?php namespace App\Validation\QueryValidators\Board;
 
-use App\Json\Schemes\BoardScheme as Scheme;
+use App\Json\Schemes\BoardSchema as Schema;
 use App\Validation\Rules\BoardRules as r;
 use Limoncello\Flute\Contracts\Validation\QueryRuleSetInterface;
 use Limoncello\Flute\Types\DateBaseType;
@@ -16,8 +16,8 @@ class ReadBoards implements QueryRuleSetInterface
     public static function getAttributeRules(): array
     {
         return [
-            Scheme::ATTR_TITLE      => r::asSanitizedString(),
-            Scheme::ATTR_CREATED_AT => r::stringToDateTime(DateBaseType::JSON_API_FORMAT),
+            Schema::ATTR_TITLE      => r::asSanitizedString(),
+            Schema::ATTR_CREATED_AT => r::stringToDateTime(DateBaseType::JSON_API_FORMAT),
         ];
     }
 }

@@ -1,6 +1,6 @@
 <?php namespace Tests\Web;
 
-use App\Json\Schemes\BoardScheme;
+use App\Json\Schemes\BoardSchema;
 use Tests\TestCase;
 
 /**
@@ -34,10 +34,10 @@ class BoardWebTest extends TestCase
     {
         $queryParams = [
             'filter' => [
-                BoardScheme::ATTR_TITLE => [
+                BoardSchema::ATTR_TITLE      => [
                     'not-like' => '%Regions%',
                 ],
-                BoardScheme::ATTR_CREATED_AT => [
+                BoardSchema::ATTR_CREATED_AT => [
                     'less-than' => '2100-02-03T04:05:06+0000',
                 ],
             ],

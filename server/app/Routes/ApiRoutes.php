@@ -5,9 +5,9 @@ use App\Json\Controllers\CommentsController;
 use App\Json\Controllers\PostsController;
 use App\Json\Controllers\RolesController;
 use App\Json\Controllers\UsersController;
-use App\Json\Schemes\BoardScheme;
-use App\Json\Schemes\PostScheme;
-use App\Json\Schemes\UserScheme;
+use App\Json\Schemes\BoardSchema;
+use App\Json\Schemes\PostSchema;
+use App\Json\Schemes\UserSchema;
 use Limoncello\Commands\CommandRoutesTrait;
 use Limoncello\Contracts\Application\RoutesConfiguratorInterface;
 use Limoncello\Contracts\Routing\GroupInterface;
@@ -45,16 +45,16 @@ class ApiRoutes implements RoutesConfiguratorInterface
             ->group(self::API_URI_PREFIX, function (GroupInterface $routes): void {
 
                 self::resource($routes, BoardsController::class);
-                self::relationship($routes, BoardScheme::REL_POSTS, BoardsController::class, 'readPosts');
+                self::relationship($routes, BoardSchema::REL_POSTS, BoardsController::class, 'readPosts');
 
                 self::resource($routes, PostsController::class);
-                self::relationship($routes, PostScheme::REL_COMMENTS, PostsController::class, 'readComments');
+                self::relationship($routes, PostSchema::REL_COMMENTS, PostsController::class, 'readComments');
 
                 self::resource($routes, CommentsController::class);
 
                 self::resource($routes, UsersController::class);
-                self::relationship($routes, UserScheme::REL_POSTS, UsersController::class, 'readPosts');
-                self::relationship($routes, UserScheme::REL_COMMENTS, UsersController::class, 'readComments');
+                self::relationship($routes, UserSchema::REL_POSTS, UsersController::class, 'readPosts');
+                self::relationship($routes, UserSchema::REL_COMMENTS, UsersController::class, 'readComments');
 
                 self::resource($routes, RolesController::class);
             }, [

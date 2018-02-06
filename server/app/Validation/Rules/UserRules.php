@@ -1,7 +1,7 @@
 <?php namespace App\Validation\Rules;
 
 use App\Data\Models\User as Model;
-use App\Json\Schemes\UserScheme as Scheme;
+use App\Json\Schemes\UserSchema as Schema;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
 /**
@@ -16,7 +16,7 @@ final class UserRules extends BaseRules
      */
     public static function userType(): RuleInterface
     {
-        return self::equals(Scheme::TYPE);
+        return self::equals(Schema::TYPE);
     }
 
     /**

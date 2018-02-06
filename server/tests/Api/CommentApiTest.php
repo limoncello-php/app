@@ -1,7 +1,7 @@
 <?php namespace Tests\Api;
 
 use App\Data\Models\Comment;
-use App\Json\Schemes\CommentScheme;
+use App\Json\Schemes\CommentSchema;
 use Limoncello\Testing\JsonApiCallsTrait;
 use Tests\TestCase;
 
@@ -12,7 +12,7 @@ class CommentApiTest extends TestCase
 {
     use JsonApiCallsTrait;
 
-    const API_URI = '/api/v1/' . CommentScheme::TYPE;
+    const API_URI = '/api/v1/' . CommentSchema::TYPE;
 
     /**
      * Test Comment's API.
@@ -103,7 +103,7 @@ class CommentApiTest extends TestCase
         $json = json_decode((string)$response->getBody());
         $this->assertObjectHasAttribute('data', $json);
         $this->assertEquals($commentId, $json->data->id);
-        $this->assertEquals(CommentScheme::TYPE, $json->data->type);
+        $this->assertEquals(CommentSchema::TYPE, $json->data->type);
     }
 
     /**

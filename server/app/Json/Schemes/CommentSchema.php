@@ -5,7 +5,7 @@ use App\Data\Models\Comment as Model;
 /**
  * @package App
  */
-class CommentScheme extends BaseScheme
+class CommentSchema extends BaseSchema
 {
     /** Type */
     const TYPE = 'comments';

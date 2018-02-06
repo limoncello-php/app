@@ -5,7 +5,7 @@ use App\Data\Models\Role as Model;
 /**
  * @package App
  */
-class RoleScheme extends BaseScheme
+class RoleSchema extends BaseSchema
 {
     /** Type */
     const TYPE = 'roles';

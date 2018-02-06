@@ -1,6 +1,6 @@
 <?php namespace App\Validation\JsonValidators\Board;
 
-use App\Json\Schemes\BoardScheme as Scheme;
+use App\Json\Schemes\BoardSchema as Schema;
 use App\Validation\Rules\BoardRules as r;
 use Limoncello\Flute\Contracts\Validation\JsonApiRuleSetInterface;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
@@ -34,8 +34,8 @@ final class BoardUpdate implements JsonApiRuleSetInterface
     public static function getAttributeRules(): array
     {
         return [
-            Scheme::ATTR_TITLE   => r::title(),
-            Scheme::ATTR_IMG_URL => r::imgUrl(),
+            Schema::ATTR_TITLE   => r::title(),
+            Schema::ATTR_IMG_URL => r::imgUrl(),
         ];
     }
 

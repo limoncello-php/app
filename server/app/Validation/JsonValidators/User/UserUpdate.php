@@ -1,6 +1,6 @@
 <?php namespace App\Validation\JsonValidators\User;
 
-use App\Json\Schemes\UserScheme as Scheme;
+use App\Json\Schemes\UserSchema as Schema;
 use App\Validation\Rules\UserRules as r;
 use Limoncello\Flute\Contracts\Validation\JsonApiRuleSetInterface;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
@@ -34,10 +34,10 @@ final class UserUpdate implements JsonApiRuleSetInterface
     public static function getAttributeRules(): array
     {
         return [
-            Scheme::ATTR_FIRST_NAME => r::firstName(),
-            Scheme::ATTR_LAST_NAME  => r::lastName(),
-            Scheme::ATTR_EMAIL      => r::email(),
-            Scheme::V_ATTR_PASSWORD => r::password(),
+            Schema::ATTR_FIRST_NAME => r::firstName(),
+            Schema::ATTR_LAST_NAME  => r::lastName(),
+            Schema::ATTR_EMAIL      => r::email(),
+            Schema::V_ATTR_PASSWORD => r::password(),
         ];
     }
 
@@ -47,7 +47,7 @@ final class UserUpdate implements JsonApiRuleSetInterface
     public static function getToOneRelationshipRules(): array
     {
         return [
-            Scheme::REL_ROLE => r::roleRelationship(),
+            Schema::REL_ROLE => r::roleRelationship(),
         ];
     }
 

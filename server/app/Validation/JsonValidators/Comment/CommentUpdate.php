@@ -1,6 +1,6 @@
 <?php namespace App\Validation\JsonValidators\Comment;
 
-use App\Json\Schemes\CommentScheme as Scheme;
+use App\Json\Schemes\CommentSchema as Schema;
 use App\Validation\Rules\CommentRules as r;
 use Limoncello\Flute\Contracts\Validation\JsonApiRuleSetInterface;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
@@ -34,7 +34,7 @@ final class CommentUpdate implements JsonApiRuleSetInterface
     public static function getAttributeRules(): array
     {
         return [
-            Scheme::ATTR_TEXT => r::required(r::text()),
+            Schema::ATTR_TEXT => r::required(r::text()),
         ];
     }
 

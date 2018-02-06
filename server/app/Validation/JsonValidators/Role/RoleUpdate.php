@@ -1,6 +1,6 @@
 <?php namespace App\Validation\JsonValidators\Role;
 
-use App\Json\Schemes\RoleScheme as Scheme;
+use App\Json\Schemes\RoleSchema as Schema;
 use App\Validation\Rules\RoleRules as r;
 use Limoncello\Flute\Contracts\Validation\JsonApiRuleSetInterface;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
@@ -34,7 +34,7 @@ final class RoleUpdate implements JsonApiRuleSetInterface
     public static function getAttributeRules(): array
     {
         return [
-            Scheme::ATTR_DESCRIPTION => r::required(r::description()),
+            Schema::ATTR_DESCRIPTION => r::required(r::description()),
         ];
     }
 

@@ -4,7 +4,7 @@ use App\Api\BoardsApi;
 use App\Api\PostsApi;
 use App\Data\Models\Board;
 use App\Data\Models\Post;
-use App\Json\Schemes\BoardScheme;
+use App\Json\Schemes\BoardSchema;
 use App\Validation\QueryValidators\Board\ReadBoards;
 use App\Web\L10n\Views;
 use Limoncello\Flute\Contracts\Http\Controller\ControllerIndexInterface;
@@ -38,7 +38,7 @@ class BoardsController extends BaseController implements ControllerIndexInterfac
     ): ResponseInterface {
         // read resources with pagination and data from relationships
         $parser    = self::createQueryValidator($container, ReadBoards::class, $request->getQueryParams());
-        $mapper    = self::createParameterMapper($container, BoardScheme::TYPE);
+        $mapper    = self::createParameterMapper($container, BoardSchema::TYPE);
         $boardsApi = self::createApi($container, BoardsApi::class);
 
         $mapper->applyQueryParameters($parser, $boardsApi);

@@ -1,7 +1,7 @@
 <?php namespace App\Json\Controllers;
 
 use App\Api\RolesApi as Api;
-use App\Json\Schemes\RoleScheme as Scheme;
+use App\Json\Schemes\RoleSchema as Schema;
 use App\Validation\JsonValidators\Role\RoleCreate;
 use App\Validation\JsonValidators\Role\RoleUpdate;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
@@ -17,7 +17,7 @@ class RolesController extends BaseController
     const API_CLASS = Api::class;
 
     /** @inheritdoc */
-    const SCHEMA_CLASS = Scheme::class;
+    const SCHEMA_CLASS = Schema::class;
 
     /** @inheritdoc */
     const ON_CREATE_VALIDATION_RULES_SET_CLASS = RoleCreate::class;
@@ -35,12 +35,12 @@ class RolesController extends BaseController
     {
         return parent::configureOnIndexParser($parser)
             ->withAllowedFilterFields([
-                Scheme::RESOURCE_ID,
-                Scheme::ATTR_DESCRIPTION,
+                Schema::RESOURCE_ID,
+                Schema::ATTR_DESCRIPTION,
             ])
             ->withAllowedSortFields([
-                Scheme::RESOURCE_ID,
-                Scheme::ATTR_DESCRIPTION,
+                Schema::RESOURCE_ID,
+                Schema::ATTR_DESCRIPTION,
             ]);
     }
 }

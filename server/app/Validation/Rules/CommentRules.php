@@ -1,6 +1,6 @@
 <?php namespace App\Validation\Rules;
 
-use App\Json\Schemes\CommentScheme as Scheme;
+use App\Json\Schemes\CommentSchema as Schema;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
 /**
@@ -15,7 +15,7 @@ final class CommentRules extends BaseRules
      */
     public static function commentType(): RuleInterface
     {
-        return self::equals(Scheme::TYPE);
+        return self::equals(Schema::TYPE);
     }
 
     /**

@@ -5,11 +5,11 @@ use App\Data\Models\Comment;
 use App\Data\Models\Post;
 use App\Data\Models\Role;
 use App\Data\Models\User;
-use App\Json\Schemes\BoardScheme;
-use App\Json\Schemes\CommentScheme;
-use App\Json\Schemes\PostScheme;
-use App\Json\Schemes\RoleScheme;
-use App\Json\Schemes\UserScheme;
+use App\Json\Schemes\BoardSchema;
+use App\Json\Schemes\CommentSchema;
+use App\Json\Schemes\PostSchema;
+use App\Json\Schemes\RoleSchema;
+use App\Json\Schemes\UserSchema;
 use Limoncello\Flute\Validation\JsonApi\Rules\ExistInDatabaseTrait;
 use Limoncello\Flute\Validation\JsonApi\Rules\RelationshipsTrait;
 use Limoncello\Validation\Contracts\Errors\ErrorCodes;
@@ -36,7 +36,7 @@ class BaseRules extends Rules
      */
     public static function boardRelationship(): RuleInterface
     {
-        return self::toOneRelationship(BoardScheme::TYPE, static::boardId());
+        return self::toOneRelationship(BoardSchema::TYPE, static::boardId());
     }
 
     /**
@@ -52,7 +52,7 @@ class BaseRules extends Rules
      */
     public static function commentRelationship(): RuleInterface
     {
-        return self::toOneRelationship(CommentScheme::TYPE, static::commentId());
+        return self::toOneRelationship(CommentSchema::TYPE, static::commentId());
     }
 
     /**
@@ -68,7 +68,7 @@ class BaseRules extends Rules
      */
     public static function postRelationship(): RuleInterface
     {
-        return self::toOneRelationship(PostScheme::TYPE, static::postId());
+        return self::toOneRelationship(PostSchema::TYPE, static::postId());
     }
 
     /**
@@ -84,7 +84,7 @@ class BaseRules extends Rules
      */
     public static function roleRelationship(): RuleInterface
     {
-        return self::toOneRelationship(RoleScheme::TYPE, static::roleId());
+        return self::toOneRelationship(RoleSchema::TYPE, static::roleId());
     }
 
     /**
@@ -100,7 +100,7 @@ class BaseRules extends Rules
      */
     public static function userRelationship(): RuleInterface
     {
-        return self::toOneRelationship(UserScheme::TYPE, static::userId());
+        return self::toOneRelationship(UserSchema::TYPE, static::userId());
     }
 
     /**
@@ -110,7 +110,7 @@ class BaseRules extends Rules
     {
         $readableAll = static::stringArrayToIntArray(static::existAll(User::TABLE_NAME, User::FIELD_ID));
 
-        return self::toManyRelationship(UserScheme::TYPE, $readableAll);
+        return self::toManyRelationship(UserSchema::TYPE, $readableAll);
     }
 
     /**

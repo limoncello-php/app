@@ -1,6 +1,6 @@
 <?php namespace App\Validation\JsonValidators\Post;
 
-use App\Json\Schemes\PostScheme as Scheme;
+use App\Json\Schemes\PostSchema as Schema;
 use App\Validation\Rules\PostRules as r;
 use Limoncello\Flute\Contracts\Validation\JsonApiRuleSetInterface;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
@@ -34,8 +34,8 @@ final class PostCreate implements JsonApiRuleSetInterface
     public static function getAttributeRules(): array
     {
         return [
-            Scheme::ATTR_TITLE => r::required(r::title()),
-            Scheme::ATTR_TEXT  => r::required(r::text()),
+            Schema::ATTR_TITLE => r::required(r::title()),
+            Schema::ATTR_TEXT  => r::required(r::text()),
         ];
     }
 
@@ -45,7 +45,7 @@ final class PostCreate implements JsonApiRuleSetInterface
     public static function getToOneRelationshipRules(): array
     {
         return [
-            Scheme::REL_BOARD => r::required(r::boardRelationship()),
+            Schema::REL_BOARD => r::required(r::boardRelationship()),
         ];
     }
 

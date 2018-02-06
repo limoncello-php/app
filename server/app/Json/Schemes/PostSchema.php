@@ -5,7 +5,7 @@ use App\Data\Models\Post as Model;
 /**
  * @package App
  */
-class PostScheme extends BaseScheme
+class PostSchema extends BaseSchema
 {
     /** Type */
     const TYPE = 'posts';

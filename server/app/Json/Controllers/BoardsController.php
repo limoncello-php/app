@@ -2,7 +2,7 @@
 
 use App\Api\BoardsApi as Api;
 use App\Data\Models\Board as Model;
-use App\Json\Schemes\BoardScheme as Scheme;
+use App\Json\Schemes\BoardSchema as Schema;
 use App\Validation\JsonValidators\Board\BoardCreate;
 use App\Validation\JsonValidators\Board\BoardUpdate;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
@@ -23,7 +23,7 @@ class BoardsController extends BaseController
     const API_CLASS = Api::class;
 
     /** @inheritdoc */
-    const SCHEMA_CLASS = Scheme::class;
+    const SCHEMA_CLASS = Schema::class;
 
     /** @inheritdoc */
     const ON_CREATE_VALIDATION_RULES_SET_CLASS = BoardCreate::class;
@@ -46,12 +46,11 @@ class BoardsController extends BaseController
         ContainerInterface $container,
         ServerRequestInterface $request
     ): ResponseInterface {
-        return static::readRelationship(
-            $routeParams[static::ROUTE_KEY_INDEX],
-            Model::REL_POSTS,
-            $container,
-            $request
-        );
+        $apiHandler = function (Api $api) use ($routeParams) {
+            return $api->readPosts($routeParams[static::ROUTE_KEY_INDEX]);
+        };
+
+        return static::readRelationshipWithClosure($apiHandler, Model::REL_POSTS, $container, $request);
     }
 
     /**
@@ -64,14 +63,14 @@ class BoardsController extends BaseController
     {
         return parent::configureOnIndexParser($parser)
             ->withAllowedFilterFields([
-                Scheme::RESOURCE_ID,
+                Schema::RESOURCE_ID,
             ])
             ->withAllowedSortFields([
-                Scheme::RESOURCE_ID,
-                Scheme::ATTR_TITLE,
+                Schema::RESOURCE_ID,
+                Schema::ATTR_TITLE,
             ])
             ->withAllowedIncludePaths([
-                Scheme::REL_POSTS,
+                Schema::REL_POSTS,
             ]);
     }
 }

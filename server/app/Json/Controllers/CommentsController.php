@@ -1,7 +1,7 @@
 <?php namespace App\Json\Controllers;
 
 use App\Api\CommentsApi as Api;
-use App\Json\Schemes\CommentScheme as Scheme;
+use App\Json\Schemes\CommentSchema as Schema;
 use App\Validation\JsonValidators\Comment\CommentCreate;
 use App\Validation\JsonValidators\Comment\CommentUpdate;
 use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
@@ -17,7 +17,7 @@ class CommentsController extends BaseController
     const API_CLASS = Api::class;
 
     /** @inheritdoc */
-    const SCHEMA_CLASS = Scheme::class;
+    const SCHEMA_CLASS = Schema::class;
 
     /** @inheritdoc */
     const ON_CREATE_VALIDATION_RULES_SET_CLASS = CommentCreate::class;
@@ -35,13 +35,13 @@ class CommentsController extends BaseController
     {
         return parent::configureOnIndexParser($parser)
             ->withAllowedFilterFields([
-                Scheme::RESOURCE_ID,
-                Scheme::REL_POST,
-                Scheme::REL_USER,
+                Schema::RESOURCE_ID,
+                Schema::REL_POST,
+                Schema::REL_USER,
             ])
             ->withAllowedSortFields([
-                Scheme::RESOURCE_ID,
-                Scheme::ATTR_TEXT,
+                Schema::RESOURCE_ID,
+                Schema::ATTR_TEXT,
             ]);
     }
 }

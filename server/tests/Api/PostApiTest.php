@@ -1,7 +1,7 @@
 <?php namespace Tests\Api;
 
 use App\Data\Models\Post;
-use App\Json\Schemes\PostScheme;
+use App\Json\Schemes\PostSchema;
 use Limoncello\Testing\JsonApiCallsTrait;
 use Tests\TestCase;
 
@@ -12,7 +12,7 @@ class PostApiTest extends TestCase
 {
     use JsonApiCallsTrait;
 
-    const API_URI = '/api/v1/' . PostScheme::TYPE;
+    const API_URI = '/api/v1/' . PostSchema::TYPE;
 
     /**
      * Test Post's API.
@@ -72,7 +72,7 @@ class PostApiTest extends TestCase
         $json = json_decode((string)$response->getBody());
         $this->assertObjectHasAttribute('data', $json);
         $this->assertEquals($postId, $json->data->id);
-        $this->assertEquals(PostScheme::TYPE, $json->data->type);
+        $this->assertEquals(PostSchema::TYPE, $json->data->type);
     }
 
     /**
@@ -80,7 +80,7 @@ class PostApiTest extends TestCase
      */
     public function testReadRelationship()
     {
-        $response = $this->get(self::API_URI . '/10/relationships/' . PostScheme::REL_COMMENTS);
+        $response = $this->get(self::API_URI . '/10/relationships/' . PostSchema::REL_COMMENTS);
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNotNull($resources = json_decode((string)$response->getBody()));

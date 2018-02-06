@@ -3,7 +3,7 @@
 use App\Api\PostsApi;
 use App\Data\Models\Post;
 use App\Data\Seeds\PassportSeed;
-use App\Json\Schemes\PostScheme as Scheme;
+use App\Json\Schemes\PostSchema as Schema;
 use Limoncello\Application\Contracts\Authorization\ResourceAuthorizationRulesInterface;
 use Limoncello\Auth\Contracts\Authorization\PolicyInformation\ContextInterface;
 use Limoncello\Flute\Contracts\FactoryInterface;
@@ -34,7 +34,7 @@ class PostRules implements ResourceAuthorizationRulesInterface
      */
     public static function getResourcesType(): string
     {
-        return Scheme::TYPE;
+        return Schema::TYPE;
     }
 
     /**
@@ -71,7 +71,7 @@ class PostRules implements ResourceAuthorizationRulesInterface
      */
     public static function canEditPost(ContextInterface $context): bool
     {
-        assert(self::reqGetResourceType($context) === Scheme::TYPE);
+        assert(self::reqGetResourceType($context) === Schema::TYPE);
 
         return
             self::hasScope($context, PassportSeed::SCOPE_ADMIN_MESSAGES) ||

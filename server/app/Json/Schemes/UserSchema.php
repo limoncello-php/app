@@ -5,7 +5,7 @@ use App\Data\Models\User as Model;
 /**
  * @package App
  */
-class UserScheme extends BaseScheme
+class UserSchema extends BaseSchema
 {
     /** Type */
     const TYPE = 'users';

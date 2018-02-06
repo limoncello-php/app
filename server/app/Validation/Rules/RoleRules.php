@@ -1,7 +1,7 @@
 <?php namespace App\Validation\Rules;
 
 use App\Data\Models\Role as Model;
-use App\Json\Schemes\RoleScheme as Scheme;
+use App\Json\Schemes\RoleSchema as Schema;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
 /**
@@ -16,7 +16,7 @@ final class RoleRules extends BaseRules
      */
     public static function roleType(): RuleInterface
     {
-        return self::equals(Scheme::TYPE);
+        return self::equals(Schema::TYPE);
     }
 
     /**

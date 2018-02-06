@@ -1,7 +1,7 @@
 <?php namespace App\Authorization;
 
 use App\Data\Seeds\PassportSeed;
-use App\Json\Schemes\BoardScheme as Scheme;
+use App\Json\Schemes\BoardSchema as Schema;
 use Limoncello\Application\Contracts\Authorization\ResourceAuthorizationRulesInterface;
 use Limoncello\Auth\Contracts\Authorization\PolicyInformation\ContextInterface;
 
@@ -26,7 +26,7 @@ class BoardRules implements ResourceAuthorizationRulesInterface
      */
     public static function getResourcesType(): string
     {
-        return Scheme::TYPE;
+        return Schema::TYPE;
     }
 
     /**

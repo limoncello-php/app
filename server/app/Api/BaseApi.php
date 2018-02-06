@@ -6,6 +6,7 @@ use DateTimeInterface;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Types\Type;
+use InvalidArgumentException;
 use Limoncello\Contracts\Authentication\AccountManagerInterface;
 use Limoncello\Contracts\Authorization\AuthorizationManagerInterface;
 use Limoncello\Contracts\Exceptions\AuthorizationExceptionInterface;
@@ -24,37 +25,33 @@ use Psr\Container\NotFoundExceptionInterface;
  */
 abstract class BaseApi extends Crud
 {
-    /**
-     * Should return authorization action name and resource type for reading a relationship.
-     *
-     * @param string        $name
-     * @param iterable|null $relationshipFilters
-     * @param iterable|null $relationshipSorts
-     *
-     * @return array [string $action, string|null $resourceType]
-     */
-    abstract protected function getAuthorizationActionAndResourceTypeForRelationship(
-        string $name,
-        iterable $relationshipFilters = null,
-        iterable $relationshipSorts = null
-    ): array;
-
-    /**
+    /** @noinspection PhpMissingParentCallCommonInspection
      * @inheritdoc
      */
-    public function readRelationship(
+    final public function readRelationship(
         $index,
         string $name,
         iterable $relationshipFilters = null,
         iterable $relationshipSorts = null
     ): PaginatedDataInterface {
-        list ($action, $resourceType) = static::getAuthorizationActionAndResourceTypeForRelationship(
-            $name,
-            $relationshipFilters,
-            $relationshipSorts
-        );
-        $this->authorize($action, $resourceType, $index);
+        assert(false, 'Use specialized reading methods instead.');
+        throw new InvalidArgumentException();
+    }
 
+    /**
+     * @param               $index
+     * @param string        $name
+     * @param iterable|null $relationshipFilters
+     * @param iterable|null $relationshipSorts
+     *
+     * @return PaginatedDataInterface
+     */
+    protected function readRelationshipInt(
+        $index,
+        string $name,
+        iterable $relationshipFilters = null,
+        iterable $relationshipSorts = null
+    ): PaginatedDataInterface {
         return parent::readRelationship($index, $name, $relationshipFilters, $relationshipSorts);
     }
 

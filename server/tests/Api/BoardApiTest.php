@@ -1,7 +1,7 @@
 <?php namespace Tests\Api;
 
 use App\Data\Models\Board;
-use App\Json\Schemes\BoardScheme;
+use App\Json\Schemes\BoardSchema;
 use Limoncello\Testing\JsonApiCallsTrait;
 use Tests\TestCase;
 
@@ -12,7 +12,7 @@ class BoardApiTest extends TestCase
 {
     use JsonApiCallsTrait;
 
-    const API_URI = '/api/v1/' . BoardScheme::TYPE;
+    const API_URI = '/api/v1/' . BoardSchema::TYPE;
 
     /**
      * Test Board's API.
@@ -71,7 +71,7 @@ class BoardApiTest extends TestCase
         $json = json_decode((string)$response->getBody());
         $this->assertObjectHasAttribute('data', $json);
         $this->assertEquals($boardId, $json->data->id);
-        $this->assertEquals(BoardScheme::TYPE, $json->data->type);
+        $this->assertEquals(BoardSchema::TYPE, $json->data->type);
     }
 
     /**
@@ -79,7 +79,7 @@ class BoardApiTest extends TestCase
      */
     public function testReadRelationship()
     {
-        $response = $this->get(self::API_URI . '/1/relationships/' . BoardScheme::REL_POSTS);
+        $response = $this->get(self::API_URI . '/1/relationships/' . BoardSchema::REL_POSTS);
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNotNull($resources = json_decode((string)$response->getBody()));

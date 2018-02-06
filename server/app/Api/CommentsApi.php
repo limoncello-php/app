@@ -2,7 +2,7 @@
 
 use App\Authorization\CommentRules;
 use App\Data\Models\Comment as Model;
-use App\Json\Schemes\CommentScheme as Scheme;
+use App\Json\Schemes\CommentSchema as Schema;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -29,7 +29,7 @@ class CommentsApi extends BaseApi
      */
     public function create($index, iterable $attributes, iterable $toMany): string
     {
-        $this->authorize(CommentRules::ACTION_CREATE_COMMENT, Scheme::TYPE, $index);
+        $this->authorize(CommentRules::ACTION_CREATE_COMMENT, Schema::TYPE, $index);
 
         $withUserId = $this->addIterable($attributes, [Model::FIELD_ID_USER => $this->getCurrentUserIdentity()]);
 
@@ -41,7 +41,7 @@ class CommentsApi extends BaseApi
      */
     public function update($index, iterable $attributes, iterable $toMany): int
     {
-        $this->authorize(CommentRules::ACTION_EDIT_COMMENT, Scheme::TYPE, $index);
+        $this->authorize(CommentRules::ACTION_EDIT_COMMENT, Schema::TYPE, $index);
 
         return parent::update($index, $attributes, $toMany);
     }
@@ -51,7 +51,7 @@ class CommentsApi extends BaseApi
      */
     public function remove($index): bool
     {
-        $this->authorize(CommentRules::ACTION_EDIT_COMMENT, Scheme::TYPE, $index);
+        $this->authorize(CommentRules::ACTION_EDIT_COMMENT, Schema::TYPE, $index);
 
         return parent::remove($index);
     }
@@ -61,7 +61,7 @@ class CommentsApi extends BaseApi
      */
     public function index(): PaginatedDataInterface
     {
-        $this->authorize(CommentRules::ACTION_VIEW_COMMENTS, Scheme::TYPE);
+        $this->authorize(CommentRules::ACTION_VIEW_COMMENTS, Schema::TYPE);
 
         return parent::index();
     }
@@ -71,32 +71,8 @@ class CommentsApi extends BaseApi
      */
     public function read($index)
     {
-        $this->authorize(CommentRules::ACTION_VIEW_COMMENTS, Scheme::TYPE, $index);
+        $this->authorize(CommentRules::ACTION_VIEW_COMMENTS, Schema::TYPE, $index);
 
         return parent::read($index);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function getAuthorizationActionAndResourceTypeForRelationship(
-        string $name,
-        iterable $relationshipFilters = null,
-        iterable $relationshipSorts = null
-    ): array {
-        // if you add new relationships available for reading
-        // don't forget to tell the authorization subsystem what are the corresponding auth actions.
-
-        //if ($name === Model::REL_1) {
-        //    $pair = [ModelAuthRules::ACTION_VIEW_REL_1, Scheme::TYPE];
-        //} else {
-        //    assert($name === Model::REL_2);
-        //    $pair = [ModelAuthRules::ACTION_VIEW_REL_2, Scheme::TYPE];
-        //}
-        //return $pair;
-
-        assert(false, "Authorization action is not configured for reading `$name` relationship.");
-
-        return [];
     }
 }

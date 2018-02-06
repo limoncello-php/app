@@ -2,7 +2,8 @@
 
 use App\Authorization\BoardRules;
 use App\Data\Models\Board as Model;
-use App\Json\Schemes\BoardScheme as Scheme;
+use App\Json\Schemes\BoardSchema as Schema;
+use Limoncello\Contracts\Exceptions\AuthorizationExceptionInterface;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -29,7 +30,7 @@ class BoardsApi extends BaseApi
      */
     public function create($index, iterable $attributes, iterable $toMany): string
     {
-        $this->authorize(BoardRules::ACTION_ADMIN_BOARDS, Scheme::TYPE, $index);
+        $this->authorize(BoardRules::ACTION_ADMIN_BOARDS, Schema::TYPE, $index);
 
         return parent::create($index, $attributes, $toMany);
     }
@@ -39,7 +40,7 @@ class BoardsApi extends BaseApi
      */
     public function update($index, iterable $attributes, iterable $toMany): int
     {
-        $this->authorize(BoardRules::ACTION_ADMIN_BOARDS, Scheme::TYPE, $index);
+        $this->authorize(BoardRules::ACTION_ADMIN_BOARDS, Schema::TYPE, $index);
 
         return parent::update($index, $attributes, $toMany);
     }
@@ -49,7 +50,7 @@ class BoardsApi extends BaseApi
      */
     public function remove($index): bool
     {
-        $this->authorize(BoardRules::ACTION_ADMIN_BOARDS, Scheme::TYPE, $index);
+        $this->authorize(BoardRules::ACTION_ADMIN_BOARDS, Schema::TYPE, $index);
 
         return parent::remove($index);
     }
@@ -59,7 +60,7 @@ class BoardsApi extends BaseApi
      */
     public function index(): PaginatedDataInterface
     {
-        $this->authorize(BoardRules::ACTION_VIEW_BOARDS, Scheme::TYPE);
+        $this->authorize(BoardRules::ACTION_VIEW_BOARDS, Schema::TYPE);
 
         return parent::index();
     }
@@ -69,25 +70,28 @@ class BoardsApi extends BaseApi
      */
     public function read($index)
     {
-        $this->authorize(BoardRules::ACTION_VIEW_BOARDS, Scheme::TYPE, $index);
+        $this->authorize(BoardRules::ACTION_VIEW_BOARDS, Schema::TYPE, $index);
 
         return parent::read($index);
     }
 
     /**
-     * @inheritdoc
+     * @param string|int    $index
+     * @param iterable|null $relationshipFilters
+     * @param iterable|null $relationshipSorts
+     *
+     * @return PaginatedDataInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws AuthorizationExceptionInterface
      */
-    protected function getAuthorizationActionAndResourceTypeForRelationship(
-        string $name,
+    public function readPosts(
+        $index,
         iterable $relationshipFilters = null,
         iterable $relationshipSorts = null
-    ): array {
-        // if you add new relationships available for reading
-        // don't forget to tell the authorization subsystem what are the corresponding auth actions.
+    ): PaginatedDataInterface {
+        $this->authorize(BoardRules::ACTION_VIEW_BOARD_POSTS, Schema::TYPE, $index);
 
-        assert($name === Model::REL_POSTS);
-        $pair = [BoardRules::ACTION_VIEW_BOARD_POSTS, Scheme::TYPE];
-
-        return $pair;
+        return $this->readRelationshipInt($index, Model::REL_POSTS, $relationshipFilters, $relationshipSorts);
     }
 }
