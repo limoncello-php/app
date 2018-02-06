@@ -2,7 +2,9 @@
 
 use Faker\Generator;
 use Limoncello\Application\Packages\Data\DataSettings;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * @package Settings
@@ -35,6 +37,9 @@ class Data extends DataSettings
      * @param string             $seedClass
      *
      * @return void
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public static function resetFaker(ContainerInterface $container, string $seedClass)
     {
