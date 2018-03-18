@@ -4,7 +4,8 @@ use App\Api\CommentsApi;
 use App\Api\PostsApi;
 use App\Data\Models\Comment;
 use App\Data\Models\Post;
-use App\Web\L10n\Views;
+use App\Validation\Post\PostsReadQuery;
+use App\Web\Views;
 use Limoncello\Flute\Contracts\Http\Controller\ControllerReadInterface as CRI;
 use Limoncello\Flute\Contracts\Http\ControllerInterface;
 use Limoncello\Flute\Http\Query\FilterParameter;
@@ -41,7 +42,8 @@ class PostsController extends BaseController implements CRI
 
 
         // read resource with data from relationships
-        $parser            = self::createQueryParser($container, $request->getQueryParams());
+        $parser = self::createQueryParser($container, PostsReadQuery::class)->parse($request->getQueryParams());
+
         $paginatedComments = self::createApi($container, CommentsApi::class)
             ->withFilters([
                 Comment::FIELD_ID_POST => [

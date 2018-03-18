@@ -5,8 +5,8 @@ use App\Api\PostsApi;
 use App\Data\Models\Board;
 use App\Data\Models\Post;
 use App\Json\Schemes\BoardSchema;
-use App\Validation\QueryValidators\Board\ReadBoards;
-use App\Web\L10n\Views;
+use App\Validation\Board\BoardsReadQuery;
+use App\Web\Views;
 use Limoncello\Flute\Contracts\Http\Controller\ControllerIndexInterface;
 use Limoncello\Flute\Contracts\Http\Controller\ControllerReadInterface;
 use Limoncello\Flute\Contracts\Http\ControllerInterface;
@@ -37,8 +37,8 @@ class BoardsController extends BaseController implements ControllerIndexInterfac
         ServerRequestInterface $request
     ): ResponseInterface {
         // read resources with pagination and data from relationships
-        $parser    = self::createQueryValidator($container, ReadBoards::class, $request->getQueryParams());
-        $mapper    = self::createParameterMapper($container, BoardSchema::TYPE);
+        $parser    = self::createQueryParser($container, BoardsReadQuery::class)->parse($request->getQueryParams());
+        $mapper    = self::createParameterMapper($container, BoardSchema::class);
         $boardsApi = self::createApi($container, BoardsApi::class);
 
         $mapper->applyQueryParameters($parser, $boardsApi);
@@ -81,7 +81,6 @@ class BoardsController extends BaseController implements ControllerIndexInterfac
         ContainerInterface $container,
         ServerRequestInterface $request
     ): ResponseInterface {
-
         $index = $routeParams[ControllerInterface::ROUTE_KEY_INDEX];
 
         $board = self::createApi($container, BoardsApi::class)->read($index);
@@ -91,7 +90,8 @@ class BoardsController extends BaseController implements ControllerIndexInterfac
         }
 
         // read resource with data from relationships
-        $parser         = self::createQueryParser($container, $request->getQueryParams());
+        $parser = self::createQueryParser($container, BoardsReadQuery::class)->parse($request->getQueryParams());
+
         $paginatedPosts = self::createApi($container, PostsApi::class)
             ->withFilters([
                 Post::FIELD_ID_BOARD => [

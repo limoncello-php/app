@@ -3,7 +3,7 @@
 use Doctrine\DBAL\Types\Type;
 use Limoncello\Contracts\Application\ModelInterface;
 use Limoncello\Contracts\Data\RelationshipTypes;
-use Limoncello\Flute\Types\JsonApiDateTimeType;
+use Limoncello\Flute\Types\DateTimeType;
 
 /**
  * @package App
@@ -57,9 +57,9 @@ class Comment implements ModelInterface, CommonFields
             self::FIELD_ID_POST    => Type::INTEGER,
             self::FIELD_ID_USER    => Type::INTEGER,
             self::FIELD_TEXT       => Type::TEXT,
-            self::FIELD_CREATED_AT => JsonApiDateTimeType::NAME,
-            self::FIELD_UPDATED_AT => JsonApiDateTimeType::NAME,
-            self::FIELD_DELETED_AT => JsonApiDateTimeType::NAME,
+            self::FIELD_CREATED_AT => DateTimeType::NAME,
+            self::FIELD_UPDATED_AT => DateTimeType::NAME,
+            self::FIELD_DELETED_AT => DateTimeType::NAME,
         ];
     }
 

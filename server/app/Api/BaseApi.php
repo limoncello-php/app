@@ -3,17 +3,13 @@
 use App\Data\Models\CommonFields;
 use DateTimeImmutable;
 use DateTimeInterface;
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\DBAL\Types\Type;
-use InvalidArgumentException;
 use Limoncello\Contracts\Authentication\AccountManagerInterface;
 use Limoncello\Contracts\Authorization\AuthorizationManagerInterface;
 use Limoncello\Contracts\Exceptions\AuthorizationExceptionInterface;
 use Limoncello\Flute\Adapters\ModelQueryBuilder;
 use Limoncello\Flute\Api\Crud;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
-use Limoncello\Flute\Types\JsonApiDateTimeType;
 use Limoncello\Passport\Contracts\Authentication\PassportAccountInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -25,19 +21,6 @@ use Psr\Container\NotFoundExceptionInterface;
  */
 abstract class BaseApi extends Crud
 {
-    /** @noinspection PhpMissingParentCallCommonInspection
-     * @inheritdoc
-     */
-    final public function readRelationship(
-        $index,
-        string $name,
-        iterable $relationshipFilters = null,
-        iterable $relationshipSorts = null
-    ): PaginatedDataInterface {
-        assert(false, 'Use specialized reading methods instead.');
-        throw new InvalidArgumentException();
-    }
-
     /**
      * @param               $index
      * @param string        $name
@@ -111,8 +94,6 @@ abstract class BaseApi extends Crud
      * @param ModelQueryBuilder $builder
      *
      * @return ModelQueryBuilder
-     *
-     * @throws DBALException
      */
     protected function addCreatedAt(ModelQueryBuilder $builder): ModelQueryBuilder
     {
@@ -127,8 +108,6 @@ abstract class BaseApi extends Crud
      * @param ModelQueryBuilder $builder
      *
      * @return ModelQueryBuilder
-     *
-     * @throws DBALException
      */
     protected function addUpdatedAt(ModelQueryBuilder $builder): ModelQueryBuilder
     {
@@ -145,14 +124,12 @@ abstract class BaseApi extends Crud
      *
      * @return string
      *
-     * @throws DBALException
-     *
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function convertDateTimeToDbValue(QueryBuilder $builder, DateTimeInterface $dateTime): string
     {
-        $type  = Type::getType(JsonApiDateTimeType::NAME);
-        $value = $type->convertToDatabaseValue($dateTime, $builder->getConnection()->getDatabasePlatform());
+        $dbDateTimeFormat = $builder->getConnection()->getDatabasePlatform()->getDateTimeFormatString();
+        $value            = $dateTime->format($dbDateTimeFormat);
 
         return $value;
     }

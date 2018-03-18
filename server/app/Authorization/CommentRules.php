@@ -50,6 +50,9 @@ class CommentRules implements ResourceAuthorizationRulesInterface
      * @param ContextInterface $context
      *
      * @return bool
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public static function canCreateComment(ContextInterface $context): bool
     {

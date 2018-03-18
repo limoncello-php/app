@@ -24,7 +24,7 @@ class PostApiTest extends TestCase
 
         $json = json_decode((string)$response->getBody());
         $this->assertObjectHasAttribute('data', $json);
-        $this->assertCount(20, $json->data);
+        $this->assertCount(10, $json->data);
     }
 
     /**
@@ -42,8 +42,8 @@ class PostApiTest extends TestCase
             'sort'    => '+id,-title',   // example of how multiple sorting conditions could be applied
 
             // example of how to add includes
-            // also the controller will limit the deepness of include paths and ignore anything deeper than first level
-            'include' => 'comments,comments.user,comments.post',
+            // also the controller will limit allowed include paths
+            'include' => 'comments,comments.user',
         ];
         $response = $this->get(self::API_URI, $queryParams);
 
@@ -57,7 +57,7 @@ class PostApiTest extends TestCase
         $this->assertCount(4, $resource->relationships->comments->data);
 
         // check response has included posts as well and ignored deeper paths
-        $this->assertCount(9, $resources->included);
+        $this->assertCount(12, $resources->included);
     }
 
     /**

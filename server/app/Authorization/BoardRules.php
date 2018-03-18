@@ -4,6 +4,8 @@ use App\Data\Seeds\PassportSeed;
 use App\Json\Schemes\BoardSchema as Schema;
 use Limoncello\Application\Contracts\Authorization\ResourceAuthorizationRulesInterface;
 use Limoncello\Auth\Contracts\Authorization\PolicyInformation\ContextInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * @package App
@@ -45,6 +47,9 @@ class BoardRules implements ResourceAuthorizationRulesInterface
      * @param ContextInterface $context
      *
      * @return bool
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public static function canAdminBoards(ContextInterface $context): bool
     {

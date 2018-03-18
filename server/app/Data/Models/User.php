@@ -3,7 +3,7 @@
 use Doctrine\DBAL\Types\Type;
 use Limoncello\Contracts\Application\ModelInterface;
 use Limoncello\Contracts\Data\RelationshipTypes;
-use Limoncello\Flute\Types\JsonApiDateTimeType;
+use Limoncello\Flute\Types\DateTimeType;
 
 /**
  * @package App
@@ -71,9 +71,9 @@ class User implements ModelInterface, CommonFields
             self::FIELD_LAST_NAME     => Type::STRING,
             self::FIELD_EMAIL         => Type::STRING,
             self::FIELD_PASSWORD_HASH => Type::STRING,
-            self::FIELD_CREATED_AT    => JsonApiDateTimeType::NAME,
-            self::FIELD_UPDATED_AT    => JsonApiDateTimeType::NAME,
-            self::FIELD_DELETED_AT    => JsonApiDateTimeType::NAME,
+            self::FIELD_CREATED_AT    => DateTimeType::NAME,
+            self::FIELD_UPDATED_AT    => DateTimeType::NAME,
+            self::FIELD_DELETED_AT    => DateTimeType::NAME,
         ];
     }
 

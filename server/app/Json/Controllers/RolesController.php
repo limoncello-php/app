@@ -2,9 +2,9 @@
 
 use App\Api\RolesApi as Api;
 use App\Json\Schemes\RoleSchema as Schema;
-use App\Validation\JsonValidators\Role\RoleCreate;
-use App\Validation\JsonValidators\Role\RoleUpdate;
-use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
+use App\Validation\Role\RoleCreateJson;
+use App\Validation\Role\RolesReadQuery;
+use App\Validation\Role\RoleUpdateJson;
 
 /**
  * @package App
@@ -20,27 +20,14 @@ class RolesController extends BaseController
     const SCHEMA_CLASS = Schema::class;
 
     /** @inheritdoc */
-    const ON_CREATE_VALIDATION_RULES_SET_CLASS = RoleCreate::class;
+    const ON_CREATE_DATA_VALIDATION_RULES_CLASS = RoleCreateJson::class;
 
     /** @inheritdoc */
-    const ON_UPDATE_VALIDATION_RULES_SET_CLASS = RoleUpdate::class;
+    const ON_UPDATE_DATA_VALIDATION_RULES_CLASS = RoleUpdateJson::class;
 
-    /**
-     * @inheritdoc
-     *
-     * By default no filters, sorts and includes are allowed (will be ignored). We override this method
-     * in order allow it.
-     */
-    protected static function configureOnIndexParser(QueryParserInterface $parser): QueryParserInterface
-    {
-        return parent::configureOnIndexParser($parser)
-            ->withAllowedFilterFields([
-                Schema::RESOURCE_ID,
-                Schema::ATTR_DESCRIPTION,
-            ])
-            ->withAllowedSortFields([
-                Schema::RESOURCE_ID,
-                Schema::ATTR_DESCRIPTION,
-            ]);
-    }
+    /** @inheritdoc */
+    const ON_INDEX_QUERY_VALIDATION_RULES_CLASS = RolesReadQuery::class;
+
+    /** @inheritdoc */
+    const ON_READ_QUERY_VALIDATION_RULES_CLASS = RolesReadQuery::class;
 }

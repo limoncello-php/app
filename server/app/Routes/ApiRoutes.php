@@ -6,7 +6,9 @@ use App\Json\Controllers\PostsController;
 use App\Json\Controllers\RolesController;
 use App\Json\Controllers\UsersController;
 use App\Json\Schemes\BoardSchema;
+use App\Json\Schemes\CommentSchema;
 use App\Json\Schemes\PostSchema;
+use App\Json\Schemes\RoleSchema;
 use App\Json\Schemes\UserSchema;
 use Limoncello\Commands\CommandRoutesTrait;
 use Limoncello\Contracts\Application\RoutesConfiguratorInterface;
@@ -44,19 +46,19 @@ class ApiRoutes implements RoutesConfiguratorInterface
             // This group uses custom exception handler to provide error information in JSON API format.
             ->group(self::API_URI_PREFIX, function (GroupInterface $routes): void {
 
-                self::resource($routes, BoardsController::class);
-                self::relationship($routes, BoardSchema::REL_POSTS, BoardsController::class, 'readPosts');
+                self::resource($routes, BoardSchema::TYPE, BoardsController::class);
+                self::relationship($routes, BoardSchema::TYPE, BoardSchema::REL_POSTS, BoardsController::class, 'readPosts');
 
-                self::resource($routes, PostsController::class);
-                self::relationship($routes, PostSchema::REL_COMMENTS, PostsController::class, 'readComments');
+                self::resource($routes, PostSchema::TYPE, PostsController::class);
+                self::relationship($routes, PostSchema::TYPE, PostSchema::REL_COMMENTS, PostsController::class, 'readComments');
 
-                self::resource($routes, CommentsController::class);
+                self::resource($routes, CommentSchema::TYPE, CommentsController::class);
 
-                self::resource($routes, UsersController::class);
-                self::relationship($routes, UserSchema::REL_POSTS, UsersController::class, 'readPosts');
-                self::relationship($routes, UserSchema::REL_COMMENTS, UsersController::class, 'readComments');
+                self::resource($routes, UserSchema::TYPE, UsersController::class);
+                self::relationship($routes, UserSchema::TYPE, UserSchema::REL_POSTS, UsersController::class, 'readPosts');
+                self::relationship($routes, UserSchema::TYPE, UserSchema::REL_COMMENTS, UsersController::class, 'readComments');
 
-                self::resource($routes, RolesController::class);
+                self::resource($routes, RoleSchema::TYPE, RolesController::class);
             }, [
                 GroupInterface::PARAM_CONTAINER_CONFIGURATORS => [
                     FluteContainerConfigurator::CONFIGURE_EXCEPTION_HANDLER,

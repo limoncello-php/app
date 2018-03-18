@@ -49,14 +49,14 @@ class BoardApiTest extends TestCase
         $this->assertNotNull($resources = json_decode((string)$response->getBody()));
         $this->assertCount(3, $resources->data);
 
-        // Board with ID 9 has more than 20 posts. Check that that data in its relationship were paginated
+        // Board with ID 9 has more than 10 posts. Check that that data in its relationship were paginated
         $resource = $resources->data[0];
         $this->assertEquals(2, $resource->id);
-        $this->assertCount(20, $resource->relationships->posts->data);
+        $this->assertCount(10, $resource->relationships->posts->data);
         $this->assertNotEmpty($resource->relationships->posts->links->next);
 
         // check response has included posts as well
-        $this->assertCount(60, $resources->included);
+        $this->assertCount(30, $resources->included);
     }
 
     /**
@@ -79,7 +79,13 @@ class BoardApiTest extends TestCase
      */
     public function testReadRelationship()
     {
-        $response = $this->get(self::API_URI . '/1/relationships/' . BoardSchema::REL_POSTS);
+        $queryParams = [
+            'page' => [
+                'limit'  => '20',
+            ],
+        ];
+
+        $response = $this->get(self::API_URI . '/1/relationships/' . BoardSchema::REL_POSTS, $queryParams);
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNotNull($resources = json_decode((string)$response->getBody()));

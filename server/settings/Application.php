@@ -43,7 +43,7 @@ class Application implements ApplicationConfigurationInterface
             static::KEY_CACHE_FOLDER                 => $cacheFolder,
             static::KEY_CACHE_CALLABLE               => static::CACHE_CALLABLE,
             static::KEY_COMMANDS_FOLDER              => $commandsFolder,
-            static::KEY_APP_ORIGIN_SCHEME            => $originScheme,
+            static::KEY_APP_ORIGIN_SCHEMA            => $originScheme,
             static::KEY_APP_ORIGIN_HOST              => $originHost,
             static::KEY_APP_ORIGIN_PORT              => $originPort,
             static::KEY_APP_ORIGIN_URI               => $originUri,

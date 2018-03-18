@@ -1,18 +1,13 @@
 <?php namespace App\Web\Controllers;
 
-use App\Web\L10n\Views;
+use App\Web\Views;
 use Limoncello\Contracts\Application\ApplicationConfigurationInterface as A;
 use Limoncello\Contracts\Application\CacheSettingsProviderInterface;
 use Limoncello\Contracts\L10n\FormatterFactoryInterface;
 use Limoncello\Contracts\Templates\TemplatesInterface;
-use Limoncello\Flute\Contracts\Api\CrudInterface;
-use Limoncello\Flute\Contracts\FactoryInterface;
-use Limoncello\Flute\Contracts\Http\Query\ParametersMapperInterface;
-use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
-use Limoncello\Flute\Contracts\Http\Query\QueryValidatorFactoryInterface;
-use Limoncello\Flute\Contracts\Http\Query\QueryValidatorInterface;
 use Limoncello\Flute\Contracts\Validation\FormValidatorFactoryInterface;
 use Limoncello\Flute\Contracts\Validation\FormValidatorInterface;
+use Limoncello\Flute\Http\Traits\DefaultControllerMethodsTrait;
 use Limoncello\Templates\TwigTemplates;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
@@ -26,6 +21,12 @@ use Twig_Extensions_Extension_Text;
  */
 abstract class BaseController
 {
+    use DefaultControllerMethodsTrait {
+        defaultCreateApi as createApi;
+        defaultCreateQueryParser as createQueryParser;
+        defaultCreateParameterMapper as createParameterMapper;
+    }
+
     /**
      * @param PsrContainerInterface $container
      * @param int                   $viewId
@@ -69,101 +70,21 @@ abstract class BaseController
 
     /**
      * @param PsrContainerInterface $container
-     * @param string                $formValidatorClass
+     * @param string                $rulesClass
      *
      * @return FormValidatorInterface
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected static function validator(
+    protected static function createFormValidator(
         PsrContainerInterface $container,
-        string $formValidatorClass
+        string $rulesClass
     ): FormValidatorInterface {
         /** @var FormValidatorFactoryInterface $validatorFactory */
         $validatorFactory = $container->get(FormValidatorFactoryInterface::class);
-        $validator        = $validatorFactory->createValidator($formValidatorClass);
+        $validator        = $validatorFactory->createValidator($rulesClass);
 
         return $validator;
-    }
-
-    /**
-     * @param PsrContainerInterface $container
-     * @param array                 $queryParameters
-     *
-     * @return QueryParserInterface
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    protected static function createQueryParser(
-        PsrContainerInterface $container,
-        array $queryParameters
-    ): QueryParserInterface {
-        /** @var QueryParserInterface $queryParser */
-        $queryParser = $container->get(QueryParserInterface::class);
-
-        return $queryParser->parse($queryParameters);
-    }
-
-    /**
-     * @param PsrContainerInterface $container
-     * @param string                $className
-     * @param array                 $queryParameters
-     *
-     * @return QueryValidatorInterface
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    protected static function createQueryValidator(
-        PsrContainerInterface $container,
-        string $className,
-        array $queryParameters
-    ): QueryValidatorInterface {
-        /** @var QueryValidatorFactoryInterface $factory */
-        $factory   = $container->get(QueryValidatorFactoryInterface::class);
-        $validator = $factory->createValidator($className);
-        $validator->parse($queryParameters);
-
-        return $validator;
-    }
-
-    /**
-     * @param PsrContainerInterface $container
-     * @param string                $apiClass
-     *
-     * @return CrudInterface
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    protected static function createApi(PsrContainerInterface $container, string $apiClass): CrudInterface
-    {
-        /** @var FactoryInterface $factory */
-        $factory = $container->get(FactoryInterface::class);
-        $api     = $factory->createApi($apiClass);
-
-        return $api;
-    }
-
-    /**
-     * @param PsrContainerInterface $container
-     * @param string                $jsonType
-     *
-     * @return ParametersMapperInterface
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    protected static function createParameterMapper(
-        PsrContainerInterface $container,
-        string $jsonType
-    ): ParametersMapperInterface {
-        /** @var ParametersMapperInterface $mapper */
-        $mapper = $container->get(ParametersMapperInterface::class);
-        $mapper->selectRootSchemeByResourceType($jsonType);
-
-        return $mapper;
     }
 }

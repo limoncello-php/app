@@ -24,7 +24,7 @@ class CommentApiTest extends TestCase
 
         $json = json_decode((string)$response->getBody());
         $this->assertObjectHasAttribute('data', $json);
-        $this->assertCount(20, $json->data);
+        $this->assertCount(10, $json->data);
     }
 
     /**
@@ -86,9 +86,10 @@ class CommentApiTest extends TestCase
         ];
         $response    = $this->get(self::API_URI, $queryParams);
 
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertNotNull($resources = json_decode((string)$response->getBody()));
-        $this->assertCount(100, $resources->data);
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertNotNull($errors = json_decode((string)$response->getBody()));
+        $this->assertCount(1, $errors->errors);
+        $this->assertContains('The value should be between', $errors->errors[0]->detail);
     }
 
     /**

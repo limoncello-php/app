@@ -3,7 +3,7 @@
 use Doctrine\DBAL\Types\Type;
 use Limoncello\Contracts\Application\ModelInterface;
 use Limoncello\Contracts\Data\RelationshipTypes;
-use Limoncello\Flute\Types\JsonApiDateTimeType;
+use Limoncello\Flute\Types\DateTimeType;
 
 /**
  * @package App
@@ -50,9 +50,9 @@ class Board implements ModelInterface, CommonFields
             self::FIELD_ID         => Type::INTEGER,
             self::FIELD_TITLE      => Type::STRING,
             self::FIELD_IMG_URL    => Type::STRING,
-            self::FIELD_CREATED_AT => JsonApiDateTimeType::NAME,
-            self::FIELD_UPDATED_AT => JsonApiDateTimeType::NAME,
-            self::FIELD_DELETED_AT => JsonApiDateTimeType::NAME,
+            self::FIELD_CREATED_AT => DateTimeType::NAME,
+            self::FIELD_UPDATED_AT => DateTimeType::NAME,
+            self::FIELD_DELETED_AT => DateTimeType::NAME,
         ];
     }
 

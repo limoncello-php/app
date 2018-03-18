@@ -2,7 +2,7 @@
 
 use Doctrine\DBAL\Types\Type;
 use Limoncello\Contracts\Application\ModelInterface;
-use Limoncello\Flute\Types\JsonApiDateTimeType;
+use Limoncello\Flute\Types\DateTimeType;
 use Limoncello\Passport\Entities\Scope;
 
 /**
@@ -47,9 +47,9 @@ class RoleScope implements ModelInterface, CommonFields
             self::FIELD_ID         => Type::INTEGER,
             self::FIELD_ID_ROLE    => Type::STRING,
             self::FIELD_ID_SCOPE   => Type::STRING,
-            self::FIELD_CREATED_AT => JsonApiDateTimeType::NAME,
-            self::FIELD_UPDATED_AT => JsonApiDateTimeType::NAME,
-            self::FIELD_DELETED_AT => JsonApiDateTimeType::NAME,
+            self::FIELD_CREATED_AT => DateTimeType::NAME,
+            self::FIELD_UPDATED_AT => DateTimeType::NAME,
+            self::FIELD_DELETED_AT => DateTimeType::NAME,
         ];
     }
 

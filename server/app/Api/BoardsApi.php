@@ -81,6 +81,7 @@ class BoardsApi extends BaseApi
      * @param iterable|null $relationshipSorts
      *
      * @return PaginatedDataInterface
+     *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws AuthorizationExceptionInterface

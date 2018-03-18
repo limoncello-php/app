@@ -3,9 +3,10 @@
 use App\Api\BoardsApi as Api;
 use App\Data\Models\Board as Model;
 use App\Json\Schemes\BoardSchema as Schema;
-use App\Validation\JsonValidators\Board\BoardCreate;
-use App\Validation\JsonValidators\Board\BoardUpdate;
-use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
+use App\Validation\Board\BoardCreateJson;
+use App\Validation\Board\BoardsReadQuery;
+use App\Validation\Board\BoardUpdateJson;
+use Limoncello\Flute\Validation\JsonApi\Rules\DefaultQueryValidationRules;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -26,10 +27,16 @@ class BoardsController extends BaseController
     const SCHEMA_CLASS = Schema::class;
 
     /** @inheritdoc */
-    const ON_CREATE_VALIDATION_RULES_SET_CLASS = BoardCreate::class;
+    const ON_CREATE_DATA_VALIDATION_RULES_CLASS = BoardCreateJson::class;
 
     /** @inheritdoc */
-    const ON_UPDATE_VALIDATION_RULES_SET_CLASS = BoardUpdate::class;
+    const ON_UPDATE_DATA_VALIDATION_RULES_CLASS = BoardUpdateJson::class;
+
+    /** @inheritdoc */
+    const ON_INDEX_QUERY_VALIDATION_RULES_CLASS = BoardsReadQuery::class;
+
+    /** @inheritdoc */
+    const ON_READ_QUERY_VALIDATION_RULES_CLASS = BoardsReadQuery::class;
 
     /**
      * @param array                  $routeParams
@@ -46,31 +53,12 @@ class BoardsController extends BaseController
         ContainerInterface $container,
         ServerRequestInterface $request
     ): ResponseInterface {
-        $apiHandler = function (Api $api) use ($routeParams) {
-            return $api->readPosts($routeParams[static::ROUTE_KEY_INDEX]);
-        };
-
-        return static::readRelationshipWithClosure($apiHandler, Model::REL_POSTS, $container, $request);
-    }
-
-    /**
-     * @inheritdoc
-     *
-     * By default no filters, sorts and includes are allowed (will be ignored). We override this method
-     * in order allow it.
-     */
-    protected static function configureOnIndexParser(QueryParserInterface $parser): QueryParserInterface
-    {
-        return parent::configureOnIndexParser($parser)
-            ->withAllowedFilterFields([
-                Schema::RESOURCE_ID,
-            ])
-            ->withAllowedSortFields([
-                Schema::RESOURCE_ID,
-                Schema::ATTR_TITLE,
-            ])
-            ->withAllowedIncludePaths([
-                Schema::REL_POSTS,
-            ]);
+        return static::readRelationship(
+            $routeParams[static::ROUTE_KEY_INDEX],
+            Model::REL_POSTS,
+            DefaultQueryValidationRules::class,
+            $container,
+            $request
+        );
     }
 }

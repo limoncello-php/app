@@ -28,7 +28,7 @@ class PostsSeed implements SeedInterface
 
         $this->seedModelsData(self::NUMBER_OF_RECORDS, Model::class, function (ContainerInterface $container) use ($now, $users, $boards) {
             /** @var Generator $faker */
-            $faker  = $container->get(Generator::class);
+            $faker = $container->get(Generator::class);
 
             return [
                 Model::FIELD_ID_BOARD   => $faker->randomElement($boards)[Board::FIELD_ID],

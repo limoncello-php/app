@@ -13,6 +13,12 @@ class ApplicationApi extends FluteSettings
 {
     use ClassIsTrait;
 
+    /** @inheritdoc */
+    public const DEFAULT_PAGE_SIZE = 10;
+
+    /** @inheritdoc */
+    public const DEFAULT_MAX_PAGE_SIZE = 30;
+
     /**
      * @inheritdoc
      */
@@ -23,10 +29,10 @@ class ApplicationApi extends FluteSettings
         $apiFolder      = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Api']);
         $schemesFolder  = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Json', 'Schemes']);
         $jsonCtrlFolder = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Json', 'Controllers']);
-        $valRulesFolder = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Validation', 'Rules']);
-        $jsonValFolder  = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Validation', 'JsonValidators', '**']);
-        $formValFolder  = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Validation', 'WebValidators', '**']);
-        $queryValFolder = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Validation', 'QueryValidators', '**']);
+        $valRulesFolder = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Validation', '**']);
+        $jsonValFolder  = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Validation', '**']);
+        $formValFolder  = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Validation', '**']);
+        $queryValFolder = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Validation', '**']);
 
         return [
 

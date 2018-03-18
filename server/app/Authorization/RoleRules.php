@@ -4,6 +4,8 @@ use App\Data\Seeds\PassportSeed;
 use App\Json\Schemes\RoleSchema as Schema;
 use Limoncello\Application\Contracts\Authorization\ResourceAuthorizationRulesInterface;
 use Limoncello\Auth\Contracts\Authorization\PolicyInformation\ContextInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * @package App
@@ -30,6 +32,9 @@ class RoleRules implements ResourceAuthorizationRulesInterface
      * @param ContextInterface $context
      *
      * @return bool
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public static function canViewRoles(ContextInterface $context): bool
     {
@@ -40,6 +45,9 @@ class RoleRules implements ResourceAuthorizationRulesInterface
      * @param ContextInterface $context
      *
      * @return bool
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public static function canAdminRoles(ContextInterface $context): bool
     {

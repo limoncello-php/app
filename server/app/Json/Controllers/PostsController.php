@@ -3,9 +3,10 @@
 use App\Api\PostsApi as Api;
 use App\Data\Models\Post as Model;
 use App\Json\Schemes\PostSchema as Schema;
-use App\Validation\JsonValidators\Post\PostCreate;
-use App\Validation\JsonValidators\Post\PostUpdate;
-use Limoncello\Flute\Contracts\Http\Query\QueryParserInterface;
+use App\Validation\Post\PostCreateJson;
+use App\Validation\Post\PostsReadQuery;
+use App\Validation\Post\PostUpdateJson;
+use Limoncello\Flute\Validation\JsonApi\Rules\DefaultQueryValidationRules;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -26,10 +27,16 @@ class PostsController extends BaseController
     const SCHEMA_CLASS = Schema::class;
 
     /** @inheritdoc */
-    const ON_CREATE_VALIDATION_RULES_SET_CLASS = PostCreate::class;
+    const ON_CREATE_DATA_VALIDATION_RULES_CLASS = PostCreateJson::class;
 
     /** @inheritdoc */
-    const ON_UPDATE_VALIDATION_RULES_SET_CLASS = PostUpdate::class;
+    const ON_UPDATE_DATA_VALIDATION_RULES_CLASS = PostUpdateJson::class;
+
+    /** @inheritdoc */
+    const ON_INDEX_QUERY_VALIDATION_RULES_CLASS = PostsReadQuery::class;
+
+    /** @inheritdoc */
+    const ON_READ_QUERY_VALIDATION_RULES_CLASS = PostsReadQuery::class;
 
     /**
      * @param array                  $routeParams
@@ -46,31 +53,12 @@ class PostsController extends BaseController
         ContainerInterface $container,
         ServerRequestInterface $request
     ): ResponseInterface {
-        $apiHandler = function (Api $api) use ($routeParams) {
-            return $api->readComments($routeParams[static::ROUTE_KEY_INDEX]);
-        };
-
-        return static::readRelationshipWithClosure($apiHandler, Model::REL_COMMENTS, $container, $request);
-    }
-
-    /**
-     * @inheritdoc
-     *
-     * By default no filters, sorts and includes are allowed (will be ignored). We override this method
-     * in order allow it.
-     */
-    protected static function configureOnIndexParser(QueryParserInterface $parser): QueryParserInterface
-    {
-        return parent::configureOnIndexParser($parser)
-            ->withAllowedFilterFields([
-                Schema::RESOURCE_ID,
-            ])
-            ->withAllowedSortFields([
-                Schema::RESOURCE_ID,
-                Schema::ATTR_TITLE,
-            ])
-            ->withAllowedIncludePaths([
-                Schema::REL_COMMENTS,
-            ]);
+        return static::readRelationship(
+            $routeParams[static::ROUTE_KEY_INDEX],
+            Model::REL_COMMENTS,
+            DefaultQueryValidationRules::class,
+            $container,
+            $request
+        );
     }
 }

@@ -3,6 +3,8 @@
 use Limoncello\Application\Authorization\AuthorizationRulesTrait;
 use Limoncello\Auth\Contracts\Authorization\PolicyInformation\ContextInterface;
 use Limoncello\Passport\Contracts\Authentication\PassportAccountInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * @package App
@@ -16,6 +18,9 @@ trait RulesTrait
      * @param string           $scope
      *
      * @return bool
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected static function hasScope(ContextInterface $context, string $scope): bool
     {
@@ -34,6 +39,9 @@ trait RulesTrait
      * @param ContextInterface $context
      *
      * @return int|string|null
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected static function getCurrentUserIdentity(ContextInterface $context)
     {

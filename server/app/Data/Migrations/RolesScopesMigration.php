@@ -5,7 +5,7 @@ use App\Data\Models\RoleScope as Model;
 use Doctrine\DBAL\Types\Type;
 use Limoncello\Contracts\Data\MigrationInterface;
 use Limoncello\Data\Migrations\MigrationTrait;
-use Limoncello\Passport\Entities\DatabaseScheme;
+use Limoncello\Passport\Entities\DatabaseSchema;
 use Limoncello\Passport\Entities\Scope;
 
 /**
@@ -25,7 +25,7 @@ class RolesScopesMigration implements MigrationInterface
             $this->foreignRelationship(Model::FIELD_ID_ROLE, Role::class),
             $this->foreignColumn(
                 Model::FIELD_ID_SCOPE,
-                DatabaseScheme::TABLE_SCOPES,
+                DatabaseSchema::TABLE_SCOPES,
                 Scope::FIELD_ID,
                 Type::STRING,
                 true
