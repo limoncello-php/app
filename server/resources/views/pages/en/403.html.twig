@@ -1,0 +1,11 @@
+{% extends 'pages/en/base/with-header-and-footer.master.html.twig' %}
+
+{% block title %}Forbidden{% endblock %}
+
+{% block content %}
+    <article class="alert alert-warning">
+        <h1>{{ title   | default("403") }}</h1>
+        <h2>{{ message | default("Forbidden") }}</h2>
+        <h3>{{ details | default("The request is forbidden for the current user.") }}</h3>
+    </article>
+{% endblock %}

@@ -1,7 +1,44 @@
-{% extends 'pages/en/master.html.twig' %}
+{% extends 'pages/en/base/with-header-and-footer.master.html.twig' %}
 
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-    <main>{{ content_text }}</main>
+    <main role="main" class="container">
+        <a href="https://github.com/limoncello-php/framework" target="_blank" rel="nofollow">
+            <img src="/img/limoncello.png" alt="Limoncello PHP" title="Limoncello PHP" align="right" width="200" height="200" />
+        </a>
+        <p class="display-1">Limoncello</p>
+        <p class="lead">Limoncello App is a fully featured OAuth 2.0 <a href="http://jsonapi.org/" target="_blank" rel="nofollow">JSON API</a> quick start application which supports</p>
+        <ul class="lead">
+            <li>JSON API CRUD operations (create, read, update and delete) for a few sample resources with <code>to-one</code>, <code>to-many</code> and <code>many-to-many</code> relationship types.</li>
+            <li>Support for such JSON API <a href="http://jsonapi.org/format/#fetching" target="_blank" rel="nofollow">features</a> as resource inclusion, sparse field sets, sorting, filtering and pagination.</li>
+            <li>Database migrations and seedings.</li>
+            <li>OAuth 2.0 server authentication and role authorization.</li>
+            <li>Cross-Origin Resource Sharing (CORS).</li>
+            <li>JSON API errors.</li>
+            <li>API tests.</li>
+        </ul>
+        <p class="lead">Supported features</p>
+        <ul class="lead">
+            <li>Multiple nested paths resource inclusion (e.g. <code>posts,posts.user,posts.comments.user</code>).</li>
+            <li>Filtering and sorting by multiple attributes in resources and its relationships.</li>
+            <li>Supported operators <code>=</code>, <code>eq</code>, <code>equals</code>, <code>!=</code>, <code>neq</code>, <code>not-equals</code>, <code>&lt;</code>, <code>lt</code>, <code>less-than</code>, <code>&lt;=</code>, <code>lte</code>, <code>less-or-equals</code>, <code>&gt;</code>, <code>gt</code>, <code>greater-than</code>, <code>&gt;=</code>, <code>gte</code>, <code>greater-or-equals</code>, <code>like</code>, <code>not-like</code>, <code>in</code>, <code>not-in</code>, <code>is-null</code>, <code>not-null</code>.</li>
+            <li>Pagination works for main resources and resources in relationships. Limits for maximum number of resources are configurable.</li>
+        </ul>
+        <p class="lead">Server API documentation is <a href="https://documenter.getpostman.com/view/53867/limoncello-app/6Z3usWQ" target="_blank" rel="nofollow">here</a>.</p>
+        <p class="lead">Thank you for supporting <a href="https://github.com/limoncello-php/app" target="_blank" rel="nofollow">the project</a> with <img alt="star" height="20" width="20" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2b50.png">.</p>
+        <p class="lead">This project is <mark>open-source</mark>. Would you like to make the app nicer or improve the framework? Feel free to contact about the app <a href="https://github.com/limoncello-php/app/issues" target="_blank" rel="nofollow">here</a> and the framework <a href="https://github.com/limoncello-php/framework/issues" target="_blank" rel="nofollow">here</a>.</p>
+        <p class="lead">Based on</p>
+        <ul class="lead">
+            <li><a href="https://github.com/zendframework/zend-diactoros" target="_blank" rel="nofollow">Zend Diactoros</a></li>
+            <li><a href="http://www.doctrine-project.org/" target="_blank" rel="nofollow">Doctrine</a></li>
+            <li><a href="http://pimple.sensiolabs.org/" target="_blank" rel="nofollow">Pimple</a></li>
+            <li><a href="https://github.com/Seldaek/monolog" target="_blank" rel="nofollow">Monolog</a></li>
+            <li><a href="https://github.com/nikic/FastRoute" target="_blank" rel="nofollow">FastRoute</a></li>
+            <li><a href="https://twig.sensiolabs.org/" target="_blank" rel="nofollow">Twig</a></li>
+            <li><a href="https://github.com/neomerx/json-api" target="_blank" rel="nofollow">JSON API implementation</a></li>
+            <li><a href="https://github.com/neomerx/cors-psr7" target="_blank" rel="nofollow">Cross-Origin Resource Sharing</a></li>
+            <li><a href="https://github.com/limoncello-php/framework" target="_blank" rel="nofollow">Limoncello Framework</a></li>
+        </ul>
+    </main>
 {% endblock %}

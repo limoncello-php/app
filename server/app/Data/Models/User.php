@@ -32,13 +32,7 @@ class User implements ModelInterface, CommonFields
     const FIELD_PASSWORD_HASH = 'password_hash';
 
     /** Relationship name */
-    const REL_POSTS = 'posts';
-
-    /** Relationship name */
     const REL_ROLE = 'role';
-
-    /** Relationship name */
-    const REL_COMMENTS = 'comments';
 
     /** Minimum password length */
     const MIN_PASSWORD_LENGTH = 5;
@@ -99,10 +93,6 @@ class User implements ModelInterface, CommonFields
         return [
             RelationshipTypes::BELONGS_TO => [
                 self::REL_ROLE => [Role::class, self::FIELD_ID_ROLE, Role::REL_USERS],
-            ],
-            RelationshipTypes::HAS_MANY   => [
-                self::REL_POSTS    => [Post::class, Post::FIELD_ID_USER, Post::REL_USER],
-                self::REL_COMMENTS => [Comment::class, Comment::FIELD_ID_USER, Comment::REL_USER],
             ],
         ];
     }

@@ -1,0 +1,78 @@
+{% extends 'pages/en/base/with-header-and-footer.master.html.twig' %}
+
+{% block title %}
+    {% if post_create_url %}
+        New User
+    {% endif %}
+    {% if post_update_url %}
+        {{ model['first-name'] ~ ' ' ~ model['last-name'] ~ ' (' ~ model['role'] ~ ')' }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <form id="delete" method="post"></form>
+    <form id="user" method="post">
+        <div class="form-group">
+            <label for="first-name">First Name</label>
+            <input type="text" class="form-control" id="first-name" name="first-name" placeholder="First Name" value="{{ model['first-name'] }}" required autofocus>
+        </div>
+        {% if (errors['first-name'] ?? false) %}
+            <div class="alert alert-danger" role="alert">{{ errors['first-name'] }}</div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="last-name">Last Name</label>
+            <input type="text" class="form-control" id="last-name" name="last-name" placeholder="Last Name" value="{{ model['last-name'] }}" required>
+        </div>
+        {% if (errors['last-name'] ?? false) %}
+            <div class="alert alert-danger" role="alert">{{ errors['last-name'] }}</div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="{{ model['email'] }}" required>
+        </div>
+        {% if (errors['email'] ?? false) %}
+            <div class="alert alert-danger" role="alert">{{ errors['email'] }}</div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="role">Role</label>
+            <select class="form-control" id="role" name="role">
+                {% for role in roles %}
+                    <option value="{{ role.id_role }}"{% if role.id_role is same as(model['role']) %} selected="selected"{% endif %}>{{ role.id_role }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="{{ model['password'] }}" {% if post_create_url %}required{% endif %}>
+        </div>
+        {% if (errors['password'] ?? false) %}
+            <div class="alert alert-danger" role="alert">{{ errors['password'] }}</div>
+        {% endif %}
+        <div class="form-group">
+            <label for="password-confirmation">Password Confirmation</label>
+            <input type="password" class="form-control" id="password-confirmation" name="password-confirmation" placeholder="Password" {% if post_create_url %}required{% endif %}>
+        </div>
+        {% if (errors['password-confirmation'] ?? false) %}
+            <div class="alert alert-danger" role="alert">{{ errors['password-confirmation'] }}</div>
+        {% endif %}
+
+        {% if error_message %}
+            <div class="alert alert-danger" role="alert">{{ error_message }}</div>
+        {% endif %}
+    </form>
+    {% if can_admin_users %}
+        {% if post_create_url %}
+            <button class="btn btn-lg btn-primary btn-block" type="submit" form="user" formaction="{{ post_create_url }}">Create</button>
+        {% endif %}
+        {% if post_update_url %}
+            <button class="btn btn-lg btn-primary btn-block" type="submit" form="user" formaction="{{ post_update_url }}">Update</button>
+        {% endif %}
+        {% if post_delete_url %}
+            <button class="btn btn-lg btn-danger btn-block" type="submit" form="delete" formaction="{{ post_delete_url }}">Delete</button>
+        {% endif %}
+    {% endif %}
+{% endblock %}

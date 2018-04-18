@@ -27,7 +27,7 @@ final class RoleRules extends BaseRules
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_DESCRIPTION];
 
-        return self::asSanitizedString(self::stringLengthMax($maxLength));
+        return self::asSanitizedString(self::stringLengthBetween(1, $maxLength));
     }
 
     /**
@@ -35,6 +35,10 @@ final class RoleRules extends BaseRules
      */
     public static function isUniqueRoleId(): RuleInterface
     {
-        return self::asSanitizedString(self::unique(Model::TABLE_NAME, Model::FIELD_ID));
+        $maxLength = Model::getAttributeLengths()[Model::FIELD_ID];
+
+        return self::asSanitizedString(
+            self::stringLengthBetween(1, $maxLength, self::unique(Model::TABLE_NAME, Model::FIELD_ID))
+        );
     }
 }

@@ -28,7 +28,7 @@ final class UserRules extends BaseRules
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_FIRST_NAME];
 
-        return self::asSanitizedString(self::stringLengthMax($maxLength));
+        return self::asSanitizedString(self::stringLengthBetween(1, $maxLength));
     }
 
     /**
@@ -38,7 +38,7 @@ final class UserRules extends BaseRules
     {
         $maxLength = Model::getAttributeLengths()[Model::FIELD_LAST_NAME];
 
-        return self::asSanitizedString(self::stringLengthMax($maxLength));
+        return self::asSanitizedString(self::stringLengthBetween(1, $maxLength));
     }
 
     /**
@@ -49,7 +49,8 @@ final class UserRules extends BaseRules
         $maxLength = Model::getAttributeLengths()[Model::FIELD_EMAIL];
 
         return self::isString(
-            self::stringLengthMax(
+            self::stringLengthBetween(
+                1,
                 $maxLength,
                 self::filter(FILTER_VALIDATE_EMAIL, null, ErrorCodes::IS_EMAIL)
             )

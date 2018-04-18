@@ -1,12 +1,17 @@
 <?php namespace App\Routes;
 
-use App\Web\Controllers\BoardsController;
-use App\Web\Controllers\PostsController;
+use App\Authentication\CookieAuth;
+use App\Web\Controllers\AuthController;
+use App\Web\Controllers\HomeController;
+use App\Web\Controllers\RolesController;
+use App\Web\Controllers\UsersController;
+use App\Web\Middleware\CustomErrorResponsesMiddleware;
 use Limoncello\Application\Packages\Application\WhoopsContainerConfigurator;
 use Limoncello\Commands\CommandRoutesTrait;
 use Limoncello\Contracts\Application\RoutesConfiguratorInterface;
 use Limoncello\Contracts\Routing\GroupInterface;
-use Limoncello\Flute\Contracts\Http\ControllerInterface;
+use Limoncello\Contracts\Routing\RouteInterface;
+use Limoncello\Flute\Contracts\Http\WebControllerInterface;
 use Limoncello\Flute\Http\Traits\FluteRoutesTrait;
 
 /**
@@ -16,6 +21,8 @@ use Limoncello\Flute\Http\Traits\FluteRoutesTrait;
  */
 class WebRoutes implements RoutesConfiguratorInterface
 {
+    const TOP_GROUP_PREFIX = '';
+
     use FluteRoutesTrait, CommandRoutesTrait;
 
     /**
@@ -34,17 +41,26 @@ class WebRoutes implements RoutesConfiguratorInterface
         $routes
             // HTML pages group
             // This group uses exception handler to provide error information in HTML format with Whoops.
-            ->group('', function (GroupInterface $routes): void {
-                $slugged = '/{' . ControllerInterface::ROUTE_KEY_INDEX . '}/';
+            ->group(self::TOP_GROUP_PREFIX, function (GroupInterface $routes): void {
 
-                $routes->get('/', [BoardsController::class, BoardsController::METHOD_INDEX]);
-                $routes->get('/boards' . $slugged, [BoardsController::class, BoardsController::METHOD_READ]);
+                $routes
+                    ->get('/', [HomeController::class, 'index'], [RouteInterface::PARAM_NAME => HomeController::ROUTE_NAME_HOME])
+                    ->get('/sign-in', AuthController::CALLABLE_SHOW_SIGN_IN, [RouteInterface::PARAM_NAME => AuthController::ROUTE_NAME_SIGN_IN])
+                    ->post('/sign-in', AuthController::CALLABLE_AUTHENTICATE)
+                    ->get('/sign-out', AuthController::CALLABLE_LOGOUT, [RouteInterface::PARAM_NAME => AuthController::ROUTE_NAME_LOGOUT]);
 
-                self::controller($routes, '/posts', PostsController::class);
+
+                $idx = '{' . WebControllerInterface::ROUTE_KEY_INDEX . '}';
+
+                self::webController($routes, 'users', UsersController::class);
+                self::webController($routes, 'roles', RolesController::class);
+                $routes->get("roles/$idx/users", RolesController::CALLABLE_READ_USERS, [RouteInterface::PARAM_NAME => RolesController::ROUTE_NAME_READ_USERS]);
+
             }, [
                 GroupInterface::PARAM_CONTAINER_CONFIGURATORS => [
                     WhoopsContainerConfigurator::CONFIGURE_EXCEPTION_HANDLER,
                 ],
+                GroupInterface::PARAM_MIDDLEWARE_LIST => [CustomErrorResponsesMiddleware::CALLABLE_HANDLER],
             ]);
     }
 
@@ -56,7 +72,7 @@ class WebRoutes implements RoutesConfiguratorInterface
     public static function getMiddleware(): array
     {
         return [
-            //ClassName::class,
+            CookieAuth::class,
         ];
     }
 }

@@ -18,22 +18,19 @@ class PassportSeed implements SeedInterface
     use SeedTrait, PassportSeedTrait;
 
     /** Scope ID */
+    const SCOPE_ADMIN_OAUTH = 'manage_oauth';
+
+    /** Scope ID */
     const SCOPE_ADMIN_USERS = 'manage_users';
-
-    /** Scope ID */
-    const SCOPE_ADMIN_BOARDS = 'manage_boards';
-
-    /** Scope ID */
-    const SCOPE_ADMIN_MESSAGES = 'manage_messages';
 
     /** Scope ID */
     const SCOPE_ADMIN_ROLES = 'manage_roles';
 
     /** Scope ID */
-    const SCOPE_VIEW_ROLES = 'view_roles';
+    const SCOPE_VIEW_USERS = 'view_users';
 
     /** Scope ID */
-    const SCOPE_ADMIN_OAUTH = 'manage_oauth';
+    const SCOPE_VIEW_ROLES = 'view_roles';
 
     /**
      * @inheritdoc
@@ -49,11 +46,10 @@ class PassportSeed implements SeedInterface
 
         // scope ID => description (don't hesitate to add required for your application)
         $scopes    = [
-            static::SCOPE_ADMIN_USERS    => 'Can create, update and delete users.',
             static::SCOPE_ADMIN_OAUTH    => 'Can create, update and delete OAuth clients, redirect URIs and scopes.',
-            static::SCOPE_ADMIN_BOARDS   => 'Can create, update and delete boards.',
-            static::SCOPE_ADMIN_MESSAGES => 'Can create, update and delete messages of other users.',
+            static::SCOPE_ADMIN_USERS    => 'Can create, update and delete users.',
             static::SCOPE_ADMIN_ROLES    => 'Can create, update and delete roles.',
+            static::SCOPE_VIEW_USERS     => 'Can view roles.',
             static::SCOPE_VIEW_ROLES     => 'Can view roles.',
         ];
         $scopeRepo = $integration->getScopeRepository();
@@ -86,19 +82,20 @@ class PassportSeed implements SeedInterface
 
         $this->assignScopes(RolesSeed::ROLE_ADMIN, [
             static::SCOPE_ADMIN_OAUTH,
-            static::SCOPE_ADMIN_BOARDS,
-            static::SCOPE_ADMIN_MESSAGES,
             static::SCOPE_ADMIN_USERS,
             static::SCOPE_ADMIN_ROLES,
+            static::SCOPE_VIEW_USERS,
             static::SCOPE_VIEW_ROLES,
         ]);
 
         $this->assignScopes(RolesSeed::ROLE_MODERATOR, [
-            static::SCOPE_ADMIN_MESSAGES,
+            static::SCOPE_ADMIN_USERS,
+            static::SCOPE_VIEW_USERS,
             static::SCOPE_VIEW_ROLES,
         ]);
 
         $this->assignScopes(RolesSeed::ROLE_USER, [
+            static::SCOPE_VIEW_USERS,
         ]);
     }
 

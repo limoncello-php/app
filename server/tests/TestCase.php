@@ -21,7 +21,7 @@ use Zend\Diactoros\Response\EmitterInterface;
  */
 class TestCase extends \PHPUnit\Framework\TestCase
 {
-    use TestCaseTrait, HttpCallsTrait, MeasureExecutionTimeTrait, OAuthLoginTrait;
+    use TestCaseTrait, HttpCallsTrait, MeasureExecutionTimeTrait, OAuthSignInTrait;
 
     /**
      * @var bool

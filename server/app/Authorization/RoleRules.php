@@ -20,6 +20,9 @@ class RoleRules implements ResourceAuthorizationRulesInterface
     /** Action name */
     const ACTION_ADMIN_ROLES = 'canAdminRoles';
 
+    /** Action name */
+    const ACTION_VIEW_ROLE_USERS = 'canViewRoleUsers';
+
     /**
      * @inheritdoc
      */
@@ -52,5 +55,20 @@ class RoleRules implements ResourceAuthorizationRulesInterface
     public static function canAdminRoles(ContextInterface $context): bool
     {
         return self::hasScope($context, PassportSeed::SCOPE_ADMIN_ROLES);
+    }
+
+    /**
+     * @param ContextInterface $context
+     *
+     * @return bool
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public static function canViewRoleUsers(ContextInterface $context): bool
+    {
+        return
+            self::hasScope($context, PassportSeed::SCOPE_VIEW_USERS) &&
+            self::hasScope($context, PassportSeed::SCOPE_VIEW_ROLES);
     }
 }

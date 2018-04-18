@@ -64,8 +64,10 @@
 
         "db": ["@composer l:db rollback", "@composer l:db migrate", "@composer l:db seed"],
 
-        "test": ["@test-unit", "@test-cs", "@test-md"],
-        "test-unit": "phpdbg -qrr ./vendor/bin/phpunit --coverage-text",
+        "test": ["@test-unit"],
+        "test-all": ["@test-coverage", "@test-cs", "@test-md"],
+        "test-unit": "./vendor/bin/phpunit",
+        "test-coverage": "./vendor/bin/phpunit --coverage-text",
         "test-cs": "./vendor/bin/phpcs -p -s --standard=PSR2 ./server/app ./server/tests",
         "test-md": "./vendor/bin/phpmd ./server/app text codesize,controversial,cleancode,design,unusedcode,naming",
         "stress": "wrk -t10 -d5s -c400 http://127.0.0.1:8080/"

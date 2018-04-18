@@ -3,6 +3,7 @@
 use App\Data\Models\CommonFields;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Limoncello\Contracts\Authentication\AccountManagerInterface;
 use Limoncello\Contracts\Authorization\AuthorizationManagerInterface;
@@ -94,6 +95,8 @@ abstract class BaseApi extends Crud
      * @param ModelQueryBuilder $builder
      *
      * @return ModelQueryBuilder
+     *
+     * @throws DBALException
      */
     protected function addCreatedAt(ModelQueryBuilder $builder): ModelQueryBuilder
     {
@@ -108,6 +111,8 @@ abstract class BaseApi extends Crud
      * @param ModelQueryBuilder $builder
      *
      * @return ModelQueryBuilder
+     *
+     * @throws DBALException
      */
     protected function addUpdatedAt(ModelQueryBuilder $builder): ModelQueryBuilder
     {
@@ -125,6 +130,8 @@ abstract class BaseApi extends Crud
      * @return string
      *
      * @SuppressWarnings(PHPMD.StaticAccess)
+     *
+     * @throws DBALException
      */
     protected function convertDateTimeToDbValue(QueryBuilder $builder, DateTimeInterface $dateTime): string
     {
@@ -135,7 +142,7 @@ abstract class BaseApi extends Crud
     }
 
     /**
-     * The method assumes an account is logged in and therefore has less checks.
+     * The method assumes an account is signed in and therefore has less checks.
      *
      * @return int|string|null
      *
@@ -151,21 +158,5 @@ abstract class BaseApi extends Crud
         $userId  = $account->getUserIdentity();
 
         return $userId;
-    }
-
-    /**
-     * @param iterable $first
-     * @param iterable $second
-     *
-     * @return iterable
-     */
-    protected function addIterable(iterable $first, iterable $second): iterable
-    {
-        foreach ($first as $key => $value) {
-            yield $key => $value;
-        }
-        foreach ($second as $key => $value) {
-            yield $key => $value;
-        }
     }
 }

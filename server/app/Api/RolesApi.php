@@ -3,6 +3,7 @@
 use App\Authorization\RoleRules;
 use App\Data\Models\Role as Model;
 use App\Json\Schemes\RoleSchema as Schema;
+use Limoncello\Contracts\Exceptions\AuthorizationExceptionInterface;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -72,5 +73,26 @@ class RolesApi extends BaseApi
         $this->authorize(RoleRules::ACTION_VIEW_ROLES, Schema::TYPE, $index);
 
         return parent::read($index);
+    }
+
+    /**
+     * @param string|int    $index
+     * @param iterable|null $relationshipFilters
+     * @param iterable|null $relationshipSorts
+     *
+     * @return PaginatedDataInterface
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws AuthorizationExceptionInterface
+     */
+    public function readUsers(
+        $index,
+        iterable $relationshipFilters = null,
+        iterable $relationshipSorts = null
+    ): PaginatedDataInterface {
+        $this->authorize(RoleRules::ACTION_VIEW_ROLE_USERS, Schema::TYPE, $index);
+
+        return $this->readRelationshipInt($index, Model::REL_USERS, $relationshipFilters, $relationshipSorts);
     }
 }

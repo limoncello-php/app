@@ -20,6 +20,8 @@ class RoleApiTest extends TestCase
      */
     public function testIndex()
     {
+        $this->setPreventCommits();
+
         $response = $this->get(self::API_URI, [], $this->getModeratorOAuthHeader());
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -33,6 +35,8 @@ class RoleApiTest extends TestCase
      */
     public function testRead()
     {
+        $this->setPreventCommits();
+
         $roleId   = RolesSeed::ROLE_USER;
         $response = $this->get(self::API_URI . "/$roleId", [], $this->getModeratorOAuthHeader());
         $this->assertEquals(200, $response->getStatusCode());
@@ -41,6 +45,22 @@ class RoleApiTest extends TestCase
         $this->assertObjectHasAttribute('data', $json);
         $this->assertEquals($roleId, $json->data->id);
         $this->assertEquals(RoleSchema::TYPE, $json->data->type);
+    }
+
+    /**
+     * Test Role's API.
+     */
+    public function testReadRelationships()
+    {
+        $this->setPreventCommits();
+
+        $roleId   = RolesSeed::ROLE_USER;
+        $response = $this->get(self::API_URI . "/$roleId/users", [], $this->getModeratorOAuthHeader());
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $json = json_decode((string)$response->getBody());
+        $this->assertObjectHasAttribute('data', $json);
+        $this->assertCount(4, $json->data);
     }
 
     /**

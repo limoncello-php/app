@@ -1,0 +1,47 @@
+{% extends 'pages/en/base/with-header-and-footer.master.html.twig' %}
+
+{% block title %}
+    {% if post_create_url %}
+        New Role
+    {% endif %}
+    {% if post_update_url %}
+        {{ model['id'] }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <form id="delete" method="post"></form>
+    <form id="role" method="post">
+        {% if post_create_url %}
+            <div class="form-group">
+                <label for="id">Name</label>
+                <input type="text" class="form-control" id="id" name="id" placeholder="Name" value="{{ model['id'] }}" required>
+            </div>
+            {% if (errors['id'] ?? false) %}
+                <div class="alert alert-danger" role="alert">{{ errors['id'] }}</div>
+            {% endif %}
+        {% endif %}
+        <div class="form-group">
+            <label for="description">Description</label>
+            <input type="text" class="form-control" id="description" name="description" placeholder="Description" value="{{ model['description'] }}" required>
+        </div>
+        {% if (errors['description'] ?? false) %}
+            <div class="alert alert-danger" role="alert">{{ errors['description'] }}</div>
+        {% endif %}
+
+        {% if error_message %}
+            <div class="alert alert-danger" role="alert">{{ error_message }}</div>
+        {% endif %}
+    </form>
+    {% if can_admin_roles %}
+        {% if post_create_url %}
+            <button class="btn btn-lg btn-primary btn-block" type="submit" form="role" formaction="{{ post_create_url }}">Create</button>
+        {% endif %}
+        {% if post_update_url %}
+            <button class="btn btn-lg btn-primary btn-block" type="submit" form="role" formaction="{{ post_update_url }}">Update</button>
+        {% endif %}
+        {% if post_delete_url %}
+            <button class="btn btn-lg btn-danger btn-block" type="submit" form="delete" formaction="{{ post_delete_url }}">Delete</button>
+        {% endif %}
+    {% endif %}
+{% endblock %}

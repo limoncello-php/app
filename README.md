@@ -1,30 +1,28 @@
 [![License](https://img.shields.io/packagist/l/limoncello-php/app.svg)](https://packagist.org/packages/limoncello-php/app)
 
-<a href="https://github.com/limoncello-php/framework" target="_blank"><img src="https://github.com/limoncello-php/app/blob/master/server/resources/img/limoncello.png" alt="Limoncello PHP" title="Limoncello PHP" align="right" width="200" height="200" /></a>
+<a href="https://github.com/limoncello-php/framework" target="_blank"><img src="https://github.com/limoncello-php/app/blob/develop/public/img/limoncello.png" alt="Limoncello PHP" title="Limoncello PHP" align="right" width="200" height="200" /></a>
 
 ### Summary
 
 Limoncello App is a fully featured OAuth 2.0 [JSON API](http://jsonapi.org/) quick start application.
 
-The demo application is a simple message board which demonstrates
+Out-of-the-box it has
 
 - [JSON API](http://jsonapi.org/) CRUD operations (create, read, update and delete) for a few sample resources with `to-one`, `to-many` and `many-to-many` relationship types.
 - Support for such JSON API [features](http://jsonapi.org/format/#fetching) as resource inclusion, sparse field sets, sorting, filtering and pagination.
 - Database migrations and seedings.
 - OAuth 2.0 server authentication and role authorization.
+- Admin panel for managing users and roles.
 - Cross-Origin Resource Sharing (CORS).
 - JSON API errors.
 - API tests.
+- Web tests.
 
 Supported features
 - Multiple nested paths resource inclusion (e.g. `posts,posts.user,posts.comments.user`).
 - Filtering and sorting by multiple attributes in resources and its relationships.
 - Supported operators `=`, `eq`, `equals`, `!=`, `neq`, `not-equals`, `<`, `lt`, `less-than`, `<=`, `lte`, `less-or-equals`, `>`, `gt`, `greater-than`, `>=`, `gte`, `greater-or-equals`, `like`, `not-like`, `in`, `not-in`, `is-null`, `not-null`.
 - Pagination works for main resources and resources in relationships. Limits for maximum number of resources are configurable.
-
-> Note: By default inclusion deepness is [artificially limited](https://github.com/limoncello-php/app/issues/6) to one level for security reasons. Feel free to adjust inclusion strategy to meet your requirements.
-
-Server API documentation is [here](https://documenter.getpostman.com/view/53867/limoncello-app/6Z3usWQ).
 
 Based on
 - [Zend Diactoros](https://github.com/zendframework/zend-diactoros)
@@ -46,7 +44,17 @@ Feel free to ask questions and thank you for supporting the project with :star:.
 #### 1 Create project
 
 ```bash
-$ composer create-project --prefer-dist limoncello-php/app app_name && cd app_name
+$ composer create-project --prefer-dist limoncello-php/app app_name
+$ cd app_name
+```
+
+Recommended additional step
+```bash
+$ npm install
+```
+or
+```bash
+$ yarn install
 ```
 
 #### 2 Run server
@@ -57,7 +65,16 @@ Application runs PHP built-in server on port 8080
 $ composer serve
 ```
 
-> Port could be configured in `composer.json`
+Recommended
+```bash
+$ npm serve
+```
+or
+```bash
+$ yarn serve
+```
+
+> Port could be configured in `composer.json` or `client/webpack/base.config.js`
 
 The easiest way to play with the server is `Postman`.
 

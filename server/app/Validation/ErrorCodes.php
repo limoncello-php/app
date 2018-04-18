@@ -9,4 +9,7 @@ interface ErrorCodes extends BaseErrorCodes
 {
     /** Custom error code */
     const IS_EMAIL = BaseErrorCodes::FLUTE_LAST + 1;
+
+    /** Custom error code */
+    const CONFIRMATION_SHOULD_MATCH_PASSWORD = self::IS_EMAIL + 1;
 }

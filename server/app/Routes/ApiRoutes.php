@@ -1,13 +1,7 @@
 <?php namespace App\Routes;
 
-use App\Json\Controllers\BoardsController;
-use App\Json\Controllers\CommentsController;
-use App\Json\Controllers\PostsController;
 use App\Json\Controllers\RolesController;
 use App\Json\Controllers\UsersController;
-use App\Json\Schemes\BoardSchema;
-use App\Json\Schemes\CommentSchema;
-use App\Json\Schemes\PostSchema;
 use App\Json\Schemes\RoleSchema;
 use App\Json\Schemes\UserSchema;
 use Limoncello\Commands\CommandRoutesTrait;
@@ -45,20 +39,10 @@ class ApiRoutes implements RoutesConfiguratorInterface
             // JSON API group
             // This group uses custom exception handler to provide error information in JSON API format.
             ->group(self::API_URI_PREFIX, function (GroupInterface $routes): void {
+                self::apiController($routes, UserSchema::TYPE, UsersController::class);
 
-                self::resource($routes, BoardSchema::TYPE, BoardsController::class);
-                self::relationship($routes, BoardSchema::TYPE, BoardSchema::REL_POSTS, BoardsController::class, 'readPosts');
-
-                self::resource($routes, PostSchema::TYPE, PostsController::class);
-                self::relationship($routes, PostSchema::TYPE, PostSchema::REL_COMMENTS, PostsController::class, 'readComments');
-
-                self::resource($routes, CommentSchema::TYPE, CommentsController::class);
-
-                self::resource($routes, UserSchema::TYPE, UsersController::class);
-                self::relationship($routes, UserSchema::TYPE, UserSchema::REL_POSTS, UsersController::class, 'readPosts');
-                self::relationship($routes, UserSchema::TYPE, UserSchema::REL_COMMENTS, UsersController::class, 'readComments');
-
-                self::resource($routes, RoleSchema::TYPE, RolesController::class);
+                self::apiController($routes, RoleSchema::TYPE, RolesController::class);
+                self::relationship($routes, RoleSchema::TYPE, RoleSchema::REL_USERS, RolesController::class, 'readUsers');
             }, [
                 GroupInterface::PARAM_CONTAINER_CONFIGURATORS => [
                     FluteContainerConfigurator::CONFIGURE_EXCEPTION_HANDLER,

@@ -72,8 +72,6 @@ final class OAuth
      */
     public static function validateScope(ContainerInterface $container, int $userId, array $scope = null): ?array
     {
-        assert($container || $userId || $scope);
-
         // Here is the place you can implement your scope limitation for users. Such as
         // limiting scopes that could be assigned for the user token.
         // It could be role based system or any other system that suits your application.

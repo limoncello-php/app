@@ -1,0 +1,38 @@
+{% extends 'pages/en/base/with-header-and-footer.master.html.twig' %}
+
+{% block title %}Limoncello Users{% endblock %}
+
+{% block content %}
+    <main role="main" class="inner cover">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">First</th>
+                <th scope="col">Last</th>
+                <th scope="col">Email</th>
+                <th scope="col">Role</th>
+                <th scope="col">Created at</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in models %}
+                <tr data-user-id="{{ user.id_user }}">
+                    <th scope="row">{{ user.id_user }}</th>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.id_role }}</td>
+                    <td>{{ user.created_at | date("Y-m-d") }}</td>
+                    <td>{% if can_admin_users %}<a href="{{ base_modify_url ~ user.id_user }}" class="btn btn-sm btn-warning">Modify</a>{% endif %}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if can_admin_users %}
+            <a href="{{ url_to_create }}" class="btn btn-lg btn-primary">Add New</a>
+        {% endif %}
+        {{ include('pages/en/sections/pagination.html.twig') }}
+    </main>
+{% endblock %}

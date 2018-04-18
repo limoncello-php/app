@@ -5,7 +5,6 @@ use App\Data\Models\RoleScope;
 use App\Data\Models\User as Model;
 use App\Json\Schemes\UserSchema as Schema;
 use Doctrine\DBAL\Connection;
-use Limoncello\Contracts\Exceptions\AuthorizationExceptionInterface;
 use Limoncello\Crypt\Contracts\HasherInterface;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
 use PDO;
@@ -112,46 +111,6 @@ class UsersApi extends BaseApi
     }
 
     /**
-     * @param string|int    $index
-     * @param iterable|null $relationshipFilters
-     * @param iterable|null $relationshipSorts
-     *
-     * @return PaginatedDataInterface
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws AuthorizationExceptionInterface
-     */
-    public function readPosts(
-        $index,
-        iterable $relationshipFilters = null,
-        iterable $relationshipSorts = null
-    ): PaginatedDataInterface {
-        $this->authorize(UserRules::ACTION_VIEW_USER_POSTS, Schema::TYPE, $index);
-
-        return $this->readRelationshipInt($index, Model::REL_POSTS, $relationshipFilters, $relationshipSorts);
-    }
-
-    /**
-     * @param string|int    $index
-     * @param iterable|null $relationshipFilters
-     * @param iterable|null $relationshipSorts
-     *
-     * @return PaginatedDataInterface
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws AuthorizationExceptionInterface
-     */
-    public function readComments(
-        $index,
-        iterable $relationshipFilters = null,
-        iterable $relationshipSorts = null
-    ): PaginatedDataInterface {
-        $this->authorize(UserRules::ACTION_VIEW_USER_COMMENTS, Schema::TYPE, $index);
-
-        return $this->readRelationshipInt($index, Model::REL_COMMENTS, $relationshipFilters, $relationshipSorts);
-    }
-
-    /**
      * @param iterable $attributes
      *
      * @return iterable
@@ -159,7 +118,7 @@ class UsersApi extends BaseApi
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    private function getReplacePasswordWithHash(iterable $attributes) : iterable
+    private function getReplacePasswordWithHash(iterable $attributes): iterable
     {
         // in attributes were captured validated input password we need to convert it into password hash
         foreach ($attributes as $name => $value) {

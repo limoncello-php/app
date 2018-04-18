@@ -18,7 +18,7 @@ class UsersMigration implements MigrationInterface
     {
         $this->createTable(Model::class, [
             $this->primaryInt(Model::FIELD_ID),
-            $this->relationship(Model::REL_ROLE, false),
+            $this->relationship(Model::REL_ROLE, true),
             $this->string(Model::FIELD_FIRST_NAME),
             $this->string(Model::FIELD_LAST_NAME),
             $this->string(Model::FIELD_EMAIL),

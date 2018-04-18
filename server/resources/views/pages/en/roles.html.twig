@@ -1,0 +1,35 @@
+{% extends 'pages/en/base/with-header-and-footer.master.html.twig' %}
+
+{% block title %}Limoncello Roles{% endblock %}
+
+{% block content %}
+    <main role="main" class="inner cover">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Created at</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for role in models %}
+                <tr data-role-id="{{ role.id_role }}">
+                    <th scope="row">{{ role.id_role }}</th>
+                    <td>{{ role.description }}</td>
+                    <td>{{ role.created_at | date("Y-m-d") }}</td>
+                    <td>
+                        {% if can_admin_roles %}<a href="{{ 'roles/' ~ role.id_role }}" class="btn btn-sm btn-warning">Modify</a>{% endif %}
+                        {% if can_view_users and can_view_roles %}<a href="{{ 'roles/' ~ role.id_role ~ '/users' }}" class="btn btn-sm btn-info">View Users</a>{% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if can_admin_roles %}
+            <a href="{{ url_to_create }}" class="btn btn-lg btn-primary">Add New</a>
+        {% endif %}
+        {{ include('pages/en/sections/pagination.html.twig') }}
+    </main>
+{% endblock %}

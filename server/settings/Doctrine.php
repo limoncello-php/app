@@ -28,6 +28,9 @@ class Doctrine extends DoctrineSettings
             static::KEY_CHARSET       => getenv('DB_CHARSET'),
             static::KEY_DRIVER        => getenv('DB_DRIVER'),
             static::KEY_PATH          => $dbPath,
+            static::KEY_EXEC          => [
+                'PRAGMA foreign_keys = ON;'
+            ],
 
         ] + parent::getSettings();
     }

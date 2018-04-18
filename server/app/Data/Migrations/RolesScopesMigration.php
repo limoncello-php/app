@@ -22,7 +22,7 @@ class RolesScopesMigration implements MigrationInterface
     {
         $this->createTable(Model::class, [
             $this->primaryInt(Model::FIELD_ID),
-            $this->foreignRelationship(Model::FIELD_ID_ROLE, Role::class),
+            $this->foreignRelationship(Model::FIELD_ID_ROLE, Role::class, true),
             $this->foreignColumn(
                 Model::FIELD_ID_SCOPE,
                 DatabaseSchema::TABLE_SCOPES,

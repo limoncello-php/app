@@ -20,6 +20,7 @@ class RolesReadQuery implements JsonApiQueryRulesInterface
         return [
             Schema::RESOURCE_ID      => r::stringToInt(r::moreThan(0)),
             Schema::ATTR_DESCRIPTION => r::asSanitizedString(),
+            Schema::ATTR_CREATED_AT  => r::asJsonApiDateTime(),
         ];
     }
 

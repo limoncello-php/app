@@ -1,0 +1,11 @@
+{% extends 'pages/en/base/with-header-and-footer.master.html.twig' %}
+
+{% block title %}Unauthorized{% endblock %}
+
+{% block content %}
+    <article class="alert alert-warning">
+        <h1>{{ title   | default("401") }}</h1>
+        <h2>{{ message | default("Unauthorized") }}</h2>
+        <h3>{{ details | default("The request lacks valid authentication credentials for the target resource(s).") }}</h3>
+    </article>
+{% endblock %}

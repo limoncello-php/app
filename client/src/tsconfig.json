@@ -1,0 +1,28 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "es2015",
+      "es2016",
+      "es2017"
+    ],
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "removeComments": false,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+
+    "target": "es2017",
+    "outDir": "./out"
+  },
+  "include": [
+    "./**/*.*"
+  ],
+  "exclude": [
+    "./index.ts",
+    "./**/*.spec.ts"
+  ]
+}

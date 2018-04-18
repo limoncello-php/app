@@ -1,0 +1,39 @@
+{% extends 'pages/en/base/master.html.twig' %}
+
+{% block header %}
+    {{ parent() }}
+    <nav class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+        <h5 class="my-0 mr-md-auto font-weight-normal">
+            <a class="text-dark" href="{{ _origin_uri }}">
+                <img src="/img/limoncello.png" alt="Limoncello PHP" title="Limoncello PHP" align="right" width="24" height="24" />
+                Limoncello
+            </a>
+        </h5>
+        <nav class="my-2 my-md-0 mr-md-3">
+        </nav>
+        {% if is_signed_in %}
+            {% if can_view_users %}
+                <a class="p-2 text-dark" href="{{ users_url }}">Users</a>
+            {% endif %}
+            {% if can_view_roles %}
+                <a class="p-2 text-dark" href="{{ roles_url }}">Roles</a>
+            {% endif %}
+            <div class="p-2 text-dark">{{ first_name ~ ' ' ~ last_name ~ ' (' ~ role_name ~ ')' }}</div>
+            <a class="btn btn-outline-primary" href="{{ sign_out_url }}">Sign out</a>
+        {% else %}
+            <a class="btn btn-outline-primary" href="{{ sign_in_url }}">Sign in</a>
+        {% endif %}
+    </nav>
+{% endblock %}
+
+
+{% block footer %}
+    {{ parent() }}
+    <footer class="my-md-5 pt-md-5 border-top">
+        <div class="row">
+            <div class="col-12 col-md">
+                <small class="d-block text-muted text-right h6">2016-2018</small>
+            </div>
+        </div>
+    </footer>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'pages/en/base/master.html.twig' %}
+
+{% block title %}Sign in{% endblock %}
+
+{% block content %}
+    <div class="text-center">
+        <form method="post" class="form-sign-in">
+            <img class="mb-4" src="/img/limoncello.png" alt="" width="72" height="72">
+            <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+
+            <label for="username" class="sr-only">Email address</label>
+            <input id="username" name="username" type="email" class="form-control" placeholder="Email address"
+                   value="{{ previous.username ?? '' }}" required autofocus>
+            {% if (errors.username ?? false) %}
+                <div class="alert alert-danger" role="alert">{{ errors.username }}</div>
+            {% endif %}
+
+            <label for="password" class="sr-only">Password</label>
+            <input id="password" name="password" type="password" class="form-control" placeholder="Password"
+                   minlength={{ password_min_length }} required>
+            {% if (errors.password ?? false) %}
+                <div class="alert alert-danger" role="alert">{{ errors.password }}</div>
+            {% endif %}
+
+            <div class="checkbox mb-3">
+                <label>
+                    <input name="remember" type="checkbox" value="true"> Remember me
+                </label>
+            </div>
+
+            {% if error_message %}
+                <div class="alert alert-danger" role="alert">{{ error_message }}</div>
+            {% endif %}
+
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        </form>
+        <div class="alert alert-warning" role="alert">
+            <p><strong class="display-4">Default credentials</strong></p>
+            <ul class="list-unstyled">
+                <li><strong>user</strong> email: bettie14@gmail.com, password: secret</li>
+                <li><strong>moderator</strong> email: waters.johann@hotmail.com, password: secret</li>
+                <li><strong>administrator</strong> email: denesik.stewart@gmail.com, password: secret</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
