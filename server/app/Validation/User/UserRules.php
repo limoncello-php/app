@@ -1,7 +1,7 @@
 <?php namespace App\Validation\User;
 
 use App\Data\Models\User as Model;
-use App\Json\Schemes\UserSchema as Schema;
+use App\Json\Schemas\UserSchema as Schema;
 use App\Validation\BaseRules;
 use App\Validation\ErrorCodes;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;

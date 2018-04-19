@@ -1,7 +1,7 @@
 <?php namespace App\Validation\Role;
 
 use App\Data\Models\Role as Model;
-use App\Json\Schemes\RoleSchema as Schema;
+use App\Json\Schemas\RoleSchema as Schema;
 use App\Validation\BaseRules;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 

@@ -1,7 +1,7 @@
 <?php namespace App\Authorization;
 
 use App\Data\Seeds\PassportSeed;
-use App\Json\Schemes\RoleSchema as Schema;
+use App\Json\Schemas\RoleSchema as Schema;
 use Limoncello\Application\Contracts\Authorization\ResourceAuthorizationRulesInterface;
 use Limoncello\Auth\Contracts\Authorization\PolicyInformation\ContextInterface;
 use Psr\Container\ContainerExceptionInterface;

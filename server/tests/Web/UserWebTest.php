@@ -1,7 +1,7 @@
 <?php namespace Tests\Web;
 
 use App\Data\Seeds\RolesSeed;
-use App\Json\Schemes\UserSchema;
+use App\Json\Schemas\UserSchema;
 use Tests\TestCase;
 
 /**

@@ -3,7 +3,7 @@
 use App\Api\RolesApi;
 use App\Api\UsersApi;
 use App\Data\Seeds\RolesSeed;
-use App\Json\Schemes\UserSchema;
+use App\Json\Schemas\UserSchema;
 use App\Validation\ErrorCodes;
 use App\Validation\User\UserCreateForm;
 use App\Validation\User\UsersReadQuery;

@@ -1,4 +1,4 @@
-<?php namespace App\Json\Schemes;
+<?php namespace App\Json\Schemas;
 
 use App\Data\Models\Role as Model;
 

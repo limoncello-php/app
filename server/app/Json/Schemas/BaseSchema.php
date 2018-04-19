@@ -1,4 +1,4 @@
-<?php namespace App\Json\Schemes;
+<?php namespace App\Json\Schemas;
 
 use Limoncello\Contracts\Application\ModelInterface;
 use Limoncello\Core\Reflection\ClassIsTrait;

@@ -1,7 +1,7 @@
 <?php namespace App\Json\Controllers;
 
 use App\Api\UsersApi as Api;
-use App\Json\Schemes\UserSchema as Schema;
+use App\Json\Schemas\UserSchema as Schema;
 use App\Validation\User\UserCreateJson;
 use App\Validation\User\UsersReadQuery;
 use App\Validation\User\UserUpdateJson;

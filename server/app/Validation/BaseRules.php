@@ -2,8 +2,8 @@
 
 use App\Data\Models\Role;
 use App\Data\Models\User;
-use App\Json\Schemes\RoleSchema;
-use App\Json\Schemes\UserSchema;
+use App\Json\Schemas\RoleSchema;
+use App\Json\Schemas\UserSchema;
 use Limoncello\Flute\Types\DateTime;
 use Limoncello\Flute\Validation\JsonApi\Rules\ExistInDatabaseTrait;
 use Limoncello\Flute\Validation\JsonApi\Rules\RelationshipsTrait;

@@ -1,7 +1,7 @@
 <?php namespace App\Validation\Role;
 
-use App\Json\Schemes\RoleSchema;
-use App\Json\Schemes\UserSchema;
+use App\Json\Schemas\RoleSchema;
+use App\Json\Schemas\UserSchema;
 use App\Validation\User\UserRules as r;
 use Limoncello\Flute\Contracts\Validation\JsonApiQueryRulesInterface;
 use Limoncello\Flute\Validation\JsonApi\Rules\DefaultQueryValidationRules;

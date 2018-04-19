@@ -3,7 +3,7 @@
 use App\Data\Models\User;
 use App\Data\Seeds\RolesSeed;
 use App\Data\Seeds\UsersSeed;
-use App\Json\Schemes\UserSchema;
+use App\Json\Schemas\UserSchema;
 use Limoncello\Contracts\Http\ThrowableResponseInterface;
 use Limoncello\Testing\JsonApiCallsTrait;
 use Neomerx\JsonApi\Exceptions\JsonApiException;

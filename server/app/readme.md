@@ -13,7 +13,7 @@
 
 `Data` folder contains application database models, database migrations and seedings.
 
-`Json` folder contains your [JSON API](http://jsonapi.org/) implementation code such as controllers, mapping between JSON data and Models with `Schemes`, middleware, and etc.
+`Json` folder contains your [JSON API](http://jsonapi.org/) implementation code such as controllers, mapping between JSON data and Models with `Schemas`, middleware, and etc.
 
 `Routes` folder contains routing for web and API.
 

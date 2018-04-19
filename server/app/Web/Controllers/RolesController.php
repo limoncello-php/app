@@ -1,8 +1,8 @@
 <?php namespace App\Web\Controllers;
 
 use App\Api\RolesApi;
-use App\Json\Schemes\RoleSchema;
-use App\Json\Schemes\UserSchema;
+use App\Json\Schemas\RoleSchema;
+use App\Json\Schemas\UserSchema;
 use App\Validation\Role\RoleCreateForm;
 use App\Validation\Role\RolesReadQuery;
 use App\Validation\Role\RolesReadUsersQuery;

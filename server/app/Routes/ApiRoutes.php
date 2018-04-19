@@ -2,8 +2,8 @@
 
 use App\Json\Controllers\RolesController;
 use App\Json\Controllers\UsersController;
-use App\Json\Schemes\RoleSchema;
-use App\Json\Schemes\UserSchema;
+use App\Json\Schemas\RoleSchema;
+use App\Json\Schemas\UserSchema;
 use Limoncello\Commands\CommandRoutesTrait;
 use Limoncello\Contracts\Application\RoutesConfiguratorInterface;
 use Limoncello\Contracts\Routing\GroupInterface;

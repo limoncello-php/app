@@ -159,4 +159,20 @@ abstract class BaseApi extends Crud
 
         return $userId;
     }
+
+    /**
+     * @param iterable $first
+     * @param iterable $second
+     *
+     * @return iterable
+     */
+    protected function addIterable(iterable $first, iterable $second): iterable
+    {
+        foreach ($first as $key => $value) {
+            yield $key => $value;
+        }
+        foreach ($second as $key => $value) {
+            yield $key => $value;
+        }
+    }
 }

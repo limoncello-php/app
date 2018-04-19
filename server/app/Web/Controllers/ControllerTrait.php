@@ -3,8 +3,8 @@
 use App\Data\Models\Role;
 use App\Data\Models\User;
 use App\Data\Seeds\PassportSeed;
-use App\Json\Schemes\RoleSchema;
-use App\Json\Schemes\UserSchema;
+use App\Json\Schemas\RoleSchema;
+use App\Json\Schemas\UserSchema;
 use App\Routes\WebRoutes;
 use App\Web\Views;
 use Limoncello\Contracts\Application\ApplicationConfigurationInterface as A;

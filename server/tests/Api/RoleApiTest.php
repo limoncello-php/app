@@ -2,7 +2,7 @@
 
 use App\Data\Models\Role;
 use App\Data\Seeds\RolesSeed;
-use App\Json\Schemes\RoleSchema;
+use App\Json\Schemas\RoleSchema;
 use Limoncello\Testing\JsonApiCallsTrait;
 use Tests\TestCase;
 

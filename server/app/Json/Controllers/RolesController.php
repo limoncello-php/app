@@ -2,7 +2,7 @@
 
 use App\Api\RolesApi as Api;
 use App\Data\Models\Role as Model;
-use App\Json\Schemes\RoleSchema as Schema;
+use App\Json\Schemas\RoleSchema as Schema;
 use App\Validation\Role\RoleCreateJson;
 use App\Validation\Role\RolesReadQuery;
 use App\Validation\Role\RoleUpdateJson;

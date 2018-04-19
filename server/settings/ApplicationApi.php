@@ -27,7 +27,7 @@ class ApplicationApi extends FluteSettings
         $defaults = parent::getSettings();
 
         $apiFolder      = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Api']);
-        $schemesFolder  = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Json', 'Schemes']);
+        $schemasFolder  = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Json', 'Schemas']);
         $jsonCtrlFolder = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Json', 'Controllers']);
         $valRulesFolder = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Validation', '**']);
         $jsonValFolder  = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'app', 'Validation', '**']);
@@ -40,7 +40,7 @@ class ApplicationApi extends FluteSettings
                 static::KEY_THROWABLE_TO_JSON_API_EXCEPTION_CONVERTER => ThrowableConverter::class,
                 static::KEY_API_FOLDER                                => $apiFolder,
                 static::KEY_JSON_CONTROLLERS_FOLDER                   => $jsonCtrlFolder,
-                static::KEY_SCHEMAS_FOLDER                            => $schemesFolder,
+                static::KEY_SCHEMAS_FOLDER                            => $schemasFolder,
                 static::KEY_JSON_VALIDATION_RULES_FOLDER              => $valRulesFolder,
                 static::KEY_JSON_VALIDATORS_FOLDER                    => $jsonValFolder,
                 static::KEY_FORM_VALIDATORS_FOLDER                    => $formValFolder,
