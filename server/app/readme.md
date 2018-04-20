@@ -1,6 +1,6 @@
 `Api` folder contains native PHP implementation for application API such as CRUD (Create, Read, Update and Delete) operations.
 
-`Authentication` folders contains application authentication implementations. By default it comes with cookie-based authentication for traditional HTML web pages and header-based for JSON API.
+`Authentication` folders contains application authentication implementation.
 
 `Authorization` folder contains rules for authorizing authenticated user for making API calls such as view, create, update, delete resources and etc.
 

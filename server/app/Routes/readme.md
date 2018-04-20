@@ -1,6 +1,6 @@
 `Routes` maps HTTP requests (e.g. `GET /index`) with Controller methods where responses for those requests are created.
 
-Controller methods should have the following signature
+Controller methods should signature
 ```php
 class AppController
 {

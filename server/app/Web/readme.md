@@ -1,11 +1,12 @@
 The overall process is
 
-- HTTP request containing form data is parsed and the data are validated with `Validators`.
-- The validated input data are sent to API.
+- HTTP request containing form data is parsed and validated.
+- The validated data are sent to API.
 
-`Controllers` folder contains HTTP controllers.
+`Controllers` folder contains web HTTP controllers.
+`Middleware` folder contains middleware used with web HTTP controllers.
 
-Controller methods should have the following signature
+Controller methods should have signature
 
 ```php
 class AppController

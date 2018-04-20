@@ -1,16 +1,18 @@
 The overall process is
 
-- HTTP request containing JSON API data is parsed and the data are validated with `Validators`.
+- HTTP request containing JSON API data is parsed and validated.
 - JSON API data are mapped to application models with `Schemas`.
 - The converted input data are sent to API.
 
-`Controllers` folder contains HTTP controllers.
+`Controllers` folder contains JSON API HTTP controllers.
 
 `Exceptions` folder contains a code that transforms various exceptions in API (application specific, authorization, 3rd party, etc) to JSON API errors.
 
+`Middleware` folder contains middleware in with JSON API HTTP controllers.
+
 `Schemas` folder contains descriptions for mapping between JSON API fields and application Model ones.
 
-Controller methods should have the following signature
+Controller methods should signature
 
 ```php
 class AppController
