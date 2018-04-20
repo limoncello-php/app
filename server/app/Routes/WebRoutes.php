@@ -1,10 +1,10 @@
 <?php namespace App\Routes;
 
-use App\Authentication\CookieAuth;
 use App\Web\Controllers\AuthController;
 use App\Web\Controllers\HomeController;
 use App\Web\Controllers\RolesController;
 use App\Web\Controllers\UsersController;
+use App\Web\Middleware\CookieAuth;
 use App\Web\Middleware\CustomErrorResponsesMiddleware;
 use Limoncello\Application\Packages\Application\WhoopsContainerConfigurator;
 use Limoncello\Commands\CommandRoutesTrait;
@@ -60,7 +60,7 @@ class WebRoutes implements RoutesConfiguratorInterface
                 GroupInterface::PARAM_CONTAINER_CONFIGURATORS => [
                     WhoopsContainerConfigurator::CONFIGURE_EXCEPTION_HANDLER,
                 ],
-                GroupInterface::PARAM_MIDDLEWARE_LIST => [CustomErrorResponsesMiddleware::CALLABLE_HANDLER],
+                GroupInterface::PARAM_MIDDLEWARE_LIST         => [CustomErrorResponsesMiddleware::CALLABLE_HANDLER],
             ]);
     }
 

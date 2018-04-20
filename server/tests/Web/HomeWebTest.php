@@ -1,7 +1,7 @@
 <?php namespace Tests\Web;
 
-use App\Authentication\CookieAuth;
 use App\Web\Controllers\AuthController;
+use App\Web\Middleware\CookieAuth;
 use DateTime;
 use Limoncello\Contracts\Cookies\CookieJarInterface;
 use Psr\Container\ContainerExceptionInterface;

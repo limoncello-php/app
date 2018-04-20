@@ -1,4 +1,4 @@
-<?php namespace App\Authentication;
+<?php namespace App\Web\Middleware;
 
 use Closure;
 use Limoncello\Contracts\Application\MiddlewareInterface;

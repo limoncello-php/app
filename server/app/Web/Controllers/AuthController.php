@@ -1,8 +1,8 @@
 <?php namespace App\Web\Controllers;
 
-use App\Authentication\CookieAuth;
 use App\Data\Models\User;
 use App\Validation\Auth\SignIn;
+use App\Web\Middleware\CookieAuth;
 use App\Web\Views;
 use Limoncello\Contracts\Cookies\CookieJarInterface;
 use Limoncello\Passport\Contracts\PassportServerIntegrationInterface;

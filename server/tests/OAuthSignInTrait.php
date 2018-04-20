@@ -1,7 +1,7 @@
 <?php namespace Tests;
 
-use App\Authentication\CookieAuth;
 use App\Data\Seeds\UsersSeed;
+use App\Web\Middleware\CookieAuth;
 use Psr\Http\Message\ResponseInterface;
 
 /**
