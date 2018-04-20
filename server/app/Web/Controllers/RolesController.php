@@ -5,10 +5,10 @@ use App\Json\Schemas\RoleSchema;
 use App\Json\Schemas\UserSchema;
 use App\Validation\Role\RoleCreateForm;
 use App\Validation\Role\RolesReadQuery;
-use App\Validation\Role\RolesReadUsersQuery;
 use App\Validation\Role\RoleUpdateForm;
 use App\Web\Views;
 use Limoncello\Flute\Contracts\Http\WebControllerInterface;
+use Limoncello\Flute\Validation\JsonApi\Rules\DefaultQueryValidationRules;
 use Neomerx\JsonApi\Contracts\Document\DocumentInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -201,7 +201,8 @@ class RolesController extends BaseController implements WebControllerInterface
     ): ResponseInterface {
         $roleName = $routeParams[static::ROUTE_KEY_INDEX];
 
-        $parser = static::createQueryParser($container, RolesReadUsersQuery::class)->parse($request->getQueryParams());
+        $parser = static::createQueryParser($container, DefaultQueryValidationRules::class)
+            ->parse($request->getQueryParams());
         $mapper = static::createParameterMapper($container, RoleSchema::class);
         /** @var RolesApi $api */
         $api = static::createApi($container, RolesApi::class);
