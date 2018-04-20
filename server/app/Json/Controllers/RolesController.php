@@ -5,8 +5,8 @@ use App\Data\Models\Role as Model;
 use App\Json\Schemas\RoleSchema as Schema;
 use App\Validation\Role\RoleCreateJson;
 use App\Validation\Role\RolesReadQuery;
+use App\Validation\Role\RolesReadUsersQuery;
 use App\Validation\Role\RoleUpdateJson;
-use Limoncello\Flute\Validation\JsonApi\Rules\DefaultQueryValidationRules;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -56,7 +56,7 @@ class RolesController extends BaseController
         return static::readRelationship(
             $routeParams[static::ROUTE_KEY_INDEX],
             Model::REL_USERS,
-            DefaultQueryValidationRules::class,
+            RolesReadUsersQuery::class,
             $container,
             $request
         );
