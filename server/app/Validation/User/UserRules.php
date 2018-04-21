@@ -60,6 +60,24 @@ final class UserRules extends BaseRules
     /**
      * @return RuleInterface
      */
+    public static function uniqueEmail(): RuleInterface
+    {
+        // input value should be unique among user's emails but before that...
+        $isUniqueEmail = self::unique(Model::TABLE_NAME, Model::FIELD_EMAIL);
+        // ... it should at least look like email but before that...
+        $isLooksLikeEmail = self::filter(FILTER_VALIDATE_EMAIL, null, ErrorCodes::IS_EMAIL, $isUniqueEmail);
+        // ... it should have length within the range but before that...
+        $maxLength  = Model::getAttributeLengths()[Model::FIELD_EMAIL];
+        $isLengthOk = self::stringLengthBetween(1, $maxLength, $isLooksLikeEmail);
+        // ... it should be string.
+        $theWholeThing = self::isString($isLengthOk);
+
+        return $theWholeThing;
+    }
+
+    /**
+     * @return RuleInterface
+     */
     public static function password(): RuleInterface
     {
         return self::isString(self::stringLengthMin(Model::MIN_PASSWORD_LENGTH));

@@ -19,7 +19,7 @@ final class UserUpdateForm implements FormRulesInterface
         return [
             Schema::ATTR_FIRST_NAME => r::firstName(),
             Schema::ATTR_LAST_NAME  => r::lastName(),
-            Schema::ATTR_EMAIL      => r::email(),
+            Schema::ATTR_EMAIL      => r::uniqueEmail(),
             Schema::REL_ROLE        => r::roleId(),
 
 

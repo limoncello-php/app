@@ -19,7 +19,7 @@ final class UserCreateForm implements FormRulesInterface
         return [
             Schema::ATTR_FIRST_NAME => r::required(r::firstName()),
             Schema::ATTR_LAST_NAME  => r::required(r::lastName()),
-            Schema::ATTR_EMAIL      => r::required(r::email()),
+            Schema::ATTR_EMAIL      => r::required(r::uniqueEmail()),
             Schema::REL_ROLE        => r::required(r::roleId()),
 
             Schema::CAPTURE_NAME_PASSWORD              => r::required(r::password()),

@@ -36,7 +36,7 @@ final class UserUpdateJson implements JsonApiDataRulesInterface
         return [
             Schema::ATTR_FIRST_NAME => r::firstName(),
             Schema::ATTR_LAST_NAME  => r::lastName(),
-            Schema::ATTR_EMAIL      => r::email(),
+            Schema::ATTR_EMAIL      => r::uniqueEmail(),
             Schema::V_ATTR_PASSWORD => r::password(),
         ];
     }

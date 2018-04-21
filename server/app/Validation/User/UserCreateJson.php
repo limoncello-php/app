@@ -36,7 +36,7 @@ final class UserCreateJson implements JsonApiDataRulesInterface
         return [
             Schema::ATTR_FIRST_NAME => r::required(r::firstName()),
             Schema::ATTR_LAST_NAME  => r::required(r::lastName()),
-            Schema::ATTR_EMAIL      => r::required(r::email()),
+            Schema::ATTR_EMAIL      => r::required(r::uniqueEmail()),
             Schema::V_ATTR_PASSWORD => r::required(r::password()),
         ];
     }
