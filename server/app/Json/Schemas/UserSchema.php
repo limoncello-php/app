@@ -58,11 +58,26 @@ class UserSchema extends BaseSchema
                 self::ATTR_UPDATED_AT => Model::FIELD_UPDATED_AT,
 
                 self::V_ATTR_PASSWORD              => self::CAPTURE_NAME_PASSWORD,
-                self::V_ATTR_PASSWORD_CONFIRMATION => self::CAPTURE_NAME_PASSWORD,
+                self::V_ATTR_PASSWORD_CONFIRMATION => self::CAPTURE_NAME_PASSWORD_CONFIRMATION,
             ],
             self::SCHEMA_RELATIONSHIPS => [
                 self::REL_ROLE => Model::REL_ROLE,
             ],
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAttributes($model, array $fieldKeysFilter = null): ?array
+    {
+        $attributes = parent::getAttributes($model, $fieldKeysFilter);
+
+        // the virtual `V-password` attributes we've added do not exist in the model and will be filled with nulls.
+        // kill them in order to have cleaner attribute list
+        unset($attributes[self::V_ATTR_PASSWORD]);
+        unset($attributes[self::V_ATTR_PASSWORD_CONFIRMATION]);
+
+        return $attributes;
     }
 }
