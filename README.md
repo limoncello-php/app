@@ -76,14 +76,13 @@ $ yarn serve
 
 > Port could be configured in `composer.json` or `client/webpack/base.config.js`
 
-The easiest way to play with the server is `Postman`.
+If you use `Postman` here is a collection of API requests that would work with a local server (reading users, filter users, create users, and etc).
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/e7ba014d506f62918b0f#?env%5Blocal%20HTTP%20(8080)%5D=W3siZW5hYmxlZCI6dHJ1ZSwia2V5Ijoic2VydmVyIiwidmFsdWUiOiJsb2NhbGhvc3Q6ODA4MCIsInR5cGUiOiJ0ZXh0In0seyJlbmFibGVkIjp0cnVlLCJrZXkiOiJ0b2tlbiIsInZhbHVlIjoiMjlhNDU0OGZkZWY1NDFiNWZiYjA3ODhjYzM2YzBiM2U1OTNlODY5ODk5YjA1IiwidHlwZSI6InRleHQifV0=)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/a911c4ba41085dea3816)
 
-API documentation and code snippets [here](https://documenter.getpostman.com/view/53867/limoncello-app/6Z3usWQ).
+Here is a `Postman` screen-shot with the collection opened 
 
 ![Requests in Postman](server/resources/img/screen-shot.png)
-
 
 #### 3 Turn on production mode (optional)
 
