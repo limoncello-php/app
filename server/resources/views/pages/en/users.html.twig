@@ -35,4 +35,12 @@
         {% endif %}
         {{ include('pages/en/sections/pagination.html.twig') }}
     </main>
+    <div class="my-md-5 alert alert-info" role="alert">
+        <p><strong class="display-4">Filters, sorting and pagination</strong></p>
+        <p>Do you know users can be filtered and sorted?</p>
+        <ul class="list-unstyled">
+            <li><strong>Filter by name and type with sorting</strong> <code>{{ _origin_uri }}/users?filter[first-name][like]=%a%&filter[role][eq]=user&sort=-last-name</code> <a href="{{ _origin_uri }}/users?filter[first-name][like]=%a%&filter[role][eq]=user&sort=-last-name" target="_blank">click</a></li>
+            <li><strong>Pagination</strong> <code>{{ _origin_uri }}/users?page[offset]=1&page[limit]=3</code> <a href="{{ _origin_uri }}/users?page[offset]=1&page[limit]=3" target="_blank">click</a></li>
+        </ul>
+    </div>
 {% endblock %}
