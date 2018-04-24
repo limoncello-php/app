@@ -1,12 +1,13 @@
 <?php namespace App\Validation;
 
-use App\Data\Models\Role;
-use App\Data\Models\User;
+use App\Api\RolesApi;
+use App\Api\UsersApi;
 use App\Json\Schemas\RoleSchema;
 use App\Json\Schemas\UserSchema;
 use Limoncello\Flute\Types\DateTime;
-use Limoncello\Flute\Validation\JsonApi\Rules\ExistInDatabaseTrait;
-use Limoncello\Flute\Validation\JsonApi\Rules\RelationshipsTrait;
+use Limoncello\Flute\Validation\Rules\ApiRulesTrait;
+use Limoncello\Flute\Validation\Rules\DatabaseRulesTrait;
+use Limoncello\Flute\Validation\Rules\RelationshipRulesTrait;
 use Limoncello\Validation\Contracts\Errors\ErrorCodes;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 use Limoncello\Validation\Rules;
@@ -16,14 +17,14 @@ use Limoncello\Validation\Rules;
  */
 class BaseRules extends Rules
 {
-    use RelationshipsTrait, ExistInDatabaseTrait;
+    use RelationshipRulesTrait, DatabaseRulesTrait, ApiRulesTrait;
 
     /**
      * @return RuleInterface
      */
     public static function roleId(): RuleInterface
     {
-        return self::asSanitizedString(self::exists(Role::TABLE_NAME, Role::FIELD_ID));
+        return self::asSanitizedString(self::readable(RolesApi::class));
     }
 
     /**
@@ -39,7 +40,7 @@ class BaseRules extends Rules
      */
     public static function userId(): RuleInterface
     {
-        return self::stringToInt(self::exists(User::TABLE_NAME, User::FIELD_ID));
+        return self::stringToInt(self::readable(UsersApi::class));
     }
 
     /**
@@ -55,7 +56,7 @@ class BaseRules extends Rules
      */
     public static function usersRelationship(): RuleInterface
     {
-        $readableAll = static::stringArrayToIntArray(static::existAll(User::TABLE_NAME, User::FIELD_ID));
+        $readableAll = static::stringArrayToIntArray(static::readableAll(UsersApi::class));
 
         return self::toManyRelationship(UserSchema::TYPE, $readableAll);
     }
