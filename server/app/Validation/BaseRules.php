@@ -20,43 +20,53 @@ class BaseRules extends Rules
     use RelationshipRulesTrait, DatabaseRulesTrait, ApiRulesTrait;
 
     /**
+     * @param RuleInterface|null $next
+     *
      * @return RuleInterface
      */
-    public static function roleId(): RuleInterface
+    public static function roleId(RuleInterface $next = null): RuleInterface
     {
-        return self::asSanitizedString(self::readable(RolesApi::class));
+        return self::asSanitizedString(self::readable(RolesApi::class, $next));
     }
 
     /**
+     * @param RuleInterface|null $next
+     *
      * @return RuleInterface
      */
-    public static function roleRelationship(): RuleInterface
+    public static function roleRelationship(RuleInterface $next = null): RuleInterface
     {
-        return self::toOneRelationship(RoleSchema::TYPE, static::roleId());
+        return self::toOneRelationship(RoleSchema::TYPE, static::roleId($next));
     }
 
     /**
+     * @param RuleInterface|null $next
+     *
      * @return RuleInterface
      */
-    public static function userId(): RuleInterface
+    public static function userId(RuleInterface $next = null): RuleInterface
     {
-        return self::stringToInt(self::readable(UsersApi::class));
+        return self::stringToInt(self::readable(UsersApi::class, $next));
     }
 
     /**
+     * @param RuleInterface|null $next
+     *
      * @return RuleInterface
      */
-    public static function userRelationship(): RuleInterface
+    public static function userRelationship(RuleInterface $next = null): RuleInterface
     {
-        return self::toOneRelationship(UserSchema::TYPE, static::userId());
+        return self::toOneRelationship(UserSchema::TYPE, static::userId($next));
     }
 
     /**
+     * @param RuleInterface|null $next
+     *
      * @return RuleInterface
      */
-    public static function usersRelationship(): RuleInterface
+    public static function usersRelationship(RuleInterface $next = null): RuleInterface
     {
-        $readableAll = static::stringArrayToIntArray(static::readableAll(UsersApi::class));
+        $readableAll = static::stringArrayToIntArray(static::readableAll(UsersApi::class, $next));
 
         return self::toManyRelationship(UserSchema::TYPE, $readableAll);
     }
