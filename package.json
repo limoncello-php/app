@@ -5,7 +5,7 @@
   "main": "./public/assets/index.js",
   "scripts": {
     "dev-serve": "webpack-dev-server --config ./client/webpack/development.config.js --open",
-    "php-serve": "php -S 0.0.0.0:8090 -t public",
+    "php-serve": "php -d zend.assertions=1 -d assert.exception=1 -S 0.0.0.0:8090 -t public",
     "serve": "npm run php-serve & npm run dev-serve",
     "watch": "webpack --config ./client/webpack/development.config.js --watch",
     "build": "webpack --config ./client/webpack/production.config.js"
