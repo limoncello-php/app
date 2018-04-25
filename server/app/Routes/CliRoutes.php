@@ -1,9 +1,18 @@
 <?php namespace App\Routes;
 
+use Limoncello\Application\Commands\ApplicationCommand;
 use Limoncello\Application\Commands\DataCommand;
+use Limoncello\Application\Packages\Application\ApplicationContainerConfigurator;
+use Limoncello\Application\Packages\Data\DataContainerConfigurator;
+use Limoncello\Application\Packages\FileSystem\FileSystemContainerConfigurator;
+use Limoncello\Application\Packages\L10n\L10nContainerConfigurator;
+use Limoncello\Application\Packages\Monolog\MonologFileContainerConfigurator;
 use Limoncello\Commands\CommandRoutesTrait;
+use Limoncello\Commands\CommandsCommand;
 use Limoncello\Contracts\Application\RoutesConfiguratorInterface;
 use Limoncello\Contracts\Routing\GroupInterface;
+use Limoncello\Crypt\Package\HasherContainerConfigurator;
+use Limoncello\Passport\Package\PassportContainerConfigurator;
 use Settings\Commands;
 
 /**
@@ -22,9 +31,26 @@ class CliRoutes implements RoutesConfiguratorInterface
      */
     public static function configureRoutes(GroupInterface $routes): void
     {
-        // Console commands can have their custom containers too!
-        // Configure container for limoncello `db` command so we can use data `Faker` for data seeding.
-        self::commandContainer($routes, DataCommand::NAME, Commands::CONFIGURATOR);
+        // Individual console commands can have their custom containers too!
+        // For example, limoncello `db` command might need `Faker` for data seeding.
+
+        // Common configurators that typically needed in commands.
+        // We configure them independently from the main application so even if all
+        // providers will be disabled in the main app the commands will continue to work.
+        $commonConfigurators = [
+            Commands::CONFIGURATOR,
+            ApplicationContainerConfigurator::CONFIGURATOR,
+            DataContainerConfigurator::CONFIGURATOR,
+            L10nContainerConfigurator::CONFIGURATOR,
+            MonologFileContainerConfigurator::CONFIGURATOR,
+            FileSystemContainerConfigurator::CONFIGURATOR,
+            HasherContainerConfigurator::CONFIGURATOR,
+            PassportContainerConfigurator::CONFIGURATOR,
+        ];
+
+        self::commandContainer($routes, DataCommand::NAME, $commonConfigurators);
+        self::commandContainer($routes, ApplicationCommand::NAME, $commonConfigurators);
+        self::commandContainer($routes, CommandsCommand::NAME, $commonConfigurators);
     }
 
     /**
