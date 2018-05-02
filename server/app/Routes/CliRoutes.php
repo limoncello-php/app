@@ -34,23 +34,26 @@ class CliRoutes implements RoutesConfiguratorInterface
         // Individual console commands can have their custom containers too!
         // For example, limoncello `db` command might need `Faker` for data seeding.
 
-        // Common configurators that typically needed in commands.
-        // We configure them independently from the main application so even if all
-        // providers will be disabled in the main app the commands will continue to work.
-        $commonConfigurators = [
-            Commands::CONFIGURATOR,
-            ApplicationContainerConfigurator::CONFIGURATOR,
-            DataContainerConfigurator::CONFIGURATOR,
-            L10nContainerConfigurator::CONFIGURATOR,
-            MonologFileContainerConfigurator::CONFIGURATOR,
-            FileSystemContainerConfigurator::CONFIGURATOR,
-            HasherContainerConfigurator::CONFIGURATOR,
-            PassportContainerConfigurator::CONFIGURATOR,
-        ];
+        // commands require composer
+        if (class_exists('Composer\Command\BaseCommand') === true) {
+            // Common configurators that typically needed in commands.
+            // We configure them independently from the main application so even if all
+            // providers will be disabled in the main app the commands will continue to work.
+            $commonConfigurators = [
+                Commands::CONFIGURATOR,
+                ApplicationContainerConfigurator::CONFIGURATOR,
+                DataContainerConfigurator::CONFIGURATOR,
+                L10nContainerConfigurator::CONFIGURATOR,
+                MonologFileContainerConfigurator::CONFIGURATOR,
+                FileSystemContainerConfigurator::CONFIGURATOR,
+                HasherContainerConfigurator::CONFIGURATOR,
+                PassportContainerConfigurator::CONFIGURATOR,
+            ];
 
-        self::commandContainer($routes, DataCommand::NAME, $commonConfigurators);
-        self::commandContainer($routes, ApplicationCommand::NAME, $commonConfigurators);
-        self::commandContainer($routes, CommandsCommand::NAME, $commonConfigurators);
+            self::commandContainer($routes, DataCommand::NAME, $commonConfigurators);
+            self::commandContainer($routes, ApplicationCommand::NAME, $commonConfigurators);
+            self::commandContainer($routes, CommandsCommand::NAME, $commonConfigurators);
+        }
     }
 
     /**

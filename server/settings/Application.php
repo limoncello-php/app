@@ -30,6 +30,7 @@ class Application implements ApplicationConfigurationInterface
         $originHost   = getenv('APP_ORIGIN_HOST');
         $originPort   = getenv('APP_ORIGIN_PORT');
         $originUri    = filter_var("$originScheme://$originHost:$originPort", FILTER_VALIDATE_URL);
+        assert(is_string($originUri) === true);
 
         return [
             static::KEY_APP_NAME                     => getenv('APP_NAME'),
