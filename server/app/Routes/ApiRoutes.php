@@ -39,15 +39,16 @@ class ApiRoutes implements RoutesConfiguratorInterface
             // JSON API group
             // This group uses custom exception handler to provide error information in JSON API format.
             ->group(self::API_URI_PREFIX, function (GroupInterface $routes): void {
+
+                $routes->addContainerConfigurators([
+                    FluteContainerConfigurator::CONFIGURE_EXCEPTION_HANDLER,
+                ]);
+
                 self::apiController($routes, UserSchema::TYPE, UsersController::class);
 
                 self::apiController($routes, RoleSchema::TYPE, RolesController::class);
                 self::relationship($routes, RoleSchema::TYPE, RoleSchema::REL_USERS, RolesController::class, 'readUsers');
-            }, [
-                GroupInterface::PARAM_CONTAINER_CONFIGURATORS => [
-                    FluteContainerConfigurator::CONFIGURE_EXCEPTION_HANDLER,
-                ],
-            ]);
+            });
     }
 
     /**

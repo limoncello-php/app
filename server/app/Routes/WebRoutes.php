@@ -43,6 +43,12 @@ class WebRoutes implements RoutesConfiguratorInterface
             // This group uses exception handler to provide error information in HTML format with Whoops.
             ->group(self::TOP_GROUP_PREFIX, function (GroupInterface $routes): void {
 
+                $routes->addContainerConfigurators([
+                    WhoopsContainerConfigurator::CONFIGURE_EXCEPTION_HANDLER,
+                ])->addMiddleware([
+                    CustomErrorResponsesMiddleware::CALLABLE_HANDLER,
+                ]);
+
                 $routes
                     ->get('/', [HomeController::class, 'index'], [RouteInterface::PARAM_NAME => HomeController::ROUTE_NAME_HOME])
                     ->get('/sign-in', AuthController::CALLABLE_SHOW_SIGN_IN, [RouteInterface::PARAM_NAME => AuthController::ROUTE_NAME_SIGN_IN])
@@ -56,12 +62,7 @@ class WebRoutes implements RoutesConfiguratorInterface
                 self::webController($routes, 'roles', RolesController::class);
                 $routes->get("roles/$idx/users", RolesController::CALLABLE_READ_USERS, [RouteInterface::PARAM_NAME => RolesController::ROUTE_NAME_READ_USERS]);
 
-            }, [
-                GroupInterface::PARAM_CONTAINER_CONFIGURATORS => [
-                    WhoopsContainerConfigurator::CONFIGURE_EXCEPTION_HANDLER,
-                ],
-                GroupInterface::PARAM_MIDDLEWARE_LIST         => [CustomErrorResponsesMiddleware::CALLABLE_HANDLER],
-            ]);
+            });
     }
 
     /**
