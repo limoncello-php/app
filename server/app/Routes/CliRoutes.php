@@ -13,6 +13,8 @@ use Limoncello\Contracts\Application\RoutesConfiguratorInterface;
 use Limoncello\Contracts\Routing\GroupInterface;
 use Limoncello\Crypt\Package\HasherContainerConfigurator;
 use Limoncello\Passport\Package\PassportContainerConfigurator;
+use Limoncello\Templates\Commands\TemplatesCommand;
+use Limoncello\Templates\Package\TwigTemplatesContainerConfigurator;
 use Settings\Commands;
 
 /**
@@ -48,11 +50,13 @@ class CliRoutes implements RoutesConfiguratorInterface
                 FileSystemContainerConfigurator::CONFIGURATOR,
                 HasherContainerConfigurator::CONFIGURATOR,
                 PassportContainerConfigurator::CONFIGURATOR,
+                TwigTemplatesContainerConfigurator::CONFIGURATOR,
             ];
 
             self::commandContainer($routes, DataCommand::NAME, $commonConfigurators);
             self::commandContainer($routes, ApplicationCommand::NAME, $commonConfigurators);
             self::commandContainer($routes, CommandsCommand::NAME, $commonConfigurators);
+            self::commandContainer($routes, TemplatesCommand::NAME, $commonConfigurators);
         }
     }
 
