@@ -59,8 +59,19 @@
 
         "serve": "php -S 0.0.0.0:8080 -t public",
 
-        "develop": ["@composer l:app clear-cache", "@composer update --optimize-autoloader --quiet"],
-        "build": ["@composer l:app cache", "@composer update --no-dev --optimize-autoloader --quiet"],
+        "develop": ["@clear-app-cache", "@composer update --optimize-autoloader --quiet"],
+        "build": ["@refresh-app-cache", "@composer update --no-dev --optimize-autoloader --quiet"],
+        "app-cache": [
+            "@composer dump-autoload --optimize --quiet",
+            "@composer l:app cache", "@composer l:templates cache",
+            "@composer dump-autoload --optimize --quiet"
+        ],
+        "clear-app-cache": [
+            "@composer dump-autoload --optimize --quiet",
+            "@composer l:templates clear-cache", "@composer l:app clear-cache",
+            "@composer dump-autoload --optimize --quiet"
+        ],
+        "refresh-app-cache": ["@clear-app-cache", "@app-cache"],
 
         "db": ["@composer l:db rollback", "@composer l:db migrate", "@composer l:db seed"],
 
