@@ -61,14 +61,24 @@
 
         "develop": ["@clear-app-cache", "@composer update --optimize-autoloader --quiet"],
         "build": ["@refresh-app-cache", "@composer update --no-dev --optimize-autoloader --quiet"],
-        "app-cache": [
+        "settings-cache": [
             "@composer dump-autoload --optimize --quiet",
-            "@composer l:app cache", "@composer l:templates cache",
+            "@composer l:app cache",
+            "@composer dump-autoload --optimize --quiet"
+        ],
+        "clear-settings-cache": [
+            "@composer dump-autoload --optimize --quiet",
+            "@composer l:app clear-cache",
+            "@composer dump-autoload --optimize --quiet"
+        ],
+        "refresh-settings-cache": ["@clear-settings-cache", "@settings-cache"],
+        "app-cache": [
+            "@refresh-settings-cache", "@composer l:templates cache",
             "@composer dump-autoload --optimize --quiet"
         ],
         "clear-app-cache": [
-            "@composer dump-autoload --optimize --quiet",
-            "@composer l:templates clear-cache", "@composer l:app clear-cache",
+            "@refresh-settings-cache",
+            "@composer l:templates clear-cache", "@clear-settings-cache",
             "@composer dump-autoload --optimize --quiet"
         ],
         "refresh-app-cache": ["@clear-app-cache", "@app-cache"],
