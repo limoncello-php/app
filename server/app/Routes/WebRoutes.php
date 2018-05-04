@@ -1,11 +1,13 @@
 <?php namespace App\Routes;
 
+use App\Container\RequestStorageConfigurator;
 use App\Web\Controllers\AuthController;
 use App\Web\Controllers\HomeController;
 use App\Web\Controllers\RolesController;
 use App\Web\Controllers\UsersController;
 use App\Web\Middleware\CookieAuth;
 use App\Web\Middleware\CustomErrorResponsesMiddleware;
+use App\Web\Middleware\RememberRequestMiddleware;
 use Limoncello\Application\Packages\Application\WhoopsContainerConfigurator;
 use Limoncello\Commands\CommandRoutesTrait;
 use Limoncello\Contracts\Application\RoutesConfiguratorInterface;
@@ -45,8 +47,10 @@ class WebRoutes implements RoutesConfiguratorInterface
 
                 $routes->addContainerConfigurators([
                     WhoopsContainerConfigurator::CONFIGURE_EXCEPTION_HANDLER,
+                    RequestStorageConfigurator::CONFIGURATOR,
                 ])->addMiddleware([
                     CustomErrorResponsesMiddleware::CALLABLE_HANDLER,
+                    RememberRequestMiddleware::CALLABLE_HANDLER,
                 ]);
 
                 $routes

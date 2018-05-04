@@ -12,6 +12,7 @@ use Limoncello\Contracts\Application\CacheSettingsProviderInterface;
 use Limoncello\Contracts\Application\ModelInterface;
 use Limoncello\Contracts\Data\ModelSchemaInfoInterface;
 use Limoncello\Contracts\Data\RelationshipTypes;
+use Limoncello\Contracts\Http\RequestStorageInterface;
 use Limoncello\Contracts\L10n\FormatterFactoryInterface;
 use Limoncello\Contracts\L10n\FormatterInterface;
 use Limoncello\Contracts\Routing\RouterInterface;
@@ -134,6 +135,8 @@ trait ControllerTrait
 
         $currentUser = static::getCurrentUser($container);
 
+        $curHostName = static::getHostUri($container);
+
         $isSignedIn = $currentUser !== null;
         if ($isSignedIn === true) {
             $firstName = $currentUser->getProperty(User::FIELD_FIRST_NAME);
@@ -169,6 +172,7 @@ trait ControllerTrait
 
         $defaultParams = [
             '_origin_uri' => $originUri,
+            'host_name'   => $curHostName,
 
             'is_signed_in' => $isSignedIn,
             'sign_in_url'  => $signInUrl,
@@ -400,11 +404,32 @@ trait ControllerTrait
         /** @var RouterInterface $router */
         $router = $container->get(RouterInterface::class);
 
-        /** @var CacheSettingsProviderInterface $provider */
-        $provider  = $container->get(CacheSettingsProviderInterface::class);
-        $originUri = $provider->getApplicationConfiguration()[A::KEY_APP_ORIGIN_URI];
-        $url       = $router->get($originUri, $routeName, $placeholders, $queryParams);
+        $hostUri = static::getHostUri($container);
+        $url     = $router->get($hostUri, $routeName, $placeholders, $queryParams);
 
         return $url;
+    }
+
+    /**
+     * @param ContainerInterface $container
+     *
+     * @return string
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    protected static function getHostUri(ContainerInterface $container): string
+    {
+        /** @var RequestStorageInterface $curRequestStorage */
+        $curRequestStorage = $container->get(RequestStorageInterface::class);
+        $curRequestUri     = $curRequestStorage->get()->getUri();
+
+        $scheme = $curRequestUri->getScheme();
+        $host   = $curRequestUri->getHost();
+        $port   = $curRequestUri->getPort();
+
+        $result = $port === null || $port === 80 ? "$scheme://$host" : "$scheme://$host:$port";
+
+        return $result;
     }
 }

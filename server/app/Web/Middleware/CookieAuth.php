@@ -16,6 +16,11 @@ final class CookieAuth implements MiddlewareInterface
     const COOKIE_NAME = 'auth_token';
 
     /**
+     * Middleware handler.
+     */
+    const CALLABLE_HANDLER = [self::class, self::MIDDLEWARE_METHOD_NAME];
+
+    /**
      * @inheritdoc
      */
     public static function handle(
