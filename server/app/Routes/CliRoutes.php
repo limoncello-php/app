@@ -3,6 +3,7 @@
 use Limoncello\Application\Commands\ApplicationCommand;
 use Limoncello\Application\Commands\DataCommand;
 use Limoncello\Application\Packages\Application\ApplicationContainerConfigurator;
+use Limoncello\Application\Packages\Application\WhoopsContainerConfigurator;
 use Limoncello\Application\Packages\Data\DataContainerConfigurator;
 use Limoncello\Application\Packages\FileSystem\FileSystemContainerConfigurator;
 use Limoncello\Application\Packages\L10n\L10nContainerConfigurator;
@@ -42,6 +43,7 @@ class CliRoutes implements RoutesConfiguratorInterface
             // We configure them independently from the main application so even if all
             // providers will be disabled in the main app the commands will continue to work.
             $commonConfigurators = [
+                WhoopsContainerConfigurator::CONFIGURE_EXCEPTION_HANDLER,
                 Commands::CONFIGURATOR,
                 ApplicationContainerConfigurator::CONFIGURATOR,
                 DataContainerConfigurator::CONFIGURATOR,
