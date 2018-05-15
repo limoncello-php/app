@@ -10,8 +10,10 @@
 {% endblock %}
 
 {% block content %}
-    <form id="delete" method="post"></form>
     <form id="role" method="post">
+
+        {{ csrf() }}
+
         {% if post_create_url %}
             <div class="form-group">
                 <label for="id">Name</label>
@@ -32,6 +34,7 @@
         {% if error_message %}
             <div class="alert alert-danger" role="alert">{{ error_message }}</div>
         {% endif %}
+
     </form>
     {% if can_admin_roles %}
         {% if post_create_url %}
@@ -41,6 +44,9 @@
             <button class="btn btn-lg btn-primary btn-block" type="submit" form="role" formaction="{{ post_update_url }}">Update</button>
         {% endif %}
         {% if post_delete_url %}
+            <form id="delete" method="post">
+                {{ csrf() }}
+            </form>
             <button class="btn btn-lg btn-danger btn-block" type="submit" form="delete" formaction="{{ post_delete_url }}">Delete</button>
         {% endif %}
     {% endif %}

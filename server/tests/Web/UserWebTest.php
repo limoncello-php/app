@@ -2,6 +2,7 @@
 
 use App\Data\Seeds\RolesSeed;
 use App\Json\Schemas\UserSchema;
+use Limoncello\Application\Packages\Csrf\CsrfSettings;
 use Tests\TestCase;
 
 /**
@@ -214,6 +215,9 @@ class UserWebTest extends TestCase
     {
         $this->setPreventCommits();
 
+        // add to session CSRF token(s) like it was issued by the server before.
+        $this->setSessionCsrfTokens(['secret_token']);
+
         $authCookie = $this->getModeratorOAuthCookie();
 
         $data = [
@@ -223,6 +227,8 @@ class UserWebTest extends TestCase
             UserSchema::REL_ROLE                     => RolesSeed::ROLE_USER,
             UserSchema::V_ATTR_PASSWORD              => '123456',
             UserSchema::V_ATTR_PASSWORD_CONFIRMATION => '123456',
+
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
         ];
 
         $response = $this->post(self::RESOURCES_URL . '/create', $data, [], $authCookie);
@@ -240,6 +246,9 @@ class UserWebTest extends TestCase
     {
         $this->setPreventCommits();
 
+        // add to session CSRF token(s) like it was issued by the server before.
+        $this->setSessionCsrfTokens(['secret_token']);
+
         $authCookie = $this->getModeratorOAuthCookie();
 
         $data = [
@@ -249,6 +258,8 @@ class UserWebTest extends TestCase
             UserSchema::REL_ROLE                     => RolesSeed::ROLE_USER,
             UserSchema::V_ATTR_PASSWORD              => '123456',
             UserSchema::V_ATTR_PASSWORD_CONFIRMATION => '123456' . 'XXX', // <-- passwords do not match
+
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
         ];
 
         $response = $this->post(self::RESOURCES_URL . '/create', $data, [], $authCookie);
@@ -266,15 +277,19 @@ class UserWebTest extends TestCase
     {
         $this->setPreventCommits();
 
+        // add to session CSRF token(s) like it was issued by the server before.
+        $this->setSessionCsrfTokens(['secret_token']);
+
         $authCookie = $this->getModeratorOAuthCookie();
 
         $data = [
             UserSchema::ATTR_FIRST_NAME              => 'John',
             UserSchema::ATTR_LAST_NAME               => 'Doe',
-            UserSchema::ATTR_EMAIL                   => 'john@doe.foo',
             UserSchema::REL_ROLE                     => RolesSeed::ROLE_USER,
             UserSchema::V_ATTR_PASSWORD              => '', // empty passwords would be ignored
             UserSchema::V_ATTR_PASSWORD_CONFIRMATION => '', // empty passwords would be ignored
+
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
         ];
 
         $userId   = 2;
@@ -293,6 +308,9 @@ class UserWebTest extends TestCase
     {
         $this->setPreventCommits();
 
+        // add to session CSRF token(s) like it was issued by the server before.
+        $this->setSessionCsrfTokens(['secret_token']);
+
         $authCookie = $this->getModeratorOAuthCookie();
 
         $data = [
@@ -302,6 +320,8 @@ class UserWebTest extends TestCase
             UserSchema::REL_ROLE                     => RolesSeed::ROLE_USER,
             UserSchema::V_ATTR_PASSWORD              => '123', // too short password
             UserSchema::V_ATTR_PASSWORD_CONFIRMATION => '123', // too short password
+
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
         ];
 
         $userId   = 2;
@@ -320,10 +340,17 @@ class UserWebTest extends TestCase
     {
         $this->setPreventCommits();
 
+        // add to session CSRF token(s) like it was issued by the server before.
+        $this->setSessionCsrfTokens(['secret_token']);
+
         $authCookie = $this->getModeratorOAuthCookie();
 
+        $data = [
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
+        ];
+
         $userId   = 2;
-        $response = $this->post(self::RESOURCES_URL . "/$userId/delete", [], [], $authCookie);
+        $response = $this->post(self::RESOURCES_URL . "/$userId/delete", $data, [], $authCookie);
 
         // check we've got redirected on success
         $this->assertEquals(302, $response->getStatusCode());

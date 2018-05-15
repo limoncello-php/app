@@ -10,8 +10,10 @@
 {% endblock %}
 
 {% block content %}
-    <form id="delete" method="post"></form>
     <form id="user" method="post">
+
+        {{ csrf() }}
+
         <div class="form-group">
             <label for="first-name">First Name</label>
             <input type="text" class="form-control" id="first-name" name="first-name" placeholder="First Name" value="{{ model['first-name'] }}" required autofocus>
@@ -28,12 +30,20 @@
             <div class="alert alert-danger" role="alert">{{ errors['last-name'] }}</div>
         {% endif %}
 
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="{{ model['email'] }}" required>
-        </div>
-        {% if (errors['email'] ?? false) %}
-            <div class="alert alert-danger" role="alert">{{ errors['email'] }}</div>
+        {# Email will be editable only on create #}
+        {% if post_create_url %}
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="{{ model['email'] }}" required>
+            </div>
+            {% if (errors['email'] ?? false) %}
+                <div class="alert alert-danger" role="alert">{{ errors['email'] }}</div>
+            {% endif %}
+        {% else %}
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" placeholder="Email" value="{{ model['email'] }}" readonly>
+            </div>
         {% endif %}
 
         <div class="form-group">
@@ -63,6 +73,7 @@
         {% if error_message %}
             <div class="alert alert-danger" role="alert">{{ error_message }}</div>
         {% endif %}
+
     </form>
     {% if can_admin_users %}
         {% if post_create_url %}
@@ -72,6 +83,9 @@
             <button class="btn btn-lg btn-primary btn-block" type="submit" form="user" formaction="{{ post_update_url }}">Update</button>
         {% endif %}
         {% if post_delete_url %}
+            <form id="delete" method="post">
+                {{ csrf() }}
+            </form>
             <button class="btn btn-lg btn-danger btn-block" type="submit" form="delete" formaction="{{ post_delete_url }}">Delete</button>
         {% endif %}
     {% endif %}

@@ -5,6 +5,9 @@
 {% block content %}
     <div class="text-center">
         <form method="post" class="form-sign-in">
+
+            {{ csrf() }}
+
             <img class="mb-4" src="/img/limoncello.png" alt="" width="72" height="72">
             <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
 
@@ -33,6 +36,7 @@
             {% endif %}
 
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+
         </form>
         <div class="alert alert-warning" role="alert">
             <p><strong class="display-4">Default credentials</strong></p>

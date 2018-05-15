@@ -5,6 +5,7 @@ use App\Data\Models\RoleScope;
 use App\Data\Models\User as Model;
 use App\Json\Schemas\UserSchema as Schema;
 use Doctrine\DBAL\Connection;
+use Limoncello\Contracts\Exceptions\AuthorizationExceptionInterface;
 use Limoncello\Crypt\Contracts\HasherInterface;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
 use PDO;
@@ -30,6 +31,8 @@ class UsersApi extends BaseApi
 
     /**
      * @inheritdoc
+     *
+     * @throws AuthorizationExceptionInterface
      */
     public function create($index, iterable $attributes, iterable $toMany): string
     {
@@ -40,6 +43,8 @@ class UsersApi extends BaseApi
 
     /**
      * @inheritdoc
+     *
+     * @throws AuthorizationExceptionInterface
      */
     public function update($index, iterable $attributes, iterable $toMany): int
     {
@@ -50,6 +55,8 @@ class UsersApi extends BaseApi
 
     /**
      * @inheritdoc
+     *
+     * @throws AuthorizationExceptionInterface
      */
     public function remove($index): bool
     {
@@ -60,6 +67,8 @@ class UsersApi extends BaseApi
 
     /**
      * @inheritdoc
+     *
+     * @throws AuthorizationExceptionInterface
      */
     public function index(): PaginatedDataInterface
     {
@@ -70,6 +79,8 @@ class UsersApi extends BaseApi
 
     /**
      * @inheritdoc
+     *
+     * @throws AuthorizationExceptionInterface
      */
     public function read($index)
     {

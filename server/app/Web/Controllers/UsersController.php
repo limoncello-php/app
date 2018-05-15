@@ -223,7 +223,6 @@ class UsersController extends BaseController implements WebControllerInterface
         $errors    = null;
         $validated = null;
 
-        // TODO add csrf
         $isPasswordSame =
             ($inputs[UserSchema::CAPTURE_NAME_PASSWORD] ?? null) ===
             ($inputs[UserSchema::CAPTURE_NAME_PASSWORD_CONFIRMATION] ?? null);

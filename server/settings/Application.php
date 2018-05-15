@@ -54,6 +54,7 @@ class Application implements ApplicationConfigurationInterface
                 //\Limoncello\Application\Packages\PDO\PdoProvider::class,
                 \Limoncello\Application\Packages\Cookies\CookieProvider::class,
                 \Limoncello\Application\Packages\Cors\CorsProvider::class,
+                \Limoncello\Application\Packages\Csrf\CsrfMinimalProvider::class,
                 \Limoncello\Application\Packages\Data\DataProvider::class,
                 \Limoncello\Application\Packages\L10n\L10nProvider::class,
                 \Limoncello\Application\Packages\Monolog\MonologFileProvider::class,

@@ -7,6 +7,7 @@ use App\Validation\Role\RoleCreateForm;
 use App\Validation\Role\RolesReadQuery;
 use App\Validation\Role\RoleUpdateForm;
 use App\Web\Views;
+use Limoncello\Contracts\Exceptions\AuthorizationExceptionInterface;
 use Limoncello\Flute\Contracts\Http\WebControllerInterface;
 use Limoncello\Flute\Validation\JsonApi\Rules\DefaultQueryValidationRules;
 use Neomerx\JsonApi\Contracts\Document\DocumentInterface;
@@ -193,6 +194,8 @@ class RolesController extends BaseController implements WebControllerInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws AuthorizationExceptionInterface
      */
     public static function readUsers(
         array $routeParams,

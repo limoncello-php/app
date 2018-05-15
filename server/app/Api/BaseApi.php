@@ -5,6 +5,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Exception;
 use Limoncello\Contracts\Authentication\AccountManagerInterface;
 use Limoncello\Contracts\Authorization\AuthorizationManagerInterface;
 use Limoncello\Contracts\Exceptions\AuthorizationExceptionInterface;
@@ -61,6 +62,8 @@ abstract class BaseApi extends Crud
 
     /**
      * @inheritdoc
+     *
+     * @throws DBALException
      */
     protected function builderSaveResourceOnCreate(ModelQueryBuilder $builder): ModelQueryBuilder
     {
@@ -69,6 +72,8 @@ abstract class BaseApi extends Crud
 
     /**
      * @inheritdoc
+     *
+     * @throws DBALException
      */
     protected function builderSaveResourceOnUpdate(ModelQueryBuilder $builder): ModelQueryBuilder
     {
@@ -77,6 +82,8 @@ abstract class BaseApi extends Crud
 
     /**
      * @inheritdoc
+     *
+     * @throws DBALException
      */
     protected function builderSaveRelationshipOnCreate($relationshipName, ModelQueryBuilder $builder): ModelQueryBuilder
     {
@@ -85,6 +92,8 @@ abstract class BaseApi extends Crud
 
     /**
      * @inheritdoc
+     *
+     * @throws DBALException
      */
     protected function builderSaveRelationshipOnUpdate($relationshipName, ModelQueryBuilder $builder): ModelQueryBuilder
     {
@@ -97,6 +106,7 @@ abstract class BaseApi extends Crud
      * @return ModelQueryBuilder
      *
      * @throws DBALException
+     * @throws Exception
      */
     protected function addCreatedAt(ModelQueryBuilder $builder): ModelQueryBuilder
     {
@@ -113,6 +123,7 @@ abstract class BaseApi extends Crud
      * @return ModelQueryBuilder
      *
      * @throws DBALException
+     * @throws Exception
      */
     protected function addUpdatedAt(ModelQueryBuilder $builder): ModelQueryBuilder
     {

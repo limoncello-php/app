@@ -3,6 +3,7 @@
 use App\Web\Controllers\AuthController;
 use App\Web\Middleware\CookieAuth;
 use DateTime;
+use Limoncello\Application\Packages\Csrf\CsrfSettings;
 use Limoncello\Contracts\Cookies\CookieJarInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -49,10 +50,15 @@ class HomeWebTest extends TestCase
     {
         $this->setPreventCommits();
 
+        // add to session CSRF token(s) like it was issued by the server before.
+        $this->setSessionCsrfTokens(['secret_token']);
+
         $form = [
             AuthController::FORM_EMAIL    => $this->getUserEmail(),
             AuthController::FORM_PASSWORD => $this->getUserPassword(),
             AuthController::FORM_REMEMBER => 'on',
+
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
         ];
 
         $response = $this->post(self::SIGN_IN_URL, $form);
@@ -80,9 +86,14 @@ class HomeWebTest extends TestCase
     {
         $this->setPreventCommits();
 
+        // add to session CSRF token(s) like it was issued by the server before.
+        $this->setSessionCsrfTokens(['secret_token']);
+
         $form = [
             AuthController::FORM_EMAIL    => $this->getUserEmail(),
             AuthController::FORM_PASSWORD => $this->getUserPassword() . '-=#', // <- invalid password
+
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
         ];
 
         $response = $this->post(self::SIGN_IN_URL, $form);
@@ -108,9 +119,14 @@ class HomeWebTest extends TestCase
     {
         $this->setPreventCommits();
 
+        // add to session CSRF token(s) like it was issued by the server before.
+        $this->setSessionCsrfTokens(['secret_token']);
+
         $form = [
             AuthController::FORM_EMAIL    => 'it-does-not-look-like-email',
             AuthController::FORM_PASSWORD => '123', // <- too short for a password
+
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
         ];
 
         $response = $this->post(self::SIGN_IN_URL, $form);

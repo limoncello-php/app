@@ -27,6 +27,8 @@ class RolesApi extends BaseApi
 
     /**
      * @inheritdoc
+     *
+     * @throws AuthorizationExceptionInterface
      */
     public function create($index, iterable $attributes, iterable $toMany): string
     {
@@ -37,6 +39,8 @@ class RolesApi extends BaseApi
 
     /**
      * @inheritdoc
+     *
+     * @throws AuthorizationExceptionInterface
      */
     public function update($index, iterable $attributes, iterable $toMany): int
     {
@@ -47,6 +51,8 @@ class RolesApi extends BaseApi
 
     /**
      * @inheritdoc
+     *
+     * @throws AuthorizationExceptionInterface
      */
     public function remove($index): bool
     {
@@ -57,6 +63,8 @@ class RolesApi extends BaseApi
 
     /**
      * @inheritdoc
+     *
+     * @throws AuthorizationExceptionInterface
      */
     public function index(): PaginatedDataInterface
     {
@@ -67,6 +75,8 @@ class RolesApi extends BaseApi
 
     /**
      * @inheritdoc
+     *
+     * @throws AuthorizationExceptionInterface
      */
     public function read($index)
     {

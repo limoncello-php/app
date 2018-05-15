@@ -7,6 +7,8 @@ use App\Json\Schemas\RoleSchema;
 use App\Json\Schemas\UserSchema;
 use App\Routes\WebRoutes;
 use App\Web\Views;
+use Limoncello\Application\Contracts\Csrf\CsrfTokenGeneratorInterface;
+use Limoncello\Application\Packages\Csrf\CsrfSettings;
 use Limoncello\Contracts\Application\ApplicationConfigurationInterface as A;
 use Limoncello\Contracts\Application\CacheSettingsProviderInterface;
 use Limoncello\Contracts\Application\ModelInterface;
@@ -37,6 +39,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\UriInterface;
 use Twig_Extensions_Extension_Text;
+use Twig_Function;
 
 /**
  * @package App
@@ -127,6 +130,19 @@ trait ControllerTrait
             $templates->getTwig()->hasExtension(Twig_Extensions_Extension_Text::class) === false
         ) {
             $templates->getTwig()->addExtension(new Twig_Extensions_Extension_Text());
+            $templates->getTwig()->addFunction(new Twig_Function('csrf', function () use ($container): string {
+                /** @var SettingsProviderInterface $provider */
+                $provider = $container->get(SettingsProviderInterface::class);
+                [CsrfSettings::HTTP_REQUEST_CSRF_TOKEN_KEY => $key] = $provider->get(CsrfSettings::class);
+
+                /** @var CsrfTokenGeneratorInterface $generator */
+                $generator = $container->get(CsrfTokenGeneratorInterface::class);
+                $token     = $generator->create();
+
+                $result = '<input type="hidden" name="' . $key . '" value="' . $token . '">';
+
+                return $result;
+            }, ['is_safe' => ['html']]));
         }
 
         /** @var CacheSettingsProviderInterface $provider */

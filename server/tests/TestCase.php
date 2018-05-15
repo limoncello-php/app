@@ -2,10 +2,13 @@
 
 use App\Application;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ConnectionException;
 use Limoncello\Application\Contracts\Cookie\CookieFunctionsInterface;
 use Limoncello\Application\Contracts\Session\SessionFunctionsInterface;
+use Limoncello\Application\Packages\Csrf\CsrfSettings;
 use Limoncello\Contracts\Container\ContainerInterface;
 use Limoncello\Contracts\Core\ApplicationInterface;
+use Limoncello\Contracts\Settings\SettingsProviderInterface;
 use Limoncello\Testing\ApplicationWrapperInterface;
 use Limoncello\Testing\ApplicationWrapperTrait;
 use Limoncello\Testing\HttpCallsTrait;
@@ -23,9 +26,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
 {
     use TestCaseTrait, HttpCallsTrait, MeasureExecutionTimeTrait, OAuthSignInTrait;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $shouldPreventCommits = false;
 
     /**
@@ -35,10 +36,14 @@ class TestCase extends \PHPUnit\Framework\TestCase
      */
     private $sharedConnection = null;
 
-    /**
-     * @var null|PsrContainerInterface
-     */
+    /** @var null|PsrContainerInterface */
     private $appContainer = null;
+
+    /** @var array  */
+    private $session = [];
+
+    /** @var array */
+    private $sessionCsrfTokens = [];
 
     /**
      * @inheritdoc
@@ -48,6 +53,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         $this->resetEventHandlers();
+        $this->setSession([])->setSessionCsrfTokens([]);
 
         // keep database connection between multiple App call during a single test
         $this->sharedConnection     = null;
@@ -78,8 +84,24 @@ class TestCase extends \PHPUnit\Framework\TestCase
                 $functions = $container->get(SessionFunctionsInterface::class);
                 $functions
                     ->setStartCallable($doNothing)
-                    ->setWriteCloseCallable($doNothing);
+                    ->setWriteCloseCallable($doNothing)
+                    ->setHasCallable(function ($key): bool {
+                        return array_key_exists($key, $this->session);
+                    })
+                    ->setPutCallable(function($key, $value): void {
+                        $this->session[$key] = $value;
+                    })
+                    ->setRetrieveCallable(function ($key) {
+                        return $this->session[$key];
+                    });
             }
+
+            // also put CSRF tokens into session
+            /** @var SettingsProviderInterface $provider */
+            $provider = $container->get(SettingsProviderInterface::class);
+            [CsrfSettings::TOKEN_STORAGE_KEY_IN_SESSION => $sessionKey] = $provider->get(CsrfSettings::class);
+            $this->session[$sessionKey] = array_merge($this->session[$sessionKey] ?? [], $this->sessionCsrfTokens);
+
             if ($container->has(CookieFunctionsInterface::class) === true) {
                 /** @var CookieFunctionsInterface $functions */
                 $functions = $container->get(CookieFunctionsInterface::class);
@@ -98,6 +120,8 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
     /**
      * @inheritdoc
+     *
+     * @throws ConnectionException
      */
     protected function tearDown()
     {
@@ -192,5 +216,39 @@ class TestCase extends \PHPUnit\Framework\TestCase
             new Sapi($emitter, $server, $queryParams, $parsedBody, $cookies, $files, $messageBody, $protocolVersion);
 
         return $sapi;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getSession(): array
+    {
+        return $this->session;
+    }
+
+    /**
+     * @param array $session
+     *
+     * @return self
+     */
+    protected function setSession(array $session): self
+    {
+        $this->session = $session;
+
+        return $this;
+    }
+
+    /**
+     * Set session CSRF tokens with tokens as keys and payload (e.g. timestamps) as values.
+     *
+     * @param array $tokens
+     *
+     * @return self
+     */
+    protected function setSessionCsrfTokens(array $tokens): self
+    {
+        $this->sessionCsrfTokens = array_flip($tokens);
+
+        return $this;
     }
 }

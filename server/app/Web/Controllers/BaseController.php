@@ -144,7 +144,6 @@ abstract class BaseController
         /** @var SchemaInterface $schemaClass */
         $resourceType = $schemaClass::TYPE;
 
-        // TODO add csrf
         $validator = static::createFormValidator($container, $rulesClass);
         if ($validator->validate($inputs) === false) {
             /** @var Traversable $messages */
@@ -214,7 +213,6 @@ abstract class BaseController
         /** @var SchemaInterface $schemaClass */
         $resourceType = $schemaClass::TYPE;
 
-        // TODO add csrf
         $validator = self::createFormValidator($container, $rulesClass);
         if ($validator->validate($inputs) === false) {
             /** @var Traversable $messages */
