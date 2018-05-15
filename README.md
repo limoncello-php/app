@@ -92,6 +92,8 @@ Here is a `Postman` screen-shot with the collection opened
 $ composer build
 ```
 
+Performance comparision with other frameworks could be found [here](https://github.com/limoncello-php/framework/tree/master/docs/bench/minimalistic) and [here](https://github.com/limoncello-php/framework/tree/master/docs/bench/realistic).
+
 ### Testing
 
 ```bash
