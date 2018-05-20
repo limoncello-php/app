@@ -48,7 +48,8 @@ module.exports = {
 
         new FsWatchPlugin({
             extraRootFolders: [
-                path.resolve(__dirname, '..', '..', 'server', 'resources', 'views')
+                path.resolve(__dirname, '..', 'src'),
+                path.resolve(__dirname, '..', '..', 'server', 'resources', 'views'),
             ]
         }),
     ],
