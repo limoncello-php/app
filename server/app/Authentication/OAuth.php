@@ -3,6 +3,7 @@
 use App\Api\UsersApi;
 use App\Data\Models\User;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Limoncello\Crypt\Contracts\HasherInterface;
 use Limoncello\Flute\Contracts\FactoryInterface;
 use Limoncello\Passport\Contracts\Entities\TokenInterface;
@@ -107,6 +108,7 @@ final class OAuth
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     * @throws DBALException
      */
     public static function getTokenCustomProperties(ContainerInterface $container, TokenInterface $token): array
     {
