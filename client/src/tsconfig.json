@@ -1,6 +1,7 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
+    "moduleResolution": "node",
     "lib": [
       "dom",
       "es2015",
