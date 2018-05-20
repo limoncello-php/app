@@ -13,6 +13,8 @@
   "author": "info@neomerx.com",
   "license": "MIT",
   "devDependencies": {
+    "@limoncello-framework/json-api-client": "^0.1.4",
+    "@limoncello-framework/oauth-client": "^0.1.5",
     "autoprefixer": "^8.3.0",
     "bootstrap": "^4.1.0",
     "clean-webpack-plugin": "^0.1.19",
