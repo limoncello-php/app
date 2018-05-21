@@ -2,6 +2,7 @@
 
 use App\Data\Models\Role;
 use App\Data\Models\RoleScope as Model;
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Types\Type;
 use Limoncello\Contracts\Data\MigrationInterface;
 use Limoncello\Data\Migrations\MigrationTrait;
@@ -17,6 +18,8 @@ class RolesScopesMigration implements MigrationInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws DBALException
      */
     public function migrate(): void
     {

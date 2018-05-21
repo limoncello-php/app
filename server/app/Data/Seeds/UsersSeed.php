@@ -1,6 +1,7 @@
 <?php namespace App\Data\Seeds;
 
 use App\Data\Models\User as Model;
+use Doctrine\DBAL\DBALException;
 use Faker\Generator;
 use Limoncello\Contracts\Data\SeedInterface;
 use Limoncello\Crypt\Contracts\HasherInterface;
@@ -20,6 +21,8 @@ class UsersSeed implements SeedInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws DBALException
      */
     public function run(): void
     {

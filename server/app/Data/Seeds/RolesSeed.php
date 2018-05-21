@@ -1,6 +1,8 @@
 <?php namespace App\Data\Seeds;
 
 use App\Data\Models\Role as Model;
+use Doctrine\DBAL\DBALException;
+use Exception;
 use Limoncello\Contracts\Data\SeedInterface;
 use Limoncello\Data\Seeds\SeedTrait;
 
@@ -22,6 +24,9 @@ class RolesSeed implements SeedInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws DBALException
+     * @throws Exception
      */
     public function run(): void
     {

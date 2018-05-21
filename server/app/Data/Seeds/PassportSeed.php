@@ -1,6 +1,8 @@
 <?php namespace App\Data\Seeds;
 
 use App\Data\Models\RoleScope;
+use Doctrine\DBAL\DBALException;
+use Exception;
 use Limoncello\Contracts\Data\SeedInterface;
 use Limoncello\Contracts\Settings\SettingsProviderInterface;
 use Limoncello\Data\Seeds\SeedTrait;
@@ -34,6 +36,8 @@ class PassportSeed implements SeedInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws DBALException
      */
     public function run(): void
     {
@@ -104,6 +108,9 @@ class PassportSeed implements SeedInterface
      * @param string[] $scopeIds
      *
      * @return void
+     *
+     * @throws DBALException
+     * @throws Exception
      */
     private function assignScopes(string $roleId, array $scopeIds)
     {

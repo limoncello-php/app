@@ -1,6 +1,7 @@
 <?php namespace App\Data\Migrations;
 
 use App\Data\Models\Role as Model;
+use Doctrine\DBAL\DBALException;
 use Limoncello\Contracts\Data\MigrationInterface;
 use Limoncello\Data\Migrations\MigrationTrait;
 
@@ -13,6 +14,8 @@ class RolesMigration implements MigrationInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws DBALException
      */
     public function migrate(): void
     {
