@@ -23,8 +23,8 @@ import './../scss/index.scss';
 //                 data: {
 //                     type: 'posts',
 //                     attributes: {
-//                         title: 'New title 12345',
-//                         text: 'Some text',
+//                         title: 'Some title',
+//                         text: 'Some text 12345',
 //                     }
 //                 }
 //             })
@@ -32,13 +32,13 @@ import './../scss/index.scss';
 //         console.log('New post created at: ' + JSON.stringify(response.headers.get('Location')));
 //
 //         // UPDATE Post sample
-//         await fetch(serverUrl + '/api/v1/posts', {
+//         await fetch(serverUrl + '/api/v1/posts/101', {
 //             method: 'PATCH', headers: authHeader, body: JSON.stringify({
 //                 data: {
 //                     id: '101',
 //                     type: 'posts',
 //                     attributes: {
-//                         title: 'Udpated title',
+//                         title: 'Updated title',
 //                     }
 //                 }
 //             })
@@ -47,7 +47,7 @@ import './../scss/index.scss';
 //         // SEARCH Posts sample
 //         const apiUrl: string = serverUrl + '/api/v1' + (new QueryBuilder('posts'))
 //             .withFilters({
-//                 field: 'title',
+//                 field: 'text',
 //                 operation: 'like',
 //                 parameters: '%12345%'
 //             })
