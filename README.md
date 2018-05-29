@@ -1,8 +1,8 @@
 [![License](https://img.shields.io/packagist/l/limoncello-php/app.svg)](https://packagist.org/packages/limoncello-php/app)
 
-<a href="https://github.com/limoncello-php/framework" target="_blank"><img src="https://github.com/limoncello-php/app/blob/develop/public/img/limoncello.png" alt="Limoncello PHP" title="Limoncello PHP" align="right" width="200" height="200" /></a>
-
 ### Summary
+
+[![How to create JSON API application](http://img.youtube.com/vi/UsIW5jC7rSc/0.jpg)](http://www.youtube.com/watch?v=UsIW5jC7rSc)
 
 Limoncello App is a fully featured OAuth 2.0 [JSON API](http://jsonapi.org/) quick start application.
 
