@@ -25,7 +25,7 @@ final class RoleCreateJson implements JsonApiDataRulesInterface
      */
     public static function getIdRule(): RuleInterface
     {
-        return r::isUniqueRoleId();
+        return r::required(r::isUniqueRoleId());
     }
 
     /**
