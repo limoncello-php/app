@@ -45,7 +45,7 @@ class RoleScope implements ModelInterface, CommonFields
     {
         return [
             self::FIELD_ID         => Type::INTEGER,
-            self::FIELD_ID_ROLE    => Type::STRING,
+            self::FIELD_ID_ROLE    => Role::getAttributeTypes()[Role::FIELD_ID],
             self::FIELD_ID_SCOPE   => Type::STRING,
             self::FIELD_CREATED_AT => DateTimeType::NAME,
             self::FIELD_UPDATED_AT => DateTimeType::NAME,
@@ -59,6 +59,8 @@ class RoleScope implements ModelInterface, CommonFields
     public static function getAttributeLengths(): array
     {
         return [
+            self::FIELD_ID_ROLE  => Role::getAttributeLengths()[Role::FIELD_ID],
+            self::FIELD_ID_SCOPE => 255,
             self::FIELD_ID_SCOPE => 255,
         ];
     }

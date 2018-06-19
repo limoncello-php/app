@@ -63,7 +63,7 @@ class User implements ModelInterface, CommonFields
     {
         return [
             self::FIELD_ID            => Type::INTEGER,
-            self::FIELD_ID_ROLE       => Type::STRING,
+            self::FIELD_ID_ROLE       => Role::getAttributeTypes()[Role::FIELD_ID],
             self::FIELD_FIRST_NAME    => Type::STRING,
             self::FIELD_LAST_NAME     => Type::STRING,
             self::FIELD_EMAIL         => Type::STRING,
@@ -80,7 +80,7 @@ class User implements ModelInterface, CommonFields
     public static function getAttributeLengths(): array
     {
         return [
-            self::FIELD_ID_ROLE       => 255,
+            self::FIELD_ID_ROLE       => Role::getAttributeLengths()[Role::FIELD_ID],
             self::FIELD_FIRST_NAME    => 100,
             self::FIELD_LAST_NAME     => 100,
             self::FIELD_EMAIL         => 255,

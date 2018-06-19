@@ -2,6 +2,7 @@
 
 use App\Api\RolesApi;
 use App\Api\UsersApi;
+use App\Data\Models\Role;
 use App\Json\Schemas\RoleSchema;
 use App\Json\Schemas\UserSchema;
 use Limoncello\Flute\Types\DateTime;
@@ -26,7 +27,9 @@ class BaseRules extends Rules
      */
     public static function roleId(RuleInterface $next = null): RuleInterface
     {
-        return self::asSanitizedString(self::readable(RolesApi::class, $next));
+        $maxLength = Role::getAttributeLengths()[Role::FIELD_ID];
+
+        return self::asSanitizedString(self::stringLengthMax($maxLength, self::readable(RolesApi::class, $next)));
     }
 
     /**
