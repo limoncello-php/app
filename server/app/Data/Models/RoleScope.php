@@ -61,7 +61,6 @@ class RoleScope implements ModelInterface, CommonFields
         return [
             self::FIELD_ID_ROLE  => Role::getAttributeLengths()[Role::FIELD_ID],
             self::FIELD_ID_SCOPE => 255,
-            self::FIELD_ID_SCOPE => 255,
         ];
     }
 
