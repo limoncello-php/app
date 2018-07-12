@@ -29,13 +29,25 @@
 # $ docker-compose -f <file_name.yml> down
 # $ docker-compose -f <file_name.yml> stop
 
-db:
-  image: percona
-  container_name: db_limoncello_app
-  ports:
-    - "3306:3306"
-  environment:
-    MYSQL_ROOT_PASSWORD: root
-    MYSQL_USER: passport
-    MYSQL_PASSWORD: secret
-    MYSQL_DATABASE: limoncello_app
+version: '3'
+services:
+  db:
+    image: percona
+    container_name: db_limoncello_app
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: passport
+      MYSQL_PASSWORD: secret
+      MYSQL_DATABASE: limoncello_app
+
+#  db:
+#    image: postgres
+#    container_name: db_limoncello_app
+#    ports:
+#      - "5432:5432"
+#    environment:
+#      POSTGRES_USER: root
+#      POSTGRES_PASSWORD: secret
+#      POSTGRES_DB: limoncello_app
