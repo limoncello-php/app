@@ -49,7 +49,7 @@ abstract class BaseController
         array $viewExtraParams = []
     ): ResponseInterface {
         // read resources with pagination
-        $parser = static::createQueryParser($container, $queryRulesClass)->parse($request->getQueryParams());
+        $parser = static::createQueryParser($container, $queryRulesClass)->parse(null, $request->getQueryParams());
         $mapper = static::createParameterMapper($container, $schemaClass);
         $api    = static::createApi($container, $apiClass);
 

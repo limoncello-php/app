@@ -13,19 +13,27 @@ use Settings\ApplicationApi;
 class RolesReadQuery implements JsonApiQueryRulesInterface
 {
     /**
-     * @return RuleInterface[]|null
+     * @inheritdoc
+     */
+    public static function getIdentityRule(): ?RuleInterface
+    {
+        return r::asSanitizedString();
+    }
+
+    /**
+     * @inheritdoc
      */
     public static function getFilterRules(): ?array
     {
         return [
-            Schema::RESOURCE_ID      => r::stringToInt(r::moreThan(0)),
+            Schema::RESOURCE_ID      => static::getIdentityRule(),
             Schema::ATTR_DESCRIPTION => r::asSanitizedString(),
             Schema::ATTR_CREATED_AT  => r::asJsonApiDateTime(),
         ];
     }
 
     /**
-     * @return RuleInterface[]|null
+     * @inheritdoc
      */
     public static function getFieldSetRules(): ?array
     {
@@ -34,7 +42,7 @@ class RolesReadQuery implements JsonApiQueryRulesInterface
     }
 
     /**
-     * @return RuleInterface|null
+     * @inheritdoc
      */
     public static function getSortsRule(): ?RuleInterface
     {
@@ -45,7 +53,7 @@ class RolesReadQuery implements JsonApiQueryRulesInterface
     }
 
     /**
-     * @return RuleInterface|null
+     * @inheritdoc
      */
     public static function getIncludesRule(): ?RuleInterface
     {
@@ -54,7 +62,7 @@ class RolesReadQuery implements JsonApiQueryRulesInterface
     }
 
     /**
-     * @return RuleInterface|null
+     * @inheritdoc
      */
     public static function getPageOffsetRule(): ?RuleInterface
     {
@@ -63,7 +71,7 @@ class RolesReadQuery implements JsonApiQueryRulesInterface
     }
 
     /**
-     * @return RuleInterface|null
+     * @inheritdoc
      */
     public static function getPageLimitRule(): ?RuleInterface
     {

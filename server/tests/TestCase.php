@@ -17,7 +17,7 @@ use Limoncello\Testing\Sapi;
 use Limoncello\Testing\TestCaseTrait;
 use Mockery;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
-use Zend\Diactoros\Response\EmitterInterface;
+use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 
 /**
  * @package Tests

@@ -14,11 +14,11 @@
     "require": {
         "php": ">=7.1.0",
         "vlucas/phpdotenv": "^2.3",
-        "limoncello-php/framework": "^0.9.1",
+        "limoncello-php/framework": "^0.10.0",
         "twig/extensions": "^1.5"
     },
     "require-dev": {
-        "limoncello-php/testing": "^0.9.1",
+        "limoncello-php/testing": "^0.10.0",
         "filp/whoops": "^2.1",
         "squizlabs/php_codesniffer": "^2.9",
         "phpmd/phpmd": "^2.6",

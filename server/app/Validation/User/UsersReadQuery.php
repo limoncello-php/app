@@ -14,12 +14,20 @@ use Settings\ApplicationApi;
 class UsersReadQuery implements JsonApiQueryRulesInterface
 {
     /**
+     * @inheritdoc
+     */
+    public static function getIdentityRule(): ?RuleInterface
+    {
+        return r::stringToInt(r::moreThan(0));
+    }
+
+    /**
      * @return RuleInterface[]|null
      */
     public static function getFilterRules(): ?array
     {
         return [
-            Schema::RESOURCE_ID                                   => r::stringToInt(r::moreThan(0)),
+            Schema::RESOURCE_ID                                   => static::getIdentityRule(),
             Schema::ATTR_FIRST_NAME                               => r::asSanitizedString(),
             Schema::ATTR_LAST_NAME                                => r::asSanitizedString(),
             Schema::ATTR_CREATED_AT                               => r::asJsonApiDateTime(),

@@ -205,7 +205,7 @@ class RolesController extends BaseController implements WebControllerInterface
         $roleName = $routeParams[static::ROUTE_KEY_INDEX];
 
         $parser = static::createQueryParser($container, DefaultQueryValidationRules::class)
-            ->parse($request->getQueryParams());
+            ->parse($routeParams[static::ROUTE_KEY_INDEX], $request->getQueryParams());
         $mapper = static::createParameterMapper($container, RoleSchema::class);
         /** @var RolesApi $api */
         $api = static::createApi($container, RolesApi::class);
