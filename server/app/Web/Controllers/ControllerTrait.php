@@ -24,7 +24,7 @@ use Limoncello\Flute\Contracts\Schema\JsonSchemasInterface;
 use Limoncello\Flute\Contracts\Schema\SchemaInterface;
 use Limoncello\Flute\Contracts\Validation\FormValidatorFactoryInterface;
 use Limoncello\Flute\Contracts\Validation\FormValidatorInterface;
-use Limoncello\Flute\Contracts\Validation\JsonApiQueryValidatingParserInterface;
+use Limoncello\Flute\Contracts\Validation\JsonApiQueryParserInterface;
 use Limoncello\Flute\Http\Traits\DefaultControllerMethodsTrait;
 use Limoncello\Flute\Http\Traits\FluteRoutesTrait;
 use Limoncello\Passport\Contracts\Authentication\PassportAccountInterface;
@@ -76,8 +76,8 @@ trait ControllerTrait
             $linkClosure = function (int $offset) use ($originalUri, $pageSize, $queryParams): UriInterface {
                 $paramsWithPaging = array_merge($queryParams, [
                     BaseQueryParserInterface::PARAM_PAGE => [
-                        JsonApiQueryValidatingParserInterface::PARAM_PAGING_OFFSET => $offset,
-                        JsonApiQueryValidatingParserInterface::PARAM_PAGING_LIMIT  => $pageSize,
+                        JsonApiQueryParserInterface::PARAM_PAGING_OFFSET => $offset,
+                        JsonApiQueryParserInterface::PARAM_PAGING_LIMIT  => $pageSize,
                     ],
                 ]);
 
