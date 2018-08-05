@@ -1,8 +1,10 @@
 <?php namespace Tests\Api;
 
+use App\Api\RolesApi;
 use App\Data\Models\Role;
 use App\Data\Seeds\RolesSeed;
 use App\Json\Schemas\RoleSchema;
+use Limoncello\Flute\Contracts\FactoryInterface;
 use Limoncello\Testing\JsonApiCallsTrait;
 use Tests\TestCase;
 
@@ -146,5 +148,22 @@ EOT;
         $this->assertNotEmpty($values = $statement->fetch());
         $this->assertEquals($description, $values[Role::FIELD_DESCRIPTION]);
         $this->assertNotEmpty($values[Role::FIELD_UPDATED_AT]);
+    }
+
+    /**
+     * Shows usage of low level API in tests.
+     */
+    public function testLowLevelApiRead(): void
+    {
+        $this->setPreventCommits();
+
+        $this->setModerator();
+
+        /** @var FactoryInterface $factory */
+        $factory = $this->createApplication()->createContainer()->get(FactoryInterface::class);
+        $api     = $factory->createApi(RolesApi::class);
+
+        $roleId = RolesSeed::ROLE_USER;
+        $this->assertNotNull($api->read($roleId));
     }
 }

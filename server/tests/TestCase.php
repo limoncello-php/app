@@ -1,22 +1,22 @@
 <?php namespace Tests;
 
 use App\Application;
+use Closure;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ConnectionException;
 use Limoncello\Application\Contracts\Cookie\CookieFunctionsInterface;
+use Limoncello\Application\Contracts\Csrf\CsrfTokenStorageInterface;
 use Limoncello\Application\Contracts\Session\SessionFunctionsInterface;
-use Limoncello\Application\Packages\Csrf\CsrfSettings;
 use Limoncello\Contracts\Container\ContainerInterface;
 use Limoncello\Contracts\Core\ApplicationInterface;
-use Limoncello\Contracts\Settings\SettingsProviderInterface;
 use Limoncello\Testing\ApplicationWrapperInterface;
 use Limoncello\Testing\ApplicationWrapperTrait;
 use Limoncello\Testing\HttpCallsTrait;
 use Limoncello\Testing\MeasureExecutionTimeTrait;
 use Limoncello\Testing\Sapi;
 use Limoncello\Testing\TestCaseTrait;
+use LogicException;
 use Mockery;
-use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 
 /**
@@ -36,14 +36,31 @@ class TestCase extends \PHPUnit\Framework\TestCase
      */
     private $sharedConnection = null;
 
-    /** @var null|PsrContainerInterface */
-    private $appContainer = null;
+    /**
+     * Next call replacements in the application container.
+     *
+     * @var array
+     */
+    private $containerToReplace = [];
 
-    /** @var array  */
-    private $session = [];
+    /**
+     * Next call captures from the application container.
+     *
+     * @var array
+     */
+    private $containerToCapture = [];
 
-    /** @var array */
-    private $sessionCsrfTokens = [];
+    /**
+     * Captured from container on previous application call.
+     *
+     * @var array
+     */
+    private $containerCaptured = [];
+
+    /**
+     * @var Closure[]
+     */
+    private $containerModifiers = [];
 
     /**
      * @inheritdoc
@@ -53,7 +70,6 @@ class TestCase extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         $this->resetEventHandlers();
-        $this->setSession([])->setSessionCsrfTokens([]);
 
         // keep database connection between multiple App call during a single test
         $this->sharedConnection     = null;
@@ -67,7 +83,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     $this->sharedConnection = $container->get(Connection::class);
                     $this->sharedConnection->beginTransaction();
                 } else {
-                    // we already have an open connection with transaction started
+                    // in transaction or not we always have same connection during a single test case
                     $container[Connection::class] = $this->sharedConnection;
                 }
             }
@@ -80,27 +96,23 @@ class TestCase extends \PHPUnit\Framework\TestCase
             $doNothing = function () {
             };
             if ($container->has(SessionFunctionsInterface::class) === true) {
+                // session values could be retrieved by capturing session interface before app call.
+                $sessionValues = [];
                 /** @var SessionFunctionsInterface $functions */
                 $functions = $container->get(SessionFunctionsInterface::class);
                 $functions
                     ->setStartCallable($doNothing)
                     ->setWriteCloseCallable($doNothing)
-                    ->setHasCallable(function ($key): bool {
-                        return array_key_exists($key, $this->session);
+                    ->setHasCallable(function ($key) use (&$sessionValues) : bool {
+                        return array_key_exists($key, $sessionValues);
                     })
-                    ->setPutCallable(function($key, $value): void {
-                        $this->session[$key] = $value;
+                    ->setPutCallable(function ($key, $value) use (&$sessionValues) : void {
+                        $sessionValues[$key] = $value;
                     })
-                    ->setRetrieveCallable(function ($key) {
-                        return $this->session[$key];
+                    ->setRetrieveCallable(function ($key) use (&$sessionValues) {
+                        return $sessionValues[$key];
                     });
             }
-
-            // also put CSRF tokens into session
-            /** @var SettingsProviderInterface $provider */
-            $provider = $container->get(SettingsProviderInterface::class);
-            [CsrfSettings::TOKEN_STORAGE_KEY_IN_SESSION => $sessionKey] = $provider->get(CsrfSettings::class);
-            $this->session[$sessionKey] = array_merge($this->session[$sessionKey] ?? [], $this->sessionCsrfTokens);
 
             if ($container->has(CookieFunctionsInterface::class) === true) {
                 /** @var CookieFunctionsInterface $functions */
@@ -114,8 +126,33 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
         $this->addOnContainerConfiguredEvent(function (ApplicationInterface $app, ContainerInterface $container) {
             assert($app);
-            $this->appContainer = $container;
+
+            foreach ($this->getContainerToReplace() as $interface => $value) {
+                $container->offsetSet(
+                    $interface,
+                    is_callable($value) === true ? call_user_func($value, $app, $container) : $value
+                );
+            }
+            $this->clearToReplace();
+
+            $this->clearCaptured();
+            foreach ($this->getContainerToCapture() as $interface) {
+                if ($container->has($interface) === false) {
+                    throw new LogicException("Application container do not contain any value with `$interface` key.");
+                }
+                $this->rememberCaptured($interface, $container->get($interface));
+            }
+            $this->clearToCapture();
+
+            foreach ($this->getContainerModifiers() as $modifierClosure) {
+                assert($modifierClosure instanceof Closure);
+                call_user_func($modifierClosure, $app, $container);
+            }
+            $this->clearContainerModifiers();
         });
+
+        // create app which calls event handlers above
+        $this->createApplication()->createContainer();
     }
 
     /**
@@ -132,8 +169,9 @@ class TestCase extends \PHPUnit\Framework\TestCase
         }
         $this->sharedConnection     = null;
         $this->shouldPreventCommits = false;
-        $this->appContainer         = null;
         $this->resetEventHandlers();
+        $this->clearContainerModifiers();
+        $this->clearToCapture()->clearCaptured()->clearToReplace();
 
         Mockery::close();
     }
@@ -156,16 +194,6 @@ class TestCase extends \PHPUnit\Framework\TestCase
     protected function getCapturedConnection(): ?Connection
     {
         return $this->sharedConnection;
-    }
-
-    /**
-     * Returns application container.
-     *
-     * @return PsrContainerInterface
-     */
-    protected function getAppContainer(): PsrContainerInterface
-    {
-        return $this->appContainer;
     }
 
     /**
@@ -212,42 +240,188 @@ class TestCase extends \PHPUnit\Framework\TestCase
         /** @var EmitterInterface $emitter */
         $emitter = Mockery::mock(EmitterInterface::class);
 
-        $sapi =
-            new Sapi($emitter, $server, $queryParams, $parsedBody, $cookies, $files, $messageBody, $protocolVersion);
+        $sapi
+            = new Sapi($emitter, $server, $queryParams, $parsedBody, $cookies, $files, $messageBody, $protocolVersion);
 
         return $sapi;
     }
 
     /**
-     * @return array
-     */
-    protected function getSession(): array
-    {
-        return $this->session;
-    }
-
-    /**
-     * @param array $session
-     *
      * @return self
      */
-    protected function setSession(array $session): self
+    protected function passThroughCsrfOnNextAppCall(): self
     {
-        $this->session = $session;
+        $csrfMock = Mockery::mock(CsrfTokenStorageInterface::class);
+        $csrfMock->shouldReceive('check')->once()->withAnyArgs()->andReturn(true);
+
+        $this->replaceInNextAppCall(CsrfTokenStorageInterface::class, $csrfMock);
 
         return $this;
     }
 
     /**
-     * Set session CSRF tokens with tokens as keys and payload (e.g. timestamps) as values.
+     * @param string         $interface
+     * @param callable|mixed $value
      *
-     * @param array $tokens
+     * @return TestCase
+     */
+    protected function replaceInNextAppCall(string $interface, $value): self
+    {
+        assert(array_key_exists($interface, $this->containerToReplace) === false);
+
+        $this->containerToReplace[$interface] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param string $interface
      *
+     * @return TestCase
+     */
+    protected function captureFromNextAppCall(string $interface): self
+    {
+        assert(in_array($interface, $this->containerToCapture) === false);
+
+        $this->containerToCapture[] = $interface;
+
+        return $this;
+    }
+
+    /**
+     * @param string $interface
+     *
+     * @return mixed
+     */
+    protected function getCapturedFromPreviousAppCall(string $interface)
+    {
+        if (array_key_exists($interface, $this->containerCaptured) === false) {
+            throw new LogicException(
+                "Nothing was captured by name `$interface`. " .
+                'Have you forgotten to call `capture` method before the application call?'
+            );
+        }
+
+        $value = $this->containerCaptured[$interface];
+
+        return $value;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getContainerCaptured(): array
+    {
+        return $this->containerCaptured;
+    }
+
+    /**
      * @return self
      */
-    protected function setSessionCsrfTokens(array $tokens): self
+    protected function setAdmin(): self
     {
-        $this->sessionCsrfTokens = array_flip($tokens);
+        return $this->addNextCallContainerModifier($this->createSetAdminAccount());
+    }
+
+    /**
+     * @return self
+     */
+    protected function setModerator(): self
+    {
+        return $this->addNextCallContainerModifier($this->createSetModeratorAccount());
+    }
+
+    /**
+     * @return self
+     */
+    protected function setUser(): self
+    {
+        return $this->addNextCallContainerModifier($this->createSetUserAccount());
+    }
+
+    /**
+     * @return array
+     */
+    private function getContainerToCapture(): array
+    {
+        return $this->containerToCapture;
+    }
+
+    /**
+     * @return array
+     */
+    private function getContainerToReplace(): array
+    {
+        return $this->containerToReplace;
+    }
+
+    /**
+     * @return self
+     */
+    private function clearToReplace(): self
+    {
+        $this->containerToReplace = [];
+
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    private function clearToCapture(): self
+    {
+        $this->containerToCapture = [];
+
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    private function clearCaptured(): self
+    {
+        $this->containerCaptured = [];
+
+        return $this;
+    }
+
+    /**
+     * @param string $interface
+     * @param mixed  $value
+     */
+    private function rememberCaptured(string $interface, $value): void
+    {
+        assert(array_key_exists($interface, $this->containerCaptured) === false);
+
+        $this->containerCaptured[$interface] = $value;
+    }
+
+    /**
+     * @return Closure[]
+     */
+    private function getContainerModifiers(): array
+    {
+        return $this->containerModifiers;
+    }
+
+    /**
+     * @return self
+     */
+    private function clearContainerModifiers(): self
+    {
+        $this->containerModifiers = [];
+
+        return $this;
+    }
+
+    /**
+     * @param Closure $modifier
+     *
+     * @return TestCase
+     */
+    protected function addNextCallContainerModifier(Closure $modifier): self
+    {
+        $this->containerModifiers[] = $modifier;
 
         return $this;
     }

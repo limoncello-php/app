@@ -204,17 +204,17 @@ class RoleWebTest extends TestCase
     {
         $this->setPreventCommits();
 
-        // add to session CSRF token(s) like it was issued by the server before.
-        $this->setSessionCsrfTokens(['secret_token']);
-
         $authCookie = $this->getAdminOAuthCookie();
 
         $data = [
             RoleSchema::RESOURCE_ID      => 'test-id',
             RoleSchema::ATTR_DESCRIPTION => 'Test Role',
 
-            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'anything',
         ];
+
+        // make CSRF protection check successful
+        $this->passThroughCsrfOnNextAppCall();
 
         $response = $this->post(self::RESOURCES_URL . '/create', $data, [], $authCookie);
 
@@ -252,17 +252,17 @@ class RoleWebTest extends TestCase
     {
         $this->setPreventCommits();
 
-        // add to session CSRF token(s) like it was issued by the server before.
-        $this->setSessionCsrfTokens(['secret_token']);
-
         $authCookie = $this->getAdminOAuthCookie();
 
         $data = [
             RoleSchema::RESOURCE_ID      => '', // <-- no role ID
             RoleSchema::ATTR_DESCRIPTION => 'Test Role',
 
-            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'anything',
         ];
+
+        // make CSRF protection check successful
+        $this->passThroughCsrfOnNextAppCall();
 
         $response = $this->post(self::RESOURCES_URL . '/create', $data, [], $authCookie);
 
@@ -282,16 +282,16 @@ class RoleWebTest extends TestCase
     {
         $this->setPreventCommits();
 
-        // add to session CSRF token(s) like it was issued by the server before.
-        $this->setSessionCsrfTokens(['secret_token']);
-
         $authCookie = $this->getAdminOAuthCookie();
 
         $data = [
             RoleSchema::ATTR_DESCRIPTION => 'Test Role',
 
-            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'anything',
         ];
+
+        // make CSRF protection check successful
+        $this->passThroughCsrfOnNextAppCall();
 
         $roleId   = RolesSeed::ROLE_USER;
         $response = $this->post(self::RESOURCES_URL . "/$roleId", $data, [], $authCookie);
@@ -309,16 +309,16 @@ class RoleWebTest extends TestCase
     {
         $this->setPreventCommits();
 
-        // add to session CSRF token(s) like it was issued by the server before.
-        $this->setSessionCsrfTokens(['secret_token']);
-
         $authCookie = $this->getAdminOAuthCookie();
 
         $data = [
             RoleSchema::ATTR_DESCRIPTION => '', // <-- empty
 
-            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'anything',
         ];
+
+        // make CSRF protection check successful
+        $this->passThroughCsrfOnNextAppCall();
 
         $roleId   = RolesSeed::ROLE_USER;
         $response = $this->post(self::RESOURCES_URL . "/$roleId", $data, [], $authCookie);
@@ -336,14 +336,14 @@ class RoleWebTest extends TestCase
     {
         $this->setPreventCommits();
 
-        // add to session CSRF token(s) like it was issued by the server before.
-        $this->setSessionCsrfTokens(['secret_token']);
-
         $authCookie = $this->getAdminOAuthCookie();
 
         $data = [
-            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'anything',
         ];
+
+        // make CSRF protection check successful
+        $this->passThroughCsrfOnNextAppCall();
 
         $roleId   = RolesSeed::ROLE_USER;
         $response = $this->post(self::RESOURCES_URL . "/$roleId/delete", $data, [], $authCookie);

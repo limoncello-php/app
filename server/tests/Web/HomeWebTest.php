@@ -50,26 +50,29 @@ class HomeWebTest extends TestCase
     {
         $this->setPreventCommits();
 
-        // add to session CSRF token(s) like it was issued by the server before.
-        $this->setSessionCsrfTokens(['secret_token']);
+        // make CSRF protection check successful
+        $this->passThroughCsrfOnNextAppCall();
 
         $form = [
             AuthController::FORM_EMAIL    => $this->getUserEmail(),
             AuthController::FORM_PASSWORD => $this->getUserPassword(),
             AuthController::FORM_REMEMBER => 'on',
 
-            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'anything',
         ];
 
+        $this->captureFromNextAppCall(CookieJarInterface::class);
+
         $response = $this->post(self::SIGN_IN_URL, $form);
+
+        /** @var CookieJarInterface $cookies */
+        $cookies = $this->getCapturedFromPreviousAppCall(CookieJarInterface::class);
 
         $this->assertEquals(302, $response->getStatusCode());
 
         // check auth cookie was set
         $nowAsTimestamp = (new DateTime())->getTimestamp();
 
-        /** @var CookieJarInterface $cookies */
-        $cookies = $this->getAppContainer()->get(CookieJarInterface::class);
         $this->assertTrue($cookies->has(CookieAuth::COOKIE_NAME));
         $this->assertTrue($nowAsTimestamp < $cookies->get(CookieAuth::COOKIE_NAME)->getExpiresAtUnixTime());
     }
@@ -86,24 +89,27 @@ class HomeWebTest extends TestCase
     {
         $this->setPreventCommits();
 
-        // add to session CSRF token(s) like it was issued by the server before.
-        $this->setSessionCsrfTokens(['secret_token']);
+        // make CSRF protection check successful
+        $this->passThroughCsrfOnNextAppCall();
 
         $form = [
             AuthController::FORM_EMAIL    => $this->getUserEmail(),
             AuthController::FORM_PASSWORD => $this->getUserPassword() . '-=#', // <- invalid password
 
-            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'anything',
         ];
 
+        $this->captureFromNextAppCall(CookieJarInterface::class);
+
         $response = $this->post(self::SIGN_IN_URL, $form);
+
+        /** @var CookieJarInterface $cookies */
+        $cookies = $this->getCapturedFromPreviousAppCall(CookieJarInterface::class);
 
         $this->assertEquals(401, $response->getStatusCode());
 
         // check auth cookie was not set
 
-        /** @var CookieJarInterface $cookies */
-        $cookies = $this->getAppContainer()->get(CookieJarInterface::class);
         $this->assertFalse($cookies->has(CookieAuth::COOKIE_NAME));
     }
 
@@ -119,24 +125,26 @@ class HomeWebTest extends TestCase
     {
         $this->setPreventCommits();
 
-        // add to session CSRF token(s) like it was issued by the server before.
-        $this->setSessionCsrfTokens(['secret_token']);
+        // make CSRF protection check successful
+        $this->passThroughCsrfOnNextAppCall();
 
         $form = [
             AuthController::FORM_EMAIL    => 'it-does-not-look-like-email',
             AuthController::FORM_PASSWORD => '123', // <- too short for a password
 
-            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'anything',
         ];
 
+        $this->captureFromNextAppCall(CookieJarInterface::class);
+
         $response = $this->post(self::SIGN_IN_URL, $form);
+
+        /** @var CookieJarInterface $cookies */
+        $cookies = $this->getCapturedFromPreviousAppCall(CookieJarInterface::class);
 
         $this->assertEquals(422, $response->getStatusCode());
 
         // check auth cookie was not set
-
-        /** @var CookieJarInterface $cookies */
-        $cookies = $this->getAppContainer()->get(CookieJarInterface::class);
         $this->assertFalse($cookies->has(CookieAuth::COOKIE_NAME));
     }
 
@@ -150,15 +158,18 @@ class HomeWebTest extends TestCase
      */
     public function testLogout(): void
     {
+        $this->captureFromNextAppCall(CookieJarInterface::class);
+
         $response = $this->get(self::SIGN_OUT_URL);
+
+        /** @var CookieJarInterface $cookies */
+        $cookies = $this->getCapturedFromPreviousAppCall(CookieJarInterface::class);
 
         $this->assertEquals(302, $response->getStatusCode());
 
         // check auth cookie was set
         $nowAsTimestamp = (new DateTime())->getTimestamp();
 
-        /** @var CookieJarInterface $cookies */
-        $cookies = $this->getAppContainer()->get(CookieJarInterface::class);
         $this->assertTrue($cookies->has(CookieAuth::COOKIE_NAME));
         $this->assertTrue($cookies->get(CookieAuth::COOKIE_NAME)->getExpiresAtUnixTime() < $nowAsTimestamp);
     }

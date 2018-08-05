@@ -215,9 +215,6 @@ class UserWebTest extends TestCase
     {
         $this->setPreventCommits();
 
-        // add to session CSRF token(s) like it was issued by the server before.
-        $this->setSessionCsrfTokens(['secret_token']);
-
         $authCookie = $this->getModeratorOAuthCookie();
 
         $data = [
@@ -228,8 +225,11 @@ class UserWebTest extends TestCase
             UserSchema::V_ATTR_PASSWORD              => '123456',
             UserSchema::V_ATTR_PASSWORD_CONFIRMATION => '123456',
 
-            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'anything',
         ];
+
+        // make CSRF protection check successful
+        $this->passThroughCsrfOnNextAppCall();
 
         $response = $this->post(self::RESOURCES_URL . '/create', $data, [], $authCookie);
 
@@ -246,9 +246,6 @@ class UserWebTest extends TestCase
     {
         $this->setPreventCommits();
 
-        // add to session CSRF token(s) like it was issued by the server before.
-        $this->setSessionCsrfTokens(['secret_token']);
-
         $authCookie = $this->getModeratorOAuthCookie();
 
         $data = [
@@ -259,8 +256,11 @@ class UserWebTest extends TestCase
             UserSchema::V_ATTR_PASSWORD              => '123456',
             UserSchema::V_ATTR_PASSWORD_CONFIRMATION => '123456' . 'XXX', // <-- passwords do not match
 
-            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'anything',
         ];
+
+        // make CSRF protection check successful
+        $this->passThroughCsrfOnNextAppCall();
 
         $response = $this->post(self::RESOURCES_URL . '/create', $data, [], $authCookie);
 
@@ -277,9 +277,6 @@ class UserWebTest extends TestCase
     {
         $this->setPreventCommits();
 
-        // add to session CSRF token(s) like it was issued by the server before.
-        $this->setSessionCsrfTokens(['secret_token']);
-
         $authCookie = $this->getModeratorOAuthCookie();
 
         $data = [
@@ -289,8 +286,11 @@ class UserWebTest extends TestCase
             UserSchema::V_ATTR_PASSWORD              => '', // empty passwords would be ignored
             UserSchema::V_ATTR_PASSWORD_CONFIRMATION => '', // empty passwords would be ignored
 
-            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'anything',
         ];
+
+        // make CSRF protection check successful
+        $this->passThroughCsrfOnNextAppCall();
 
         $userId   = 2;
         $response = $this->post(self::RESOURCES_URL . "/$userId", $data, [], $authCookie);
@@ -308,9 +308,6 @@ class UserWebTest extends TestCase
     {
         $this->setPreventCommits();
 
-        // add to session CSRF token(s) like it was issued by the server before.
-        $this->setSessionCsrfTokens(['secret_token']);
-
         $authCookie = $this->getModeratorOAuthCookie();
 
         $data = [
@@ -321,8 +318,11 @@ class UserWebTest extends TestCase
             UserSchema::V_ATTR_PASSWORD              => '123', // too short password
             UserSchema::V_ATTR_PASSWORD_CONFIRMATION => '123', // too short password
 
-            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'anything',
         ];
+
+        // make CSRF protection check successful
+        $this->passThroughCsrfOnNextAppCall();
 
         $userId   = 2;
         $response = $this->post(self::RESOURCES_URL . "/$userId", $data, [], $authCookie);
@@ -340,14 +340,14 @@ class UserWebTest extends TestCase
     {
         $this->setPreventCommits();
 
-        // add to session CSRF token(s) like it was issued by the server before.
-        $this->setSessionCsrfTokens(['secret_token']);
-
         $authCookie = $this->getModeratorOAuthCookie();
 
         $data = [
-            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'secret_token',
+            CsrfSettings::DEFAULT_HTTP_REQUEST_CSRF_TOKEN_KEY => 'anything',
         ];
+
+        // make CSRF protection check successful
+        $this->passThroughCsrfOnNextAppCall();
 
         $userId   = 2;
         $response = $this->post(self::RESOURCES_URL . "/$userId/delete", $data, [], $authCookie);

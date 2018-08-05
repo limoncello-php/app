@@ -2,7 +2,13 @@
 
 use App\Data\Seeds\UsersSeed;
 use App\Web\Middleware\CookieAuth;
+use Closure;
+use Limoncello\Contracts\Core\ApplicationInterface;
+use Limoncello\Passport\Contracts\Authentication\PassportAccountManagerInterface;
+use Limoncello\Passport\Contracts\PassportServerInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
+use Zend\Diactoros\ServerRequest;
 
 /**
  * @package Tests
@@ -166,11 +172,7 @@ trait OAuthSignInTrait
     private function requestOAuthToken(string $username, string $password): string
     {
         /** @var ResponseInterface $response */
-        $response = $this->post('/token', [
-            'grant_type' => 'password',
-            'username'   => $username,
-            'password'   => $password,
-        ]);
+        $response = $this->post('/token', $this->createOAuthTokenRequestBody($username, $password));
 
         assert($response->getStatusCode() == 200);
         assert(($token = json_decode((string)$response->getBody())) !== false);
@@ -179,5 +181,73 @@ trait OAuthSignInTrait
         assert(empty($value) === false);
 
         return $value;
+    }
+
+    /**
+     * @return Closure
+     */
+    private function createSetAdminAccount(): Closure
+    {
+        return $this->createSetUserClosure($this->getAdminEmail(), $this->getAdminPassword());
+    }
+
+    /**
+     * @return Closure
+     */
+    private function createSetModeratorAccount(): Closure
+    {
+        return $this->createSetUserClosure($this->getModeratorEmail(), $this->getModeratorPassword());
+    }
+
+    /**
+     * @return Closure
+     */
+    private function createSetUserAccount(): Closure
+    {
+        return $this->createSetUserClosure($this->getUserEmail(), $this->getUserPassword());
+    }
+
+    /**
+     * @param string $username
+     * @param string $password
+     *
+     * @return Closure
+     */
+    private function createSetUserClosure(string $username, string $password): Closure
+    {
+        return function (ApplicationInterface $app, ContainerInterface $container) use ($username, $password): void
+        {
+            assert($app !== null);
+
+            /** @var PassportAccountManagerInterface $manager */
+            assert($container->has(PassportAccountManagerInterface::class));
+            $manager = $container->get(PassportAccountManagerInterface::class);
+
+            $request = (new ServerRequest())->withParsedBody($this->createOAuthTokenRequestBody($username, $password));
+
+            /** @var PassportServerInterface $passportServer */
+            $passportServer = $container->get(PassportServerInterface::class);
+            $tokenResponse  = $passportServer->postCreateToken($request);
+            assert($tokenResponse->getStatusCode() === 200);
+            $token          = json_decode((string)$tokenResponse->getBody());
+            $authToken      = $token->access_token;
+
+            $manager->setAccountWithTokenValue($authToken);
+        };
+    }
+
+    /**
+     * @param string $username
+     * @param string $password
+     *
+     * @return array
+     */
+    private function createOAuthTokenRequestBody(string $username, string $password): array
+    {
+        return [
+            'grant_type' => 'password',
+            'username'   => $username,
+            'password'   => $password,
+        ];
     }
 }
