@@ -29,6 +29,9 @@ class TestCase extends \PHPUnit\Framework\TestCase
     /** @var bool */
     private $shouldPreventCommits = false;
 
+    /** @var bool */
+    private $isInTransaction = false;
+
     /**
      * Database connection shared during test when commit prevention is requested.
      *
@@ -76,16 +79,19 @@ class TestCase extends \PHPUnit\Framework\TestCase
         $this->shouldPreventCommits = false;
         $interceptConnection        = function (ApplicationInterface $app, ContainerInterface $container) {
             assert($app);
-            if ($this->shouldPreventCommits === true) {
-                if ($this->sharedConnection === null) {
-                    // first connection during current test
-                    // * other option is take container from function args
-                    $this->sharedConnection = $container->get(Connection::class);
+            if ($this->shouldPreventCommits === false) {
+                // just capture connection from the call / typically is captured before test starts
+                $this->sharedConnection = $container->get(Connection::class);
+            } else {
+                // we are here if `prevent commits` is activated in a test
+
+                if ($this->isInTransaction === false) {
                     $this->sharedConnection->beginTransaction();
-                } else {
-                    // in transaction or not we always have same connection during a single test case
-                    $container[Connection::class] = $this->sharedConnection;
+                    $this->isInTransaction = true;
                 }
+                // we always have same connection during a single test case if `prevent commits` is activated
+                // the code below expects that app is created and connection is captured before test in `setUp()`
+                $container[Connection::class] = $this->sharedConnection;
             }
         };
         $this->addOnContainerConfiguredEvent($interceptConnection);
@@ -164,11 +170,15 @@ class TestCase extends \PHPUnit\Framework\TestCase
     {
         parent::tearDown();
 
-        if ($this->shouldPreventCommits === true && $this->sharedConnection !== null) {
+        if ($this->shouldPreventCommits === true &&
+            $this->sharedConnection !== null &&
+            $this->isInTransaction === true
+        ) {
             $this->sharedConnection->rollBack();
         }
         $this->sharedConnection     = null;
         $this->shouldPreventCommits = false;
+        $this->isInTransaction      = false;
         $this->resetEventHandlers();
         $this->clearContainerModifiers();
         $this->clearToCapture()->clearCaptured()->clearToReplace();
@@ -187,7 +197,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Returns database connection used used by application within current test. Needs 'prevent commits' to be set.
+     * Returns database connection used used by application within current test.
      *
      * @return Connection
      */
