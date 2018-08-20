@@ -128,58 +128,15 @@ class AuthController extends BaseController
         // if we are here name and password are valid.
         // we have to create an auth token and return its value as a cookie.
 
-        // default scope of default OAuth client
-        $clientScope = $passport->getClientRepository()->readScopeIdentifiers($passport->getDefaultClientIdentifier());
-        // limit the default scope to user's role allowed scopes
-        // by default settings it invokes `\App\Authentication\OAuth::validateScope`
-        $changedScopeOrNull = $passport->verifyAllowedUserScope($userId, $clientScope);
-        // now save the token with the assigned scopes
-        $unsavedToken = $passport
-            ->createTokenInstance()
-            ->setClientIdentifier($passport->getDefaultClientIdentifier())
-            ->setUserIdentifier($userId);
-        if ($changedScopeOrNull === null) {
-            // here will be users with scopes identical to client's ones aka unlimited (e.g. admins)
-            $unsavedToken->setScopeIdentifiers($clientScope)->setScopeUnmodified();
-        } else {
-            // here will be less privileged users with scope less than client's default
-            $unsavedToken->setScopeIdentifiers($changedScopeOrNull)->setScopeModified();
-        }
-        list($tokenValue, $tokenType, $tokenExpiresIn, $refreshValue) = $passport->generateTokenValues($unsavedToken);
-        $unsavedToken->setValue($tokenValue)->setType($tokenType)->setRefreshValue($refreshValue);
-        $savedToken     = $passport->getTokenRepository()->createToken($unsavedToken);
-        $valueForCookie = $savedToken->getValue();
-
-        // now cookie ...
-        /** @var CookieJarInterface $cookies */
-        $cookies    = $container->get(CookieJarInterface::class);
-        $authCookie = $cookies
-            ->create(CookieAuth::COOKIE_NAME)
-            ->setValue($valueForCookie)
-            ->setAccessibleOnlyThroughHttp();
-
-        $isRemember === true ? $authCookie->setExpiresInSeconds($tokenExpiresIn) : $authCookie->setExpiresAtUnixTime(0);
-
-        $isOnlyHttpsCookie =
-            static::getSettings($container, Authorization::class)[Authorization::KEY_AUTH_COOKIE_ONLY_OVER_HTTPS];
-        if ($isOnlyHttpsCookie === true) {
-            $authCookie->setSendOnlyOverSecureConnection();
-        }
-
-        $redirectUrl = null;
-        if (array_key_exists(static::QUERY_SIGN_IN_REDIRECT_URI, $request->getQueryParams()) === true) {
-            $mightBeRedirectUrl = $request->getQueryParams()[static::QUERY_SIGN_IN_REDIRECT_URI];
-            if (is_string($mightBeRedirectUrl) === true && empty($mightBeRedirectUrl) === false) {
-                $redirectUrl = static::safelyParseRedirectUrl($mightBeRedirectUrl);
-            }
-        }
-
-        // ... and redirect to home page if no valid redirect URI given
-        if ($redirectUrl === null) {
-            $redirectUrl = static::createRouteUrl($container, HomeController::ROUTE_NAME_HOME);
-        }
-
-        return new RedirectResponse($redirectUrl);
+        return static::authenticateUserById(
+            $userId,
+            $isRemember,
+            $request->getQueryParams(),
+            static::getSettings($container, Authorization::class),
+            static::createRouteUrl($container, HomeController::ROUTE_NAME_HOME),
+            $passport,
+            $container->get(CookieJarInterface::class)
+        );
     }
 
     /**
@@ -208,6 +165,77 @@ class AuthController extends BaseController
         $homeUrl = static::createRouteUrl($container, HomeController::ROUTE_NAME_HOME);
 
         return new RedirectResponse($homeUrl);
+    }
+
+    /**
+     * @param int                                $userId
+     * @param bool                               $isRemember
+     * @param array                              $queryParameters
+     * @param array                              $authSettings
+     * @param string                             $defaultRedirectUrl
+     * @param PassportServerIntegrationInterface $passport
+     * @param CookieJarInterface                 $cookies
+     *
+     * @return ResponseInterface
+     */
+    private static function authenticateUserById(
+        int $userId,
+        bool $isRemember,
+        array $queryParameters,
+        array $authSettings,
+        string $defaultRedirectUrl,
+        PassportServerIntegrationInterface $passport,
+        CookieJarInterface $cookies
+    ): ResponseInterface {
+        // default scope of default OAuth client
+        $clientScope = $passport->getClientRepository()->readScopeIdentifiers($passport->getDefaultClientIdentifier());
+        // limit the default scope to user's role allowed scopes
+        // by default settings it invokes `\App\Authentication\OAuth::validateScope`
+        $changedScopeOrNull = $passport->verifyAllowedUserScope($userId, $clientScope);
+        // now save the token with the assigned scopes
+        $unsavedToken = $passport
+            ->createTokenInstance()
+            ->setClientIdentifier($passport->getDefaultClientIdentifier())
+            ->setUserIdentifier($userId);
+        if ($changedScopeOrNull === null) {
+            // here will be users with scopes identical to client's ones aka unlimited (e.g. admins)
+            $unsavedToken->setScopeIdentifiers($clientScope)->setScopeUnmodified();
+        } else {
+            // here will be less privileged users with scope less than client's default
+            $unsavedToken->setScopeIdentifiers($changedScopeOrNull)->setScopeModified();
+        }
+        list($tokenValue, $tokenType, $tokenExpiresIn, $refreshValue) = $passport->generateTokenValues($unsavedToken);
+        $unsavedToken->setValue($tokenValue)->setType($tokenType)->setRefreshValue($refreshValue);
+        $savedToken     = $passport->getTokenRepository()->createToken($unsavedToken);
+        $valueForCookie = $savedToken->getValue();
+
+        // now cookie ...
+        $authCookie = $cookies
+            ->create(CookieAuth::COOKIE_NAME)
+            ->setValue($valueForCookie)
+            ->setAccessibleOnlyThroughHttp();
+
+        $isRemember === true ? $authCookie->setExpiresInSeconds($tokenExpiresIn) : $authCookie->setExpiresAtUnixTime(0);
+
+        $isOnlyHttpsCookie = $authSettings[Authorization::KEY_AUTH_COOKIE_ONLY_OVER_HTTPS];
+        if ($isOnlyHttpsCookie === true) {
+            $authCookie->setSendOnlyOverSecureConnection();
+        }
+
+        $redirectUrl = null;
+        if (array_key_exists(static::QUERY_SIGN_IN_REDIRECT_URI, $queryParameters) === true) {
+            $mightBeRedirectUrl = $queryParameters[static::QUERY_SIGN_IN_REDIRECT_URI];
+            if (is_string($mightBeRedirectUrl) === true && empty($mightBeRedirectUrl) === false) {
+                $redirectUrl = static::safelyParseRedirectUrl($mightBeRedirectUrl);
+            }
+        }
+
+        // ... and redirect to home page if no valid redirect URI given
+        if ($redirectUrl === null) {
+            $redirectUrl = $defaultRedirectUrl;
+        }
+
+        return new RedirectResponse($redirectUrl);
     }
 
     /**
