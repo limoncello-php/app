@@ -8,6 +8,7 @@
     <title>{% block title %}{% endblock %}</title>
     {% if master_canonical_sub_url %}<link rel="canonical" href="{{ _origin_uri ~ master_canonical_sub_url }}"/>{% endif %}
     <script src="/assets/index.js"></script>
+    {% block head_bottom %}{% endblock %}
 </head>
 
 <body>
@@ -18,6 +19,7 @@
     {% block footer %}{% endblock %}
 </div>
 
+    {% block body_bottom %}{% endblock %}
 </body>
 
 </html>
