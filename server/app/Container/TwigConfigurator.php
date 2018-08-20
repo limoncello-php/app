@@ -56,6 +56,28 @@ class TwigConfigurator implements ContainerConfiguratorInterface
                 ['is_safe' => ['html']]
             ));
 
+            $templates->getTwig()->addFunction(new Twig_Function(
+                'csrf_name',
+                function () use ($container, $provider): string {
+                    [CsrfSettings::HTTP_REQUEST_CSRF_TOKEN_KEY => $key] = $provider->get(CsrfSettings::class);
+
+                    return $key;
+                },
+                ['is_safe' => ['html']]
+            ));
+
+            $templates->getTwig()->addFunction(new Twig_Function(
+                'csrf_value',
+                function () use ($container, $provider): string {
+                    /** @var CsrfTokenGeneratorInterface $generator */
+                    $generator = $container->get(CsrfTokenGeneratorInterface::class);
+                    $token     = $generator->create();
+
+                    return $token;
+                },
+                ['is_safe' => ['html']]
+            ));
+
             return $templates;
         };
     }
