@@ -90,7 +90,7 @@ final class OAuth
             $factory  = $container->get(FactoryInterface::class);
             $usersApi = $factory->createApi(UsersApi::class);
 
-            $userScopes    = $usersApi->readScopes($userId);
+            $userScopes    = $usersApi->noAuthReadScopes($userId);
             $adjustedScope = array_intersect($userScopes, $scope);
             if (count($adjustedScope) !== count($scope)) {
                 $result = $adjustedScope;

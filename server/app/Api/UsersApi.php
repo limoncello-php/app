@@ -97,7 +97,7 @@ class UsersApi extends BaseApi
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function readScopes(int $userId): array
+    public function noAuthReadScopes(int $userId): array
     {
         /** @var Connection $connection */
         $connection  = $this->getContainer()->get(Connection::class);
@@ -119,6 +119,28 @@ class UsersApi extends BaseApi
         }
 
         return $scopes;
+    }
+
+    /**
+     * @param string $email
+     *
+     * @return int|null
+     */
+    public function noAuthReadUserIdByEmail(string $email): ?int
+    {
+        /** @var Connection $connection */
+        $connection  = $this->getContainer()->get(Connection::class);
+        $query       = $connection->createQueryBuilder();
+        $query
+            ->select(Model::FIELD_ID)
+            ->from(Model::TABLE_NAME)
+            ->where(Model::FIELD_EMAIL . '=' . $query->createPositionalParameter($email))
+            ->setMaxResults(1);
+        $statement = $query->execute();
+        $idOrFalse = $statement->fetchColumn();
+        $userId    = $idOrFalse === false ? null : (int)$idOrFalse;
+
+        return $userId;
     }
 
     /**
