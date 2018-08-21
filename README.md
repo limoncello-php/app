@@ -100,6 +100,10 @@ Performance comparision with other frameworks could be found [here](https://gith
 $ composer test
 ```
 
+### How-to add Google Auth to the Application
+
+You can find detailed instructions [here](https://github.com/limoncello-php/framework/blob/develop/docs/101.How_to_add_Google_auth.md).
+
 ### License
 
 [MIT license](http://opensource.org/licenses/MIT)
