@@ -2,7 +2,7 @@
 
 use App\Routes\WebRoutes;
 use App\Web\Views;
-use Limoncello\Core\Reflection\ClassIsTrait;
+use Limoncello\Common\Reflection\ClassIsTrait;
 use Limoncello\Flute\Contracts\Http\WebControllerInterface;
 use Limoncello\Flute\Contracts\Schema\SchemaInterface;
 use Neomerx\JsonApi\Contracts\Document\DocumentInterface;

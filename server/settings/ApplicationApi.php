@@ -3,7 +3,6 @@
 use App\Json\Exceptions\ThrowableConverter;
 use App\Routes\ApiRoutes;
 use Limoncello\Application\Exceptions\AuthorizationException;
-use Limoncello\Core\Reflection\ClassIsTrait;
 use Limoncello\Flute\Package\FluteSettings;
 
 /**
@@ -11,8 +10,6 @@ use Limoncello\Flute\Package\FluteSettings;
  */
 class ApplicationApi extends FluteSettings
 {
-    use ClassIsTrait;
-
     /** @inheritdoc */
     public const DEFAULT_PAGE_SIZE = 10;
 

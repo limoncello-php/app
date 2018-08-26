@@ -4,7 +4,6 @@ use App\Json\Controllers\RolesController;
 use App\Json\Controllers\UsersController;
 use App\Json\Schemas\RoleSchema;
 use App\Json\Schemas\UserSchema;
-use Limoncello\Commands\CommandRoutesTrait;
 use Limoncello\Contracts\Application\RoutesConfiguratorInterface;
 use Limoncello\Contracts\Routing\GroupInterface;
 use Limoncello\Flute\Http\Traits\FluteRoutesTrait;
@@ -17,7 +16,7 @@ use Limoncello\Flute\Package\FluteContainerConfigurator;
  */
 class ApiRoutes implements RoutesConfiguratorInterface
 {
-    use FluteRoutesTrait, CommandRoutesTrait;
+    use FluteRoutesTrait;
 
     /** API URI prefix */
     const API_URI_PREFIX = '/api/v1';

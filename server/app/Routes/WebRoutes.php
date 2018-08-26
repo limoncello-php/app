@@ -13,7 +13,6 @@ use Limoncello\Application\Packages\Csrf\CsrfContainerConfigurator;
 use Limoncello\Application\Packages\Csrf\CsrfMiddleware;
 use Limoncello\Application\Packages\Session\SessionContainerConfigurator;
 use Limoncello\Application\Packages\Session\SessionMiddleware;
-use Limoncello\Commands\CommandRoutesTrait;
 use Limoncello\Contracts\Application\RoutesConfiguratorInterface;
 use Limoncello\Contracts\Routing\GroupInterface;
 use Limoncello\Contracts\Routing\RouteInterface;
@@ -29,7 +28,7 @@ class WebRoutes implements RoutesConfiguratorInterface
 {
     const TOP_GROUP_PREFIX = '';
 
-    use FluteRoutesTrait, CommandRoutesTrait;
+    use FluteRoutesTrait;
 
     /**
      * @inheritdoc

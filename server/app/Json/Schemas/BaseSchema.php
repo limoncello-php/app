@@ -1,7 +1,7 @@
 <?php namespace App\Json\Schemas;
 
+use Limoncello\Common\Reflection\ClassIsTrait;
 use Limoncello\Contracts\Application\ModelInterface;
-use Limoncello\Core\Reflection\ClassIsTrait;
 use Limoncello\Flute\Schema\Schema;
 
 /**

@@ -1,14 +1,14 @@
-<?php namespace Settings;
+<?php namespace App\Container;
 
 use Faker\Factory;
 use Faker\Generator;
-use Limoncello\Contracts\Application\ContainerConfiguratorInterface;
+use Limoncello\Contracts\Commands\ContainerConfiguratorInterface;
 use Limoncello\Contracts\Container\ContainerInterface as LimoncelloContainerInterface;
 
 /**
  * @package Settings
  */
-class Commands implements ContainerConfiguratorInterface
+class CliCommandsConfigurator implements ContainerConfiguratorInterface
 {
     /** @var callable */
     const CONFIGURATOR = [self::class, self::CONTAINER_METHOD_NAME];
