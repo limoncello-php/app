@@ -31,7 +31,12 @@ class CliiTest extends TestCase
 
         $container = $this->createApplication()->createContainer();
 
-        $this->executeCommand([DataCommand::class, DataCommand::COMMAND_METHOD_NAME], $ioMock, $container);
+        $this->executeCommand(
+            DataCommand::NAME,
+            [DataCommand::class, DataCommand::COMMAND_METHOD_NAME],
+            $ioMock,
+            $container
+        );
 
         $this->assertEmpty($ioMock->getErrorRecords());
         $this->assertEmpty($ioMock->getWarningRecords());
