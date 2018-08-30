@@ -2,7 +2,7 @@
 
 use Limoncello\Application\Authorization\AuthorizationRulesTrait;
 use Limoncello\Auth\Contracts\Authorization\PolicyInformation\ContextInterface;
-use Limoncello\Passport\Contracts\Authentication\PassportAccountInterface;
+use Limoncello\Contracts\Passport\PassportAccountInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 

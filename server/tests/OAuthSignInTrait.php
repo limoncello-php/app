@@ -4,7 +4,7 @@ use App\Data\Seeds\UsersSeed;
 use App\Web\Middleware\CookieAuth;
 use Closure;
 use Limoncello\Contracts\Core\ApplicationInterface;
-use Limoncello\Passport\Contracts\Authentication\PassportAccountManagerInterface;
+use Limoncello\Contracts\Passport\PassportAccountManagerInterface;
 use Limoncello\Passport\Contracts\PassportServerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;

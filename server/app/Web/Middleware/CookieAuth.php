@@ -2,7 +2,7 @@
 
 use Closure;
 use Limoncello\Contracts\Application\MiddlewareInterface;
-use Limoncello\Passport\Contracts\Authentication\PassportAccountManagerInterface;
+use Limoncello\Contracts\Passport\PassportAccountManagerInterface;
 use Limoncello\Passport\Exceptions\AuthenticationException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;

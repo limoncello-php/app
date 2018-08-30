@@ -111,12 +111,8 @@ class UsersApi extends BaseApi
             ->from(Model::TABLE_NAME, $users)
             ->leftJoin($users, RoleScope::TABLE_NAME, $rolesScopes, "$users.$uRoleId = $rolesScopes.$rsRoleId")
             ->where(Model::FIELD_ID . '=' . $query->createPositionalParameter($userId, PDO::PARAM_INT));
-        $statement = $query->execute();
 
-        $scopes = [];
-        while (($fetchedScope = $statement->fetchColumn()) !== false) {
-            $scopes[] = $fetchedScope;
-        }
+        $scopes = array_column($query->execute()->fetchAll(), RoleScope::FIELD_ID_SCOPE);
 
         return $scopes;
     }

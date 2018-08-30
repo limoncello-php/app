@@ -9,10 +9,10 @@ use Exception;
 use Limoncello\Contracts\Authentication\AccountManagerInterface;
 use Limoncello\Contracts\Authorization\AuthorizationManagerInterface;
 use Limoncello\Contracts\Exceptions\AuthorizationExceptionInterface;
+use Limoncello\Contracts\Passport\PassportAccountInterface;
 use Limoncello\Flute\Adapters\ModelQueryBuilder;
 use Limoncello\Flute\Api\Crud;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
-use Limoncello\Passport\Contracts\Authentication\PassportAccountInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
