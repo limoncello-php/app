@@ -20,7 +20,7 @@ class Passport extends PassportSettings
     const APPROVAL_URI = 'oauth-scope-approval';
 
     /** URI to handle OAuth critical errors such as invalid client ID or unsupported grant types. */
-    const ERROR_URI = 'oauth-scope-approval';
+    const ERROR_URI = 'oauth-error';
 
     /** Default OAuth client ID */
     const DEFAULT_CLIENT_ID = 'default_client';

@@ -53,7 +53,7 @@ class PassportSeed implements SeedInterface
             static::SCOPE_ADMIN_OAUTH    => 'Can create, update and delete OAuth clients, redirect URIs and scopes.',
             static::SCOPE_ADMIN_USERS    => 'Can create, update and delete users.',
             static::SCOPE_ADMIN_ROLES    => 'Can create, update and delete roles.',
-            static::SCOPE_VIEW_USERS     => 'Can view roles.',
+            static::SCOPE_VIEW_USERS     => 'Can view users.',
             static::SCOPE_VIEW_ROLES     => 'Can view roles.',
         ];
         $scopeRepo = $integration->getScopeRepository();
