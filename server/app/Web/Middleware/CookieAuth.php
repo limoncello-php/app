@@ -4,9 +4,11 @@ use Closure;
 use Limoncello\Contracts\Application\MiddlewareInterface;
 use Limoncello\Contracts\Passport\PassportAccountManagerInterface;
 use Limoncello\Passport\Exceptions\AuthenticationException;
+use Limoncello\Passport\Exceptions\RepositoryException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * @package App
@@ -43,8 +45,21 @@ final class CookieAuth implements MiddlewareInterface
                     $accountManager->setAccountWithTokenValue($tokenValue);
                 } catch (AuthenticationException $exception) {
                     // ignore if auth with the token fails or add the accident to log (could be taken from container)
+                    /** @var LoggerInterface $logger */
+                    $logger = $container->get(LoggerInterface::class);
+                    $logger->warning(
+                        'Auth cookie received with request however authentication failed due to its invalid value.',
+                        ['exception' => $exception]
+                    );
+                } catch (RepositoryException $exception) {
+                    // ignore if auth with the token fails or add the accident to log (could be taken from container)
+                    /** @var LoggerInterface $logger */
+                    $logger = $container->get(LoggerInterface::class);
+                    $logger->warning(
+                        'Auth cookie received with request however authentication failed due to database issue(s).',
+                        ['exception' => $exception]
+                    );
                 }
-
             }
         }
 
