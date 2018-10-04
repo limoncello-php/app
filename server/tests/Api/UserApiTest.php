@@ -1,7 +1,6 @@
 <?php namespace Tests\Api;
 
 use App\Api\UsersApi;
-use Limoncello\Testing\JsonApiCallsTrait;
 use Tests\TestCase;
 
 /**
@@ -9,17 +8,19 @@ use Tests\TestCase;
  */
 class UserApiTest extends TestCase
 {
-    use JsonApiCallsTrait;
-
     /**
-     * Test User's API.
+     * Sample how to test low level API.
      */
-    public function testIndex()
+    public function testLowLevelApi()
     {
         $this->setPreventCommits();
 
+        // create API
+
         /** @var UsersApi $api */
         $api = $this->createApi(UsersApi::class);
+
+        // Call and check any method from low level API.
 
         /** Default seed data. Manually checked. */
         $this->assertEquals(5, $api->noAuthReadUserIdByEmail('denesik.stewart@gmail.com'));
