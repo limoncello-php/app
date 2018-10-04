@@ -7,8 +7,11 @@ use Doctrine\DBAL\ConnectionException;
 use Limoncello\Application\Contracts\Cookie\CookieFunctionsInterface;
 use Limoncello\Application\Contracts\Csrf\CsrfTokenStorageInterface;
 use Limoncello\Application\Contracts\Session\SessionFunctionsInterface;
+use Limoncello\Common\Reflection\ClassIsTrait;
 use Limoncello\Contracts\Container\ContainerInterface;
 use Limoncello\Contracts\Core\ApplicationInterface;
+use Limoncello\Flute\Contracts\Api\CrudInterface;
+use Limoncello\Flute\Contracts\FactoryInterface;
 use Limoncello\Testing\ApplicationWrapperInterface;
 use Limoncello\Testing\ApplicationWrapperTrait;
 use Limoncello\Testing\HttpCallsTrait;
@@ -24,7 +27,7 @@ use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
  */
 class TestCase extends \PHPUnit\Framework\TestCase
 {
-    use TestCaseTrait, HttpCallsTrait, MeasureExecutionTimeTrait, OAuthSignInTrait;
+    use TestCaseTrait, HttpCallsTrait, MeasureExecutionTimeTrait, OAuthSignInTrait, ClassIsTrait;
 
     /** @var bool */
     private $shouldPreventCommits = false;
@@ -347,6 +350,25 @@ class TestCase extends \PHPUnit\Framework\TestCase
     protected function setUser(): self
     {
         return $this->addNextCallContainerModifier($this->createSetUserAccount());
+    }
+
+    /**
+     * @param string $apiClass
+     *
+     * @return CrudInterface
+     */
+    protected function createApi(string $apiClass): CrudInterface
+    {
+        assert($this->classImplements(
+            $apiClass,
+            CrudInterface::class), "Class `$apiClass` does not look like a valid API CRUD class."
+        );
+
+        /** @var FactoryInterface $factory */
+        $factory = $this->createApplication()->createContainer()->get(FactoryInterface::class);
+        $api     = $factory->createApi($apiClass);
+
+        return $api;
     }
 
     /**

@@ -1,4 +1,4 @@
-<?php namespace Tests\Api;
+<?php namespace Tests\Json;
 
 use App\Api\RolesApi;
 use App\Data\Models\Role;
