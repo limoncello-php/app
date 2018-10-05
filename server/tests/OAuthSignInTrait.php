@@ -76,7 +76,7 @@ trait OAuthSignInTrait
      */
     protected function getAdminOAuthHeader(): array
     {
-        return $this->getOAuthHeader($this->getAdminOAuthToken());
+        return $this->getOAuthHeader($this->extractOAuthAccessTokenValue($this->getAdminOAuthToken()));
     }
 
     /**
@@ -84,7 +84,7 @@ trait OAuthSignInTrait
      */
     protected function getModeratorOAuthHeader(): array
     {
-        return $this->getOAuthHeader($this->getModeratorOAuthToken());
+        return $this->getOAuthHeader($this->extractOAuthAccessTokenValue($this->getModeratorOAuthToken()));
     }
 
     /**
@@ -92,7 +92,7 @@ trait OAuthSignInTrait
      */
     protected function getPlainUserOAuthHeader(): array
     {
-        return $this->getOAuthHeader($this->getUserOAuthToken());
+        return $this->getOAuthHeader($this->extractOAuthAccessTokenValue($this->getUserOAuthToken()));
     }
 
     /**
@@ -100,7 +100,7 @@ trait OAuthSignInTrait
      */
     protected function getAdminOAuthCookie(): array
     {
-        return $this->getOAuthCookie($this->getAdminOAuthToken());
+        return $this->getOAuthCookie($this->extractOAuthAccessTokenValue($this->getAdminOAuthToken()));
     }
 
     /**
@@ -108,7 +108,7 @@ trait OAuthSignInTrait
      */
     protected function getModeratorOAuthCookie(): array
     {
-        return $this->getOAuthCookie($this->getModeratorOAuthToken());
+        return $this->getOAuthCookie($this->extractOAuthAccessTokenValue($this->getModeratorOAuthToken()));
     }
 
     /**
@@ -116,7 +116,7 @@ trait OAuthSignInTrait
      */
     protected function getPlainUserOAuthCookie(): array
     {
-        return $this->getOAuthCookie($this->getUserOAuthToken());
+        return $this->getOAuthCookie($this->extractOAuthAccessTokenValue($this->getUserOAuthToken()));
     }
 
     /**
@@ -140,36 +140,36 @@ trait OAuthSignInTrait
     }
 
     /**
-     * @return string
+     * @return object
      */
-    private function getAdminOAuthToken(): string
+    protected function getAdminOAuthToken()
     {
-        return $this->requestOAuthToken($this->getAdminEmail(), $this->getAdminPassword());
+        return $this->getOAuthToken($this->getAdminEmail(), $this->getAdminPassword());
     }
 
     /**
-     * @return string
+     * @return object
      */
-    private function getModeratorOAuthToken(): string
+    protected function getModeratorOAuthToken()
     {
-        return $this->requestOAuthToken($this->getModeratorEmail(), $this->getModeratorPassword());
+        return $this->getOAuthToken($this->getModeratorEmail(), $this->getModeratorPassword());
     }
 
     /**
-     * @return string
+     * @return object
      */
-    private function getUserOAuthToken(): string
+    protected function getUserOAuthToken()
     {
-        return $this->requestOAuthToken($this->getUserEmail(), $this->getUserPassword());
+        return $this->getOAuthToken($this->getUserEmail(), $this->getUserPassword());
     }
 
     /**
      * @param string $username
      * @param string $password
      *
-     * @return string
+     * @return object
      */
-    private function requestOAuthToken(string $username, string $password): string
+    private function getOAuthToken(string $username, string $password)
     {
         /** @var ResponseInterface $response */
         $response = $this->post('/token', $this->createOAuthTokenRequestBody($username, $password));
@@ -177,6 +177,18 @@ trait OAuthSignInTrait
         assert($response->getStatusCode() == 200);
         assert(($token = json_decode((string)$response->getBody())) !== false);
 
+        return $token;
+    }
+
+    /**
+     * @param object $token
+     *
+     * @return string
+     */
+    private function extractOAuthAccessTokenValue($token): string
+    {
+        assert(is_object($token));
+        assert(isset($token->access_token));
         $value = $token->access_token;
         assert(empty($value) === false);
 
