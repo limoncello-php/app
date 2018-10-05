@@ -169,7 +169,7 @@ trait OAuthSignInTrait
      *
      * @return object
      */
-    private function getOAuthToken(string $username, string $password)
+    protected function getOAuthToken(string $username, string $password)
     {
         /** @var ResponseInterface $response */
         $response = $this->post('/token', $this->createOAuthTokenRequestBody($username, $password));
@@ -196,44 +196,16 @@ trait OAuthSignInTrait
     }
 
     /**
-     * @return Closure
-     */
-    private function createSetAdminAccount(): Closure
-    {
-        return $this->createSetUserClosure($this->getAdminEmail(), $this->getAdminPassword());
-    }
-
-    /**
-     * @return Closure
-     */
-    private function createSetModeratorAccount(): Closure
-    {
-        return $this->createSetUserClosure($this->getModeratorEmail(), $this->getModeratorPassword());
-    }
-
-    /**
-     * @return Closure
-     */
-    private function createSetUserAccount(): Closure
-    {
-        return $this->createSetUserClosure($this->getUserEmail(), $this->getUserPassword());
-    }
-
-    /**
      * @param string $username
      * @param string $password
      *
      * @return Closure
      */
-    private function createSetUserClosure(string $username, string $password): Closure
+    private function createSetUserClosureWithCredentials(string $username, string $password): Closure
     {
         return function (ApplicationInterface $app, ContainerInterface $container) use ($username, $password): void
         {
             assert($app !== null);
-
-            /** @var PassportAccountManagerInterface $manager */
-            assert($container->has(PassportAccountManagerInterface::class));
-            $manager = $container->get(PassportAccountManagerInterface::class);
 
             $request = (new ServerRequest())->withParsedBody($this->createOAuthTokenRequestBody($username, $password));
 
@@ -244,7 +216,28 @@ trait OAuthSignInTrait
             $token          = json_decode((string)$tokenResponse->getBody());
             $authToken      = $token->access_token;
 
+            /** @var PassportAccountManagerInterface $manager */
+            assert($container->has(PassportAccountManagerInterface::class));
+            $manager = $container->get(PassportAccountManagerInterface::class);
             $manager->setAccountWithTokenValue($authToken);
+        };
+    }
+
+    /**
+     * @param string $accessToken
+     *
+     * @return Closure
+     */
+    private function createSetUserClosureWithAccessToken(string $accessToken): Closure
+    {
+        return function (ApplicationInterface $app, ContainerInterface $container) use ($accessToken): void
+        {
+            assert($app !== null);
+
+            /** @var PassportAccountManagerInterface $manager */
+            assert($container->has(PassportAccountManagerInterface::class));
+            $manager = $container->get(PassportAccountManagerInterface::class);
+            $manager->setAccountWithTokenValue($accessToken);
         };
     }
 

@@ -333,7 +333,9 @@ class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function setAdmin(): self
     {
-        return $this->addNextCallContainerModifier($this->createSetAdminAccount());
+        return $this->addNextCallContainerModifier(
+            $this->createSetUserClosureWithCredentials($this->getAdminEmail(), $this->getAdminPassword())
+        );
     }
 
     /**
@@ -341,7 +343,9 @@ class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function setModerator(): self
     {
-        return $this->addNextCallContainerModifier($this->createSetModeratorAccount());
+        return $this->addNextCallContainerModifier(
+            $this->createSetUserClosureWithCredentials($this->getModeratorEmail(), $this->getModeratorPassword())
+        );
     }
 
     /**
@@ -349,7 +353,21 @@ class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function setUser(): self
     {
-        return $this->addNextCallContainerModifier($this->createSetUserAccount());
+        return $this->addNextCallContainerModifier(
+            $this->createSetUserClosureWithCredentials($this->getUserEmail(), $this->getUserPassword())
+        );
+    }
+
+    /**
+     * @param string $accessToken
+     *
+     * @return self
+     */
+    protected function setUserByToken(string $accessToken): self
+    {
+        return $this->addNextCallContainerModifier(
+            $this->createSetUserClosureWithAccessToken($accessToken)
+        );
     }
 
     /**
