@@ -91,6 +91,14 @@ class User implements ModelInterface, CommonFields
     /**
      * @inheritdoc
      */
+    public static function getRawAttributes(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function getRelationships(): array
     {
         return [

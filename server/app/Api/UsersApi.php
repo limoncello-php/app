@@ -46,7 +46,7 @@ class UsersApi extends BaseApi
      *
      * @throws AuthorizationExceptionInterface
      */
-    public function update($index, iterable $attributes, iterable $toMany): int
+    public function update($index, array $attributes, array $toMany): int
     {
         $this->authorize(UserRules::ACTION_MANAGE_USERS, Schema::TYPE, $index);
 
@@ -140,25 +140,22 @@ class UsersApi extends BaseApi
     }
 
     /**
-     * @param iterable $attributes
+     * @param array $attributes
      *
-     * @return iterable
+     * @return array
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    private function getReplacePasswordWithHash(iterable $attributes): iterable
+    private function getReplacePasswordWithHash(array $attributes): array
     {
         // in attributes were captured validated input password we need to convert it into password hash
-        foreach ($attributes as $name => $value) {
-            if ($name === Schema::CAPTURE_NAME_PASSWORD) {
-                /** @var HasherInterface $hasher */
-                $hasher = $this->getContainer()->get(HasherInterface::class);
-                $value  = $hasher->hash($value);
-                $name   = Model::FIELD_PASSWORD_HASH;
-            }
-
-            yield $name => $value;
+        if (array_key_exists(Schema::CAPTURE_NAME_PASSWORD, $attributes) === true) {
+            /** @var HasherInterface $hasher */
+            $hasher = $this->getContainer()->get(HasherInterface::class);
+            $attributes[Model::FIELD_PASSWORD_HASH] = $hasher->hash($attributes[Schema::CAPTURE_NAME_PASSWORD]);
         }
+
+        return $attributes;
     }
 }
