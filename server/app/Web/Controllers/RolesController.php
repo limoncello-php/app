@@ -10,7 +10,7 @@ use App\Web\Views;
 use Limoncello\Contracts\Exceptions\AuthorizationExceptionInterface;
 use Limoncello\Flute\Contracts\Http\WebControllerInterface;
 use Limoncello\Flute\Validation\JsonApi\Rules\DefaultQueryValidationRules;
-use Neomerx\JsonApi\Contracts\Document\DocumentInterface;
+use Neomerx\JsonApi\Contracts\Schema\LinkInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -216,8 +216,8 @@ class RolesController extends BaseController implements WebControllerInterface
         $users         = $paginatedData->getData();
 
         // now prepare the data for rendering in HTML template
-        list(DocumentInterface::KEYWORD_PREV => $prevLink,
-            DocumentInterface::KEYWORD_NEXT => $nextLink) = static::getPagingLinks($request->getUri(), $paginatedData);
+        [LinkInterface::PREV => $prevLink, LinkInterface::NEXT => $nextLink] =
+            static::getPagingLinks($request->getUri(), $paginatedData);
 
         // render HTML body for response
         $body = static::view($container, Views::USERS_INDEX_PAGE, [

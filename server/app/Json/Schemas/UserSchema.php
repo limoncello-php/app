@@ -69,9 +69,9 @@ class UserSchema extends BaseSchema
     /**
      * @inheritdoc
      */
-    public function getAttributes($model, array $fieldKeysFilter = null): ?array
+    public function getAttributes($model): iterable
     {
-        $attributes = parent::getAttributes($model, $fieldKeysFilter);
+        $attributes = parent::getAttributes($model);
 
         // the virtual `V-password` attributes we've added do not exist in the model and will be filled with nulls.
         // kill them in order to have cleaner attribute list

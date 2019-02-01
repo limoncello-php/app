@@ -29,8 +29,8 @@ use Limoncello\Flute\Contracts\Validation\FormValidatorInterface;
 use Limoncello\Flute\Contracts\Validation\JsonApiQueryParserInterface;
 use Limoncello\Flute\Http\Traits\DefaultControllerMethodsTrait;
 use Limoncello\Flute\Http\Traits\FluteRoutesTrait;
-use Neomerx\JsonApi\Contracts\Document\DocumentInterface;
 use Neomerx\JsonApi\Contracts\Http\Query\BaseQueryParserInterface;
+use Neomerx\JsonApi\Contracts\Schema\LinkInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -65,8 +65,8 @@ trait ControllerTrait
     protected static function getPagingLinks(UriInterface $originalUri, PaginatedDataInterface $data): array
     {
         $links = [
-            DocumentInterface::KEYWORD_PREV => null,
-            DocumentInterface::KEYWORD_NEXT => null,
+            LinkInterface::PREV => null,
+            LinkInterface::NEXT => null,
         ];
 
         if ($data->isCollection() === true && (0 < $data->getOffset() || $data->hasMoreItems() === true)) {
@@ -87,12 +87,12 @@ trait ControllerTrait
             };
 
             if ($data->getOffset() > 0) {
-                $prevOffset                             = max(0, $data->getOffset() - $data->getLimit());
-                $links[DocumentInterface::KEYWORD_PREV] = $linkClosure($prevOffset);
+                $prevOffset                 = max(0, $data->getOffset() - $data->getLimit());
+                $links[LinkInterface::PREV] = $linkClosure($prevOffset);
             }
             if ($data->hasMoreItems() === true) {
-                $nextOffset                             = $data->getOffset() + $data->getLimit();
-                $links[DocumentInterface::KEYWORD_NEXT] = $linkClosure($nextOffset);
+                $nextOffset                 = $data->getOffset() + $data->getLimit();
+                $links[LinkInterface::NEXT] = $linkClosure($nextOffset);
             }
         }
 

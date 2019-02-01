@@ -5,7 +5,7 @@ use App\Web\Views;
 use Limoncello\Common\Reflection\ClassIsTrait;
 use Limoncello\Flute\Contracts\Http\WebControllerInterface;
 use Limoncello\Flute\Contracts\Schema\SchemaInterface;
-use Neomerx\JsonApi\Contracts\Document\DocumentInterface;
+use Neomerx\JsonApi\Contracts\Schema\LinkInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
@@ -59,8 +59,8 @@ abstract class BaseController
         $models        = $paginatedData->getData();
 
         // now prepare the data for rendering in HTML template
-        list(DocumentInterface::KEYWORD_PREV => $prevLink,
-            DocumentInterface::KEYWORD_NEXT => $nextLink) = static::getPagingLinks($request->getUri(), $paginatedData);
+        [LinkInterface::PREV => $prevLink, LinkInterface::NEXT => $nextLink] =
+            static::getPagingLinks($request->getUri(), $paginatedData);
 
         // render HTML body for response
         $body = static::view($container, $viewId, $viewExtraParams + [
