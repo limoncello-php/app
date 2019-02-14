@@ -5,6 +5,7 @@ use App\Data\Models\RoleScope;
 use App\Data\Models\User as Model;
 use App\Json\Schemas\UserSchema as Schema;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Limoncello\Contracts\Exceptions\AuthorizationExceptionInterface;
 use Limoncello\Crypt\Contracts\HasherInterface;
 use Limoncello\Flute\Contracts\Models\PaginatedDataInterface;
@@ -140,6 +141,25 @@ class UsersApi extends BaseApi
     }
 
     /**
+     * @param int    $userId
+     * @param string $newPassword
+     *
+     * @return bool
+     */
+    public function noAuthResetPassword(int $userId, string $newPassword): bool
+    {
+        $hash = $this->createHasher()->hash($newPassword);
+
+        try {
+            $changed = parent::update($userId, [Model::FIELD_PASSWORD_HASH => $hash], []);
+
+            return $changed > 0;
+        } catch (DBALException $exception) {
+            return false;
+        }
+    }
+
+    /**
      * @param array $attributes
      *
      * @return array
@@ -151,11 +171,18 @@ class UsersApi extends BaseApi
     {
         // in attributes were captured validated input password we need to convert it into password hash
         if (array_key_exists(Schema::CAPTURE_NAME_PASSWORD, $attributes) === true) {
-            /** @var HasherInterface $hasher */
-            $hasher = $this->getContainer()->get(HasherInterface::class);
-            $attributes[Model::FIELD_PASSWORD_HASH] = $hasher->hash($attributes[Schema::CAPTURE_NAME_PASSWORD]);
+            $attributes[Model::FIELD_PASSWORD_HASH] =
+                $this->createHasher()->hash($attributes[Schema::CAPTURE_NAME_PASSWORD]);
         }
 
         return $attributes;
+    }
+
+    /**
+     * @return HasherInterface
+     */
+    private function createHasher(): HasherInterface
+    {
+        return $this->getContainer()->get(HasherInterface::class);
     }
 }
