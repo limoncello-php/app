@@ -4,6 +4,7 @@ use App\Data\Models\User as Model;
 use App\Json\Schemas\UserSchema as Schema;
 use App\Validation\BaseRules;
 use App\Validation\ErrorCodes;
+use App\Validation\L10n\Messages;
 use Limoncello\Validation\Contracts\Rules\RuleInterface;
 
 /**
@@ -52,7 +53,7 @@ final class UserRules extends BaseRules
             self::stringLengthBetween(
                 1,
                 $maxLength,
-                self::filter(FILTER_VALIDATE_EMAIL, null, ErrorCodes::IS_EMAIL)
+                self::filter(FILTER_VALIDATE_EMAIL, null, ErrorCodes::IS_EMAIL, Messages::IS_EMAIL)
             )
         );
     }
@@ -65,7 +66,7 @@ final class UserRules extends BaseRules
         // input value should be unique among user's emails but before that...
         $isUniqueEmail = self::unique(Model::TABLE_NAME, Model::FIELD_EMAIL);
         // ... it should at least look like email but before that...
-        $isLooksLikeEmail = self::filter(FILTER_VALIDATE_EMAIL, null, ErrorCodes::IS_EMAIL, $isUniqueEmail);
+        $isLooksLikeEmail = self::filter(FILTER_VALIDATE_EMAIL, null, ErrorCodes::IS_EMAIL, Messages::IS_EMAIL, $isUniqueEmail);
         // ... it should have length within the range but before that...
         $maxLength  = Model::getAttributeLengths()[Model::FIELD_EMAIL];
         $isLengthOk = self::stringLengthBetween(1, $maxLength, $isLooksLikeEmail);

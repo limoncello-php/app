@@ -5,6 +5,7 @@ use App\Api\UsersApi;
 use App\Data\Models\Role;
 use App\Json\Schemas\RoleSchema;
 use App\Json\Schemas\UserSchema;
+use App\Validation\L10n\Messages;
 use Limoncello\Flute\Types\DateTime;
 use Limoncello\Flute\Validation\Rules\ApiRulesTrait;
 use Limoncello\Flute\Validation\Rules\DatabaseRulesTrait;
@@ -81,7 +82,9 @@ class BaseRules extends Rules
      */
     public static function asSanitizedUrl(RuleInterface $next = null): RuleInterface
     {
-        return self::isString(self::filter(FILTER_SANITIZE_URL, null, ErrorCodes::INVALID_VALUE, $next));
+        return self::isString(
+            self::filter(FILTER_SANITIZE_URL, null, ErrorCodes::INVALID_VALUE, Messages::INVALID_VALUE, $next)
+        );
     }
 
     /**
@@ -92,7 +95,7 @@ class BaseRules extends Rules
     public static function asSanitizedString(RuleInterface $next = null): RuleInterface
     {
         return self::isString(
-            self::filter(FILTER_SANITIZE_FULL_SPECIAL_CHARS, null, ErrorCodes::INVALID_VALUE, $next)
+            self::filter(FILTER_SANITIZE_FULL_SPECIAL_CHARS, null, ErrorCodes::INVALID_VALUE, Messages::INVALID_VALUE, $next)
         );
     }
 

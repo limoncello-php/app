@@ -30,7 +30,7 @@ class RolesApi extends BaseApi
      *
      * @throws AuthorizationExceptionInterface
      */
-    public function create($index, iterable $attributes, iterable $toMany): string
+    public function create(?string $index, iterable $attributes, iterable $toMany): string
     {
         $this->authorize(RoleRules::ACTION_ADMIN_ROLES, Schema::TYPE, $index);
 
@@ -42,7 +42,7 @@ class RolesApi extends BaseApi
      *
      * @throws AuthorizationExceptionInterface
      */
-    public function update($index, iterable $attributes, iterable $toMany): int
+    public function update(string $index, iterable $attributes, iterable $toMany): int
     {
         $this->authorize(RoleRules::ACTION_ADMIN_ROLES, Schema::TYPE, $index);
 
@@ -54,7 +54,7 @@ class RolesApi extends BaseApi
      *
      * @throws AuthorizationExceptionInterface
      */
-    public function remove($index): bool
+    public function remove(string $index): bool
     {
         $this->authorize(RoleRules::ACTION_ADMIN_ROLES, Schema::TYPE, $index);
 
@@ -78,7 +78,7 @@ class RolesApi extends BaseApi
      *
      * @throws AuthorizationExceptionInterface
      */
-    public function read($index)
+    public function read(string $index)
     {
         $this->authorize(RoleRules::ACTION_VIEW_ROLES, Schema::TYPE, $index);
 

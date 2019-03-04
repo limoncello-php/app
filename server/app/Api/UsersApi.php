@@ -35,7 +35,7 @@ class UsersApi extends BaseApi
      *
      * @throws AuthorizationExceptionInterface
      */
-    public function create($index, iterable $attributes, iterable $toMany): string
+    public function create(?string $index, iterable $attributes, iterable $toMany): string
     {
         $this->authorize(UserRules::ACTION_MANAGE_USERS, Schema::TYPE);
 
@@ -47,7 +47,7 @@ class UsersApi extends BaseApi
      *
      * @throws AuthorizationExceptionInterface
      */
-    public function update($index, array $attributes, array $toMany): int
+    public function update(string $index, array $attributes, array $toMany): int
     {
         $this->authorize(UserRules::ACTION_MANAGE_USERS, Schema::TYPE, $index);
 
@@ -59,7 +59,7 @@ class UsersApi extends BaseApi
      *
      * @throws AuthorizationExceptionInterface
      */
-    public function remove($index): bool
+    public function remove(string $index): bool
     {
         $this->authorize(UserRules::ACTION_MANAGE_USERS, Schema::TYPE, $index);
 
@@ -83,7 +83,7 @@ class UsersApi extends BaseApi
      *
      * @throws AuthorizationExceptionInterface
      */
-    public function read($index)
+    public function read(string $index)
     {
         $this->authorize(UserRules::ACTION_VIEW_USERS, Schema::TYPE, $index);
 

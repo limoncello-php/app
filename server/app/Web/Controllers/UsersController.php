@@ -4,13 +4,12 @@ use App\Api\RolesApi;
 use App\Api\UsersApi;
 use App\Data\Seeds\RolesSeed;
 use App\Json\Schemas\UserSchema;
-use App\Validation\ErrorCodes;
+use App\Validation\L10n\Messages;
 use App\Validation\User\UserCreateForm;
 use App\Validation\User\UsersReadQuery;
 use App\Validation\User\UserUpdateForm;
 use App\Web\Views;
 use Limoncello\Flute\Contracts\Http\WebControllerInterface;
-use Limoncello\Flute\Package\FluteSettings;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -233,10 +232,9 @@ class UsersController extends BaseController implements WebControllerInterface
             $messages = $validator->getMessages();
             $errors   = iterator_to_array($messages);
             if ($isPasswordSame === false) {
-                $formatter = static::createFormatter($container, FluteSettings::VALIDATION_NAMESPACE);
-
+                $formatter = static::createFormatter($container, Messages::NAMESPACE_NAME);
                 $errors[UserSchema::CAPTURE_NAME_PASSWORD_CONFIRMATION] =
-                    $formatter->formatMessage(ErrorCodes::CONFIRMATION_SHOULD_MATCH_PASSWORD);
+                    $formatter->formatMessage(Messages::CONFIRMATION_SHOULD_MATCH_PASSWORD);
             }
 
             // clear password from inputs
