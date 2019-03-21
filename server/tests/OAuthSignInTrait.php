@@ -175,7 +175,8 @@ trait OAuthSignInTrait
         $response = $this->post('/token', $this->createOAuthTokenRequestBody($username, $password));
 
         assert($response->getStatusCode() == 200);
-        assert(($token = json_decode((string)$response->getBody())) !== false);
+        $token = json_decode((string)$response->getBody());
+        assert($token !== false);
 
         return $token;
     }
