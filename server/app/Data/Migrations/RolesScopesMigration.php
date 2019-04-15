@@ -6,6 +6,7 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Types\Type;
 use Limoncello\Contracts\Data\MigrationInterface;
 use Limoncello\Data\Migrations\MigrationTrait;
+use Limoncello\Data\Migrations\RelationshipRestrictions;
 use Limoncello\Passport\Entities\DatabaseSchema;
 use Limoncello\Passport\Entities\Scope;
 
@@ -25,7 +26,7 @@ class RolesScopesMigration implements MigrationInterface
     {
         $this->createTable(Model::class, [
             $this->primaryInt(Model::FIELD_ID),
-            $this->foreignRelationship(Model::FIELD_ID_ROLE, Role::class, true),
+            $this->foreignRelationship(Model::FIELD_ID_ROLE, Role::class, RelationshipRestrictions::CASCADE),
             $this->foreignColumn(
                 Model::FIELD_ID_SCOPE,
                 DatabaseSchema::TABLE_SCOPES,

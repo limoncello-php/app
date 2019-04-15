@@ -4,6 +4,7 @@ use App\Data\Models\User as Model;
 use Doctrine\DBAL\DBALException;
 use Limoncello\Contracts\Data\MigrationInterface;
 use Limoncello\Data\Migrations\MigrationTrait;
+use Limoncello\Data\Migrations\RelationshipRestrictions;
 
 /**
  * @package App
@@ -21,7 +22,7 @@ class UsersMigration implements MigrationInterface
     {
         $this->createTable(Model::class, [
             $this->primaryInt(Model::FIELD_ID),
-            $this->relationship(Model::REL_ROLE, true),
+            $this->relationship(Model::REL_ROLE, RelationshipRestrictions::CASCADE),
             $this->string(Model::FIELD_FIRST_NAME),
             $this->string(Model::FIELD_LAST_NAME),
             $this->string(Model::FIELD_EMAIL),
