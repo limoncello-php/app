@@ -20,6 +20,7 @@ use Limoncello\Testing\Sapi;
 use Limoncello\Testing\TestCaseTrait;
 use LogicException;
 use Mockery;
+use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 
 /**
@@ -371,19 +372,24 @@ class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param string $apiClass
+     * @param string                $apiClass
+     * @param PsrContainerInterface $container
      *
      * @return CrudInterface
      */
-    protected function createApi(string $apiClass): CrudInterface
+    protected function createApi(string $apiClass, PsrContainerInterface $container = null): CrudInterface
     {
         assert($this->classImplements(
             $apiClass,
             CrudInterface::class), "Class `$apiClass` does not look like a valid API CRUD class."
         );
 
+        if ($container === null) {
+            $container = $this->createApplication()->createContainer();
+        }
+
         /** @var FactoryInterface $factory */
-        $factory = $this->createApplication()->createContainer()->get(FactoryInterface::class);
+        $factory = $container->get(FactoryInterface::class);
         $api     = $factory->createApi($apiClass);
 
         return $api;
